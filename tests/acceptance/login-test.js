@@ -34,15 +34,22 @@ test('send GET users and display them', function(assert) {
   });
 });
 
-test('logs in redirect to index and logs the user', function(assert) {
-  const data = [{ type: 'users', id: '1', attributes: { name: 'louis' } }];
-  server.get(url('users'), function() { return [ 200, {}, { data: data }]; });
+test('logs in POST sessions and redirect to index', function(assert) {
+  const getUsersData = [{ type: 'users', id: '1', attributes: { name: 'louis' } }];
+  server.get(url('users'), function() { return [ 200, {}, { data: getUsersData }]; });
+
+  const postSessionsData = [{ type: 'sessions', id: '1', attributes: { token: 'session-token', name: 'louis' } }];
+  const postSessions = server.post(url('sessions'), function(request) {
+    postSessions.body = JSON.parse(request.requestBody);
+    return [ 200, {}, { data: postSessionsData }];
+  });
 
   visit('/login');
   click('.it-select-user');
 
   andThen(function() {
+    assert.equal(postSessions.numberOfCalls, 1, 'should have POST sessions');
+    assert.equal(postSessions.body.data.relationships.user.data.id, '1', 'should have send user id on POST sessions');
     assert.equal(currentURL(), '/', 'should redirect to index');
-    assert.ok(find('.it-current-user').text().match('louis'), 'should logs the user');
   });
 });

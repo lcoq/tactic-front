@@ -1,8 +1,8 @@
 <header class="header">
   <div class="header-brand-container">
     <h1 class="header-brand">Tactic</h1>
-    {{#if currentUser}}
-      {{#link-to "login" class="header-brand-user it-current-user"}}@ {{currentUser.name}}{{/link-to}}
+    {{#if isAuthenticated}}
+      {{#link-to "login" class="header-brand-user it-current-user"}}@ {{currentUserName}}{{/link-to}}
     {{/if}}
   </div>
 

@@ -3,13 +3,14 @@ import Ember from 'ember';
 const { set } = Ember;
 
 export default Ember.Service.extend({
-  user: null,
+  session: null,
+  sessionName: Ember.computed.reads('session.name'),
 
-  authenticated: Ember.computed.notEmpty('user'),
-  notAuthenticated: Ember.computed.not('authenticated'),
+  isAuthenticated: Ember.computed.notEmpty('session'),
+  notAuthenticated: Ember.computed.not('isAuthenticated'),
 
-  authenticate(user) {
-    set(this, 'user', user);
+  authenticate(session) {
+    set(this, 'session', session);
     return Ember.RSVP.resolve();
   }
 });
