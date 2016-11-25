@@ -1,0 +1,93 @@
+.header {
+  display: flex;
+  width: 100%;
+  height: $btn-size;
+  background-color: $clr2;
+  color: $clr3;
+}
+
+.header-brand-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 $sp;
+}
+
+.header-brand {
+  padding: 0 $sp-sm;
+  font-size: $fs-xxl;
+  font-weight: bold;
+}
+
+.header-brand-user {
+  font-size: $fs-lg;
+}
+
+.header-nav {
+  display: flex;
+  width: 1280px;
+  margin: auto;
+}
+
+.header-nav-section {
+  display: inline-block;
+}
+
+.header-nav-section-title {
+  display: inline-block;
+  height: $btn-size;
+  line-height: $btn-size;
+  padding: 0 $sp;
+
+  &:hover {
+    color: $clr4;
+    background-color: $clr6;
+  }
+}
+
+.header-nav-section-week {
+  background-color: $clr4;
+}
+
+.header-nav-section:hover .header-nav-section-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-nav-section-content {
+  position: absolute;
+  display: none;
+  padding: $sp-sm $sp;
+  min-width: 220px;
+  background-color: $clr5;
+}
+
+.header-nav-sub-title {
+  padding: $sp-sm 0;
+  font-size: $fs-lg;
+  font-weight: bold;
+}
+
+.header-nav-sub-list {
+  margin-left: $sp-xs;
+}
+
+.header-nav-sub-item {
+  display: flex;
+  padding: $sp-sm 0;
+}
+
+.header-nav-sub-item-label {
+  flex-grow: 1;
+}
+
+.header-nav-sub-item-duration {
+  padding-left: $sp;
+}
+
+.header-nav-sub-item-total {
+  padding-right: $sp-sm;
+  text-align: right;
+  font-variant: small-caps;
+  font-weight: bold;
+}
