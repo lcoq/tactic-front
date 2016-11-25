@@ -1,7 +1,9 @@
 <header class="header">
   <div class="header-brand-container">
     <h1 class="header-brand">Tactic</h1>
-    <h2 class="header-brand-user">@ louis</h2>
+    {{#if currentUser}}
+      {{#link-to "login" class="header-brand-user it-current-user"}}@ {{currentUser.name}}{{/link-to}}
+    {{/if}}
   </div>
 
   <nav class="header-nav">
