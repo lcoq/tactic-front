@@ -6,7 +6,7 @@ body {
 
 .app-content {
   display: flex;
-  width: 1080px;
+  max-width: 1080px;
   margin: auto;
-  padding: $sp 0;
+  padding: 20px 200px;
 }

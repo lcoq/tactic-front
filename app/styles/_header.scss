@@ -7,9 +7,10 @@
 }
 
 .header-brand-container {
+  position: absolute;
   display: flex;
   align-items: center;
-  height: 100%;
+  height: $btn-size;
   padding: 0 $sp;
 }
 
@@ -26,11 +27,13 @@
 
 .header-nav {
   display: flex;
-  width: 1280px;
+  width: 1080px;
   margin: auto;
+  padding: 0 200px;
 }
 
 .header-nav-section {
+  z-index: 10;
   display: inline-block;
 }
 
@@ -43,6 +46,10 @@
   &:hover {
     color: $clr4;
     background-color: $clr6;
+  }
+
+  &.link-active {
+    display: none;
   }
 }
 

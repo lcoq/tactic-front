@@ -9,5 +9,9 @@ export default Ember.Route.extend({
     if (get(this, 'authentication.notAuthenticated')) {
       this.transitionTo('login');
     }
+  },
+
+  model() {
+    return get(this, 'store').query('entry', {});
   }
 });

@@ -62,22 +62,43 @@ test('redirects to login when a session token is stored in cookies but is invali
   });
 });
 
-test('GET session and stay on index when a valid session token is stored in cookies', function(assert) {
+test('GET session, GET entries and display them grouped by day when a valid session token is stored in cookies', function(assert) {
   document.cookie = "token=session-token; path=/";
 
   const getSessionData = { type: 'sessions', id: '1', attributes: { token: 'session-token', name: 'louis' } };
   const getSession = server.get(url('sessions'), function() { return [ 200, {}, { data: getSessionData }]; });
 
+  const getEntriesData = [
+    { type: 'entries', id: '1', attributes: { title: 'entry1', 'started-at': "2016-11-25T13:01:11.000Z", 'stopped-at': "2016-11-25T13:10:11.000Z" } },
+    { type: 'entries', id: '2', attributes: { title: 'entry2', 'started-at': "2016-11-24T11:04:10.000Z", 'stopped-at': "2016-11-24T12:07:12.000Z" } },
+    { type: 'entries', id: '3', attributes: { title: 'entry3', 'started-at': "2016-11-24T09:53:12.000Z", 'stopped-at': "2016-11-24T10:27:18.000Z" } }
+  ];
+  const getEntries = server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
+
   visit('/');
 
   andThen(function() {
     assert.equal(getSession.numberOfCalls, 1, 'should GET session');
+    assert.equal(getEntries.numberOfCalls, 1, 'should GET entries');
     assert.equal(currentURL(), '/', 'should stay on index');
+
+    const $entryGroups = find('.it-entry-group');
+    assert.equal($entryGroups.length, 2, 'should show 2 groups of entries');
+
+    const $firstEntryGroup = $entryGroups.first();
+    assert.equal($firstEntryGroup.find('.it-entry').length, 1, 'should show the first entry in the first entry group');
+    assert.equal($firstEntryGroup.find('.it-entry-group-duration').text(), '00:09:00', 'should show the duration of the first entry group');
+
+    const $secondEntryGroup = $entryGroups.last();
+    assert.equal($secondEntryGroup.find('.it-entry').length, 2, 'should show the second and third entries in the second entry group');
+    assert.ok($secondEntryGroup.find('.it-entry').first().text().match('entry2'), 'should show the second and third entries in the second entry group');
+    assert.equal($secondEntryGroup.find('.it-entry-group-duration').text(), '01:37:08', 'should show the duration of the first entry group');
   });
 });
 
 test('click on username goes to login', function(assert) {
   logsIn(server);
+  stubIndexModelRequest(server);
   click('.it-current-user');
 
   andThen(function() {

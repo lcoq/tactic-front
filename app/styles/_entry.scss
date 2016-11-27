@@ -1,0 +1,98 @@
+.entry-group-list {
+  width: 100%;
+  color: $clr2;
+}
+
+.entry-group-header {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: $sp;
+}
+
+.entry-group-header-title {
+  color: $clr4;
+  font-size: $fs-xxl;
+  font-weight: bold;
+}
+
+.entry-group-header-duration {
+  margin-left: $sp;
+  color: $clr8;
+  font-weight: bold;
+}
+
+.entry-group {
+  &:first-of-type {
+    margin-top: 30px;
+  }
+  &:not(:first-of-type) {
+    margin-top: 50px;
+  }
+}
+
+.entry {
+  position: relative;
+  padding: $sp-sm;
+  border-bottom: 1px solid $clr6;
+}
+
+.entry:hover {
+  background-color: $clr7;
+
+  .entry-actions {
+    display: block;
+  }
+}
+
+.entry-actions {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+}
+
+.entry-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.entry-action-delete-img {
+  width: 16px;
+  height: 16px;
+}
+
+.entry-content {
+  display: flex;
+  align-items: center;
+}
+
+.entry-title, .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
+  line-height: $btn-size;
+}
+
+.entry-title {
+  padding-right: $sp;
+  flex-grow: 10;
+  min-width: 300px;
+}
+
+.entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
+  padding: 0 $sp;
+  text-align: center;
+  flex-wrap: nowrap;
+}
+
+.entry-project {
+  flex-grow: 2;
+}
+
+.entry-duration {
+  flex-grow: 1;
+}
+
+.entry-started-at, .entry-stopped-at {
+  color: $clr5;
+  font-size: $fs-xs;
+}

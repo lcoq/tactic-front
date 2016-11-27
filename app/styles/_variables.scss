@@ -1,5 +1,7 @@
 /* fonts */
 $font-family: "Lucida Grande", Arial, sans-serif;
+$fs-xs: 0.8em;
+$fs-sm: 0.9em;
 $fs-lg: 1.1em;
 $fs-xl: 1.2em;
 $fs-xxl: 1.5em;
@@ -12,8 +14,10 @@ $clr4: #555555;
 $clr5: #666666;
 $clr6: #DDDDDD;
 $clr7: #F1F1F1;
+$clr8: #888888;
 
 /* spacings */
+$sp-lg: 30px;
 $sp: 20px;
 $sp-sm: $sp / 2;
 $sp-xs: $sp / 3;

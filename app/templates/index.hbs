@@ -1,1 +1,28 @@
-{{outlet}}
+<section class="entry-group-list">
+  {{#each entriesByDay as |group|}}
+    <section class="entry-group it-entry-group">
+      <header class="entry-group-header">
+        <h2 class="entry-group-header-title" title={{moment-format group.day "YYYY-MM-DD"}}>{{moment-from-now group.day}}</h2>
+        <div class="entry-group-header-duration it-entry-group-duration">{{format-duration group.durationInSeconds}}</div>
+      </header>
+      <ul class="entry-group-item-list">
+        {{#each group.entries as |entry|}}
+          <li class="entry it-entry">
+            <div class="entry-actions">
+              <a class="entry-action entry-action-delete touch">
+                <img class="entry-action-delete-img" src="/assets/images/delete.svg" alt="Delete" />{{! TODO use not licensed icon}}
+              </a>
+            </div>
+            <div class="entry-content">
+              <div class="entry-title touch">{{entry.title}}</div>
+              <div class="entry-project touch">Tactic</div>
+              <div class="entry-duration touch">{{format-duration entry.startedAt entry.stoppedAt}}</div>
+              <div class="entry-started-at touch">{{format-hour entry.startedAt}}</div>
+              <div class="entry-stopped-at touch">{{format-hour entry.stoppedAt}}</div>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/each}}
+</section>

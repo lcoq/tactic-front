@@ -35,6 +35,8 @@ test('send GET users and display them', function(assert) {
 });
 
 test('logs in POST sessions and redirect to index', function(assert) {
+  stubIndexModelRequest(server);
+
   const getUsersData = [{ type: 'users', id: '1', attributes: { name: 'louis' } }];
   server.get(url('users'), function() { return [ 200, {}, { data: getUsersData }]; });
 
