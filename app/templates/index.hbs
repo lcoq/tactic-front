@@ -2,7 +2,7 @@
   {{#each entriesByDay as |group|}}
     <section class="entry-group it-entry-group">
       <header class="entry-group-header">
-        <h2 class="entry-group-header-title" title={{moment-format group.day "YYYY-MM-DD"}}>{{moment-from-now group.day}}</h2>
+        <h2 class="entry-group-header-title" title={{moment-format group.day "YYYY-MM-DD"}}>{{entry-group-day group.day}}</h2>
         <div class="entry-group-header-duration it-entry-group-duration">{{format-duration group.durationInSeconds}}</div>
       </header>
       <ul class="entry-group-item-list">

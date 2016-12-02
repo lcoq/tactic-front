@@ -1,0 +1,9 @@
+{{#if isToday}}
+  Today
+{{else if isCurrentWeek}}
+  {{moment-from-now day}}
+{{else if isCurrentYear}}
+  {{moment-format day "ddd[,] D MMM"}}
+{{else}}
+  {{moment-format day "ddd[,] D MMM YYYY"}}
+{{/if}}
