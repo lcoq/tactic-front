@@ -4,7 +4,7 @@ import Ember from 'ember';
 const { get } = Ember;
 
 moduleForModel('entry', 'Unit | Model | entry', {
-  needs: []
+  needs: ['model:project']
 });
 
 test('it exists', function(assert) {

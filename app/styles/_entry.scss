@@ -78,6 +78,10 @@
   min-width: 300px;
 }
 
+.entry-title-no-title, .entry-project-no-project {
+  font-style: italic;
+}
+
 .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
   padding: 0 $sp;
   text-align: center;

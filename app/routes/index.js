@@ -12,6 +12,6 @@ export default Ember.Route.extend({
   },
 
   model() {
-    return get(this, 'store').query('entry', {});
+    return get(this, 'store').query('entry', { include: 'project' });
   }
 });
