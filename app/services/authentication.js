@@ -7,6 +7,7 @@ export default Ember.Service.extend({
 
   session: null,
   token: null,
+  userId: null,
 
   sessionName: Ember.computed.reads('session.name'),
   isRecoverable: Ember.computed.notEmpty('token'),
@@ -22,7 +23,8 @@ export default Ember.Service.extend({
   authenticate(session) {
     setProperties(this, {
       session: session,
-      token: get(session, 'token')
+      token: get(session, 'token'),
+      userId: session.belongsTo('user').id()
     });
     return Ember.RSVP.resolve();
   },

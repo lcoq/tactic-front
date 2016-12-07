@@ -9,6 +9,7 @@ export default DS.Model.extend({
   startedAt: DS.attr('date'),
   stoppedAt: DS.attr('date'),
   project: DS.belongsTo('project'),
+  user: DS.belongsTo('user'),
 
   durationInSeconds: Ember.computed('startedAt', 'stoppedAt', function() {
     const startedAt = get(this, 'startedAt');
