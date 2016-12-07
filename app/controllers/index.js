@@ -1,21 +1,8 @@
 import Ember from 'ember';
 import moment from 'moment';
+import EntryGroup from '../models/entry-group';
 
-const { get, set } = Ember;
-
-const Group = Ember.Object.extend({
-  day: null,
-  entries: null,
-
-  init() {
-    this._super(...arguments);
-    set(this, 'entries', []);
-  },
-
-  durationInSeconds: Ember.computed.sum('_entriesDurationsInSeconds'),
-  _entriesDurationsInSeconds: Ember.computed.mapBy('entries', 'durationInSeconds')
-
-});
+const { get } = Ember;
 
 export default Ember.Controller.extend({
   entriesByDay: Ember.computed('model', function() {
@@ -41,7 +28,7 @@ export default Ember.Controller.extend({
   },
 
   _createGroupAndInsertIn(groups, day) {
-    const group = Group.create({ day: day });
+    const group = EntryGroup.create({ day: day });
     groups.insertAt(this._groupInsertIndex(groups, group), group);
     return group;
   },
