@@ -5,6 +5,8 @@ import EntryGroup from '../models/entry-group';
 const { get } = Ember;
 
 export default Ember.Controller.extend({
+  currentWeek: Ember.inject.service(),
+
   entriesByDay: Ember.computed('model', function() {
     const entries = get(this, 'model') || [];
     const groups = [];
@@ -61,6 +63,16 @@ export default Ember.Controller.extend({
       return index;
     } else {
       return get(entries, 'length');
+    }
+  },
+
+  actions: {
+    deleteEntry(entry) {
+      entry.destroyRecord().then(() => {
+        get(this, 'model').removeObject(entry);
+        get(this, 'currentWeek').reload();
+        this.notifyPropertyChange('model');
+      });
     }
   }
 });

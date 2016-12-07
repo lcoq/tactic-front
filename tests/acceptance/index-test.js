@@ -214,6 +214,28 @@ test('GET entries?filter[current-week]=1&include=project and display them groupe
   });
 });
 
+test('delete entry send DELETE /entries/ID and hide the entry', function(assert) {
+  logsIn(server);
+
+  const getEntriesData = [{ type: 'entries', id: '1', attributes: { title: 'my-entry' } }];
+  server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
+
+  const deleteEntry = server.delete(url('entries/1'), function() {
+    return [ 200, {}, { data: { type: 'entries', id: '1' } }];
+  });
+
+  andThen(function() {
+    assert.equal(find(".it-entry-title:contains('my-entry')").length, 1, 'should show the entry before destroy');
+  });
+
+  click('.it-entry:first .it-entry-action-delete');
+
+  andThen(function() {
+    assert.equal(deleteEntry.numberOfCalls, 1, 'should DELETE /entries/1');
+    assert.equal(find(".it-entry-title:contains('my-entry')").length, 0, 'should no longer display the destroyed entry');
+  });
+});
+
 test('click on username goes to login', function(assert) {
   logsIn(server);
   stubIndexModelRequest(server);

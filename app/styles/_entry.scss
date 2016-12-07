@@ -44,6 +44,14 @@
   }
 }
 
+.entry.deleting {
+  background-color: $clr9;
+
+  .entry-actions {
+    display: block;
+  }
+}
+
 .entry-actions {
   display: none;
   position: absolute;
@@ -59,6 +67,11 @@
 }
 
 .entry-action-delete-img {
+  width: 16px;
+  height: 16px;
+}
+
+.entry-action-cancel-img {
   width: 16px;
   height: 16px;
 }

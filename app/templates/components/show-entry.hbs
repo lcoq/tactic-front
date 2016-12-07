@@ -1,7 +1,13 @@
 <div class="entry-actions">
-  <a class="entry-action entry-action-delete touch">
-    <img class="entry-action-delete-img" src="/assets/images/delete.svg" alt="Delete" />{{! TODO use not licensed icon}}
-  </a>
+  {{#if isDeleting}}
+    <a {{action "revertDeleteEntry"}} class="entry-action entry-action-revert touch">
+      <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
+    </a>
+  {{else}}
+    <a {{action "deleteEntry"}} class="entry-action entry-action-delete touch it-entry-action-delete">
+      <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
+    </a>
+  {{/if}}
 </div>
 <div class="entry-content">
   <div class="entry-title touch it-entry-title">
