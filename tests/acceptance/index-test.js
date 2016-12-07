@@ -7,11 +7,17 @@ function url(path) {
   return '/' + ENV.APP.namespace + path;
 }
 
-function logsIn(s) {
-  const postSessionsData = [{ type: 'sessions', id: '1', attributes: { token: 'session-token', name: 'louis' } }];
+function logsIn(s, options) {
+  const userId = options && options.userId || '1';
+
+  const postSessionsData = [{
+    type: 'sessions', id: '1',
+    attributes: { token: 'session-token', name: 'louis' },
+    relationships: { user: { type: 'users', id: userId } }
+  }];
   s.post(url('sessions'), function() { return [ 200, {}, { data: postSessionsData }]; });
 
-  const getUsersData = [{ type: 'users', id: '1', attributes: { name: 'louis' } }];
+  const getUsersData = [{ type: 'users', id: userId, attributes: { name: 'louis' } }];
   s.get(url('users'), function() { return [ 200, {}, { data: getUsersData }]; });
 
   visit('/login');
@@ -104,7 +110,8 @@ test('GET session, GET entries?include=project and display them grouped by day w
     }
   ];
   const getEntries = server.get(url('entries'), function(request) {
-    getEntries.queryParams = request.queryParams;
+    if (!getEntries.requests) { getEntries.requests = []; }
+    getEntries.requests.push(request);
     return [ 200, {}, { data: getEntriesData, included: getEntriesIncluded }];
   });
 
@@ -112,8 +119,10 @@ test('GET session, GET entries?include=project and display them grouped by day w
 
   andThen(function() {
     assert.equal(getSession.numberOfCalls, 1, 'should GET session');
-    assert.equal(getEntries.numberOfCalls, 1, 'should GET entries');
-    assert.equal(getEntries.queryParams.include, 'project', 'should include project on GET entries');
+    const getEntriesRequest = getEntries.requests.find(function(r) {
+      return Object.keys(r.queryParams).length === 1 && r.queryParams.include === 'project';
+    });
+    assert.ok(getEntriesRequest, 'should GET entries?include=project');
     assert.equal(currentURL(), '/', 'should stay on index');
 
     const $entryGroups = find('.it-entry-group');
@@ -133,9 +142,84 @@ test('GET session, GET entries?include=project and display them grouped by day w
   });
 });
 
+test('GET entries?filter[current-week]=1&include=project and display them grouped by user and project', function(assert) {
+  const currentUserId = '1';
+  logsIn(server, { userId: currentUserId });
+  stubIndexModelRequest(server);
+
+  const getEntriesData = [
+    {
+      type: 'entries', id: '1',
+      attributes: {
+        title: null,
+        'started-at': "2016-11-25T13:01:11.000Z",
+        'stopped-at': "2016-11-25T13:10:11.000Z"
+      },
+      relationships: {
+        project: { data: { type: 'projects', id: '1' } },
+        user: { data: { type: 'users', id: currentUserId } }
+      }
+    },
+    {
+      type: 'entries', id: '2',
+      attributes: {
+        title: 'entry2',
+        'started-at': "2016-11-24T11:04:10.000Z",
+        'stopped-at': "2016-11-24T12:07:12.000Z"
+      },
+      relationships: {
+        user: { data: { type: 'users', id: currentUserId } }
+      }
+    },
+    {
+      type: 'entries', id: '3',
+      attributes: {
+        title: 'entry3',
+        'started-at': "2016-11-24T09:53:12.000Z",
+        'stopped-at': "2016-11-24T10:27:18.000Z"
+      },
+      relationships: {
+        user: { data: { type: 'users', id: '2' } }
+      }
+    }
+  ];
+  const getEntriesIncluded = [
+    {
+      type: 'projects', id: '1',
+      attributes: { name: 'Tactic' }
+    }
+  ];
+
+  const getEntries = server.get(url('entries'), function(request) {
+    if (!getEntries.requests) { getEntries.requests = []; }
+    getEntries.requests.push(request);
+    return [ 200, {}, { data: getEntriesData, included: getEntriesIncluded }];
+  });
+
+  andThen(function() {
+    assert.equal(currentURL(), '/', 'should start on index');
+
+    const getEntriesRequest = getEntries.requests.find(function(r) {
+      return Object.keys(r.queryParams).length === 2 &&
+        r.queryParams.include === 'project' &&
+        r.queryParams['filter[current-week]'] === '1';
+    });
+    assert.ok(getEntriesRequest, 'should GET entries?filter[current-week]=1&include=project');
+
+    const $currentUserDuration = find(".it-current-week-summary-user:contains(Me) .it-current-week-summary-user-total-duration");
+    assert.equal($currentUserDuration.text(), '01:12:02', 'should compute current user entries total duration in week');
+
+    const $allUserDuration = find(".it-current-week-summary-user:contains(Everyone) .it-current-week-summary-user-total-duration");
+    assert.equal($allUserDuration.text(), '01:46:08', 'should compute all users entries total duration in week');
+  });
+});
+
 test('click on username goes to login', function(assert) {
   logsIn(server);
   stubIndexModelRequest(server);
+
+  andThen(function() { assert.equal(currentURL(), '/', 'should start on index'); });
+
   click('.it-current-user');
 
   andThen(function() {

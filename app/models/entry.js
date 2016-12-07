@@ -17,5 +17,9 @@ export default DS.Model.extend({
     if (startedAt && stoppedAt) {
       return moment(stoppedAt).diff(startedAt, 'seconds');
     }
-  })
+  }),
+
+  belongsToUserWithId(userId) {
+    return this.belongsTo('user').id() === userId;
+  }
 });
