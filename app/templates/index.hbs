@@ -7,32 +7,7 @@
       </header>
       <ul class="entry-group-item-list">
         {{#each group.entries as |entry|}}
-          <li class="entry it-entry">
-            <div class="entry-actions">
-              <a class="entry-action entry-action-delete touch">
-                <img class="entry-action-delete-img" src="/assets/images/delete.svg" alt="Delete" />{{! TODO use not licensed icon}}
-              </a>
-            </div>
-            <div class="entry-content">
-              <div class="entry-title touch it-entry-title">
-                {{#if entry.title}}
-                  {{entry.title}}
-                {{else}}
-                  <span class="entry-title-no-title">No title</span>
-                {{/if}}
-              </div>
-              <div class="entry-project touch it-entry-project">
-                {{#if entry.project}}
-                  {{entry.project.name}}
-                {{else}}
-                  <span class="entry-project-no-project">No project</span>
-                {{/if}}
-              </div>
-              <div class="entry-duration touch">{{format-duration entry.startedAt entry.stoppedAt}}</div>
-              <div class="entry-started-at touch">{{format-hour entry.startedAt}}</div>
-              <div class="entry-stopped-at touch">{{format-hour entry.stoppedAt}}</div>
-            </div>
-          </li>
+          {{show-entry entry=entry}}
         {{/each}}
       </ul>
     </section>
