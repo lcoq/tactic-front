@@ -252,10 +252,10 @@ test('update entry send PATCH /entries/ID', function(assert) {
 
   click('.it-entry:first .it-entry-title');
   fillIn('.it-entry-edit-title', "updated-entry");
-  triggerEvent('.it-entry-edit-title', 'blur');
+  click('.it-header'); /* used to send focusout */
 
   andThen(function() {
-    assert.ok(patchEntry.numberOfCalls >= 1, 'should PATCH /entries/1'); /* should be called only once but seems to be called twice in PhantomJS */
+    assert.equal(patchEntry.numberOfCalls, 1, 'should PATCH /entries/1');
     assert.equal(find(".it-entry-title:contains('updated-entry')").length, 1, 'should update the entry display');
   });
 });

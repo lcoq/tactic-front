@@ -2,6 +2,10 @@ import Ember from 'ember';
 
 const { get, set, setProperties } = Ember;
 
+function elementIsOrIsIn($element, $container) {
+  return $element.is($container) || $element.closest($container).length;
+}
+
 export default Ember.Component.extend({
   tagName: 'li',
   classNames: ['entry', 'it-entry'],
@@ -15,6 +19,20 @@ export default Ember.Component.extend({
   isPending: Ember.computed.bool('saveTimer'),
 
   isEditing: false,
+
+  didInsertElement() {
+    this._super(...arguments);
+    Ember.$('body').on('click.focus-out-entry-edit', (event) => {
+      if (get(this, 'isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
+        this.send('focusLost');
+      }
+    });
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    Ember.$('body').off('click.focus-out-entry-edit');
+  },
 
   _revertChanges() {
     const entry = get(this, 'entry');

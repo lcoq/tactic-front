@@ -16,7 +16,7 @@
 <div class="entry-content">
   <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
     {{#if isEditing}}
-      {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" focus-out="focusLost" enter="clearFocus"}}
+      {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus"}}
     {{else}}
       {{#if entry.title}}
         {{entry.title}}
