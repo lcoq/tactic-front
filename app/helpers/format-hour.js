@@ -1,10 +1,8 @@
 import Ember from 'ember';
-import moment from 'moment';
+import formatHour from '../utils/format-hour';
 
-export function formatHour([date]) {
-  if (date) {
-    return moment(date).format('H:mm');
-  }
+export function formatHourHelper([date]) {
+  return formatHour(date);
 }
 
-export default Ember.Helper.helper(formatHour);
+export default Ember.Helper.helper(formatHourHelper);
