@@ -40,21 +40,11 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
     this._updateInitialProject();
-    Ember.$('body').on('click.focus-out-entry-edit', (event) => {
-      if (get(this, 'isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
-        this.send('focusLost');
-      }
-    });
-  },
-
-  willDestroyElement() {
-    this._super(...arguments);
-    Ember.$('body').off('click.focus-out-entry-edit');
   },
 
   _searchProjects() {
-    if (!get(this, 'isEditing')) { return; }
     const query = get(this, 'projectName');
+    if (!get(this, 'isEditing') || Ember.isEmpty(query)) { return; }
     get(this, 'searchProjects')(query).then((projects) => {
       set(this, 'projectChoices', projects);
     });
@@ -98,6 +88,14 @@ export default Ember.Component.extend({
     get(this, 'deleteEntry')(entry);
   },
 
+  _openEdit(selector) {
+    set(this, 'isEditing', true);
+    Ember.run.scheduleOnce('afterRender', this, function() {
+      this.$(selector).focus().select();
+      this._watchFocusOut();
+    });
+  },
+
   _closeEdit() {
     const timer = Ember.run.later(this, this._saveEntry, 5000);
     setProperties(this, {
@@ -105,6 +103,19 @@ export default Ember.Component.extend({
       isEditing: false,
       projectChoices: null
     });
+    this._unwatchFocusOut();
+  },
+
+  _watchFocusOut() {
+    Ember.$('body').on('click.focus-out-entry-edit', (event) => {
+      if (get(this, 'isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
+        this.send('focusLost');
+      }
+    });
+  },
+
+  _unwatchFocusOut() {
+    Ember.$('body').off('click.focus-out-entry-edit');
   },
 
   _updateInitialProject() {
@@ -113,7 +124,13 @@ export default Ember.Component.extend({
 
   actions: {
     clearFocus() {
-      document.activeElement.blur();
+      Ember.$('body').click();
+    },
+    clearFocusAndPossiblyProject() {
+      if (Ember.isEmpty(get(this, 'projectName'))) {
+        get(this, 'entry').set('project', null);
+      }
+      this.send('clearFocus');
     },
     focusLost() {
       this._closeEdit();
@@ -121,10 +138,7 @@ export default Ember.Component.extend({
     editEntry(selector) {
       if (get(this, 'isEditing')) { return; }
       this._cancelSaveAndDelete();
-      set(this, 'isEditing', true);
-      Ember.run.scheduleOnce('afterRender', this, function() {
-        this.$(selector).focus().select();
-      });
+      this._openEdit(selector);
     },
     selectProject(project) {
       this._closeEdit();

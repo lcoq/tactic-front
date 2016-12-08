@@ -27,7 +27,7 @@
   </div>
   <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
     {{#if isEditing}}
-      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project"}}
+      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearFocusAndPossiblyProject"}}
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}
