@@ -16,7 +16,7 @@
 <div class="entry-content">
   <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
     {{#if isEditing}}
-      {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus"}}
+      {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus" selectOnFocus=true}}
     {{else}}
       {{#if entry.title}}
         {{entry.title}}
@@ -27,7 +27,7 @@
   </div>
   <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
     {{#if isEditing}}
-      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearFocusAndPossiblyProject"}}
+      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearFocusAndPossiblyProject" selectOnFocus=true}}
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}

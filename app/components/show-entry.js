@@ -91,7 +91,7 @@ export default Ember.Component.extend({
   _openEdit(selector) {
     set(this, 'isEditing', true);
     Ember.run.scheduleOnce('afterRender', this, function() {
-      this.$(selector).focus().select();
+      this.$(selector).focus();
       this._watchFocusOut();
     });
   },
