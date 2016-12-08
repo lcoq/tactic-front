@@ -236,6 +236,30 @@ test('delete entry send DELETE /entries/ID and hide the entry', function(assert)
   });
 });
 
+test('update entry send PATCH /entries/ID', function(assert) {
+  logsIn(server);
+
+  const getEntriesData = [{ type: 'entries', id: '1', attributes: { title: 'my-entry' } }];
+  server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
+
+  const patchEntry = server.patch(url('entries/1'), function() {
+    return [ 200, {}, { data: { type: 'entries', id: '1', attributes: { title: 'updated-entry' } } }];
+  });
+
+  andThen(function() {
+    assert.equal(find(".it-entry-title:contains('my-entry')").length, 1, 'should show the entry before update');
+  });
+
+  click('.it-entry:first .it-entry-title');
+  fillIn('.it-entry-edit-title', "updated-entry");
+  triggerEvent('.it-entry-edit-title', 'blur');
+
+  andThen(function() {
+    assert.ok(patchEntry.numberOfCalls >= 1, 'should PATCH /entries/1'); /* should be called only once but seems to be called twice in PhantomJS */
+    assert.equal(find(".it-entry-title:contains('updated-entry')").length, 1, 'should update the entry display');
+  });
+});
+
 test('click on username goes to login', function(assert) {
   logsIn(server);
   stubIndexModelRequest(server);

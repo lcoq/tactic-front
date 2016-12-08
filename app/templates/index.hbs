@@ -7,7 +7,7 @@
       </header>
       <ul class="entry-group-item-list">
         {{#each group.entries as |entry|}}
-          {{show-entry entry=entry deleteEntry=(action "deleteEntry")}}
+          {{show-entry entry=entry saveEntry=(action "saveEntry") deleteEntry=(action "deleteEntry")}}
         {{/each}}
       </ul>
     </section>

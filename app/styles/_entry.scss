@@ -52,6 +52,23 @@
   }
 }
 
+.entry.pending {
+  background-color: $clr11;
+
+  .entry-actions {
+    display: block;
+  }
+}
+
+.entry.editing {
+  padding-left: 0;
+  background-color: $clr10;
+
+  &:hover {
+    background-color: $clr10;
+  }
+}
+
 .entry-actions {
   display: none;
   position: absolute;
@@ -112,4 +129,9 @@
 .entry-started-at, .entry-stopped-at {
   color: $clr5;
   font-size: $fs-xs;
+}
+
+.entry-edit-title {
+  width: 100%;
+  padding-left: $sp-sm;
 }

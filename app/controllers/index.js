@@ -67,6 +67,10 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    saveEntry(entry) {
+      entry.save().then(() => {
+      });
+    },
     deleteEntry(entry) {
       entry.destroyRecord().then(() => {
         get(this, 'model').removeObject(entry);

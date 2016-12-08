@@ -3,6 +3,10 @@
     <a {{action "revertDeleteEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
+  {{else if isPending}}
+    <a {{action "revertEditEntry"}} class="entry-action entry-action-revert touch">
+      <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
+    </a>
   {{else}}
     <a {{action "deleteEntry"}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
@@ -10,11 +14,15 @@
   {{/if}}
 </div>
 <div class="entry-content">
-  <div class="entry-title touch it-entry-title">
-    {{#if entry.title}}
-      {{entry.title}}
+  <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
+    {{#if isEditing}}
+      {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" focus-out="focusLost" enter="clearFocus"}}
     {{else}}
-      <span class="entry-title-no-title">No title</span>
+      {{#if entry.title}}
+        {{entry.title}}
+      {{else}}
+        <span class="entry-title-no-title">No title</span>
+      {{/if}}
     {{/if}}
   </div>
   <div class="entry-project touch it-entry-project">
