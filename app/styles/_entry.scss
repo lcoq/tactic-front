@@ -119,6 +119,7 @@
 }
 
 .entry-project {
+  position: relative;
   flex-grow: 2;
 }
 
@@ -134,4 +135,15 @@
 .entry-edit-title {
   width: 100%;
   padding-left: $sp-sm;
+}
+
+.entry-edit-project {
+  text-align: center;
+}
+
+.entry-edit-project-choices {
+  position: absolute;
+  width: 100%;
+  background-color: $clr3;
+  z-index: 1;
 }

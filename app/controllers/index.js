@@ -67,6 +67,9 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    searchProjects(query) {
+      return get(this, 'store').query('project', { filter: { query: query } });
+    },
     saveEntry(entry) {
       entry.save().then(() => {
       });

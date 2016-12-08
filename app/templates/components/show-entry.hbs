@@ -25,11 +25,22 @@
       {{/if}}
     {{/if}}
   </div>
-  <div class="entry-project touch it-entry-project">
-    {{#if entry.project}}
-      {{entry.project.name}}
+  <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
+    {{#if isEditing}}
+      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project"}}
+      {{#if projectChoices}}
+        <ul class="entry-edit-project-choices">
+          {{#each projectChoices as |project|}}
+            <li {{action "selectProject" project bubbles=false}}>{{project.name}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
     {{else}}
-      <span class="entry-project-no-project">No project</span>
+      {{#if entry.project}}
+        {{entry.project.name}}
+      {{else}}
+        <span class="entry-project-no-project">No project</span>
+      {{/if}}
     {{/if}}
   </div>
   <div class="entry-duration touch">{{format-duration entry.startedAt entry.stoppedAt}}</div>
