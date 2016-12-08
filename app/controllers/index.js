@@ -71,7 +71,8 @@ export default Ember.Controller.extend({
       return get(this, 'store').query('project', { filter: { query: query } });
     },
     saveEntry(entry) {
-      entry.save().then(() => {
+      return entry.save().then(() => {
+        get(this, 'currentWeek').reload();
       });
     },
     deleteEntry(entry) {

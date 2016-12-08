@@ -20,6 +20,8 @@ export default Ember.Component.extend({
 
   isEditing: false,
 
+  initialProject: null,
+
   /* use 'entry.project.name' dependent key triggers changes while the value remain the same */
   projectName: Ember.computed(function() { return get(this, 'entry.project.name'); }),
   entryProjectNameChanged: Ember.observer('entry.project.name', function() {
@@ -37,6 +39,7 @@ export default Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
+    this._updateInitialProject();
     Ember.$('body').on('click.focus-out-entry-edit', (event) => {
       if (get(this, 'isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
         this.send('focusLost');
@@ -60,6 +63,7 @@ export default Ember.Component.extend({
   _revertChanges() {
     const entry = get(this, 'entry');
     entry.rollbackAttributes();
+    entry.set('project', get(this, 'initialProject'));
   },
 
   _cancelSaveAndDelete() {
@@ -85,8 +89,7 @@ export default Ember.Component.extend({
 
   _saveEntry() {
     set(this, 'saveTimer', null);
-    const entry = get(this, 'entry');
-    get(this, 'saveEntry')(entry);
+    this.send('saveEntry');
   },
 
   _deleteEntry() {
@@ -102,6 +105,10 @@ export default Ember.Component.extend({
       isEditing: false,
       projectChoices: null
     });
+  },
+
+  _updateInitialProject() {
+    set(this, 'initialProject', get(this, 'entry.project'));
   },
 
   actions: {
@@ -126,6 +133,12 @@ export default Ember.Component.extend({
     revertEditEntry() {
       this._cancelSave();
       this._revertChanges();
+    },
+    saveEntry() {
+      const entry = get(this, 'entry');
+      get(this, 'saveEntry')(entry).then(() => {
+        this._updateInitialProject();
+      });
     },
     deleteEntry() {
       const timer = Ember.run.later(this, this._deleteEntry, 5000);

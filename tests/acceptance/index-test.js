@@ -248,11 +248,14 @@ test('update entry send PATCH /entries/ID', function(assert) {
 
   andThen(function() {
     assert.equal(find(".it-entry-title:contains('my-entry')").length, 1, 'should show the entry before update');
+
+    /* ensure the updated entry is not reloaded while reloading the current week entries */
+    server.get(url('entries'), function() { return [ 200, {}, { data: [] }]; });
   });
 
   click('.it-entry:first .it-entry-title');
   fillIn('.it-entry-edit-title', "updated-entry");
-  click('.it-header'); /* used to send focusout */
+  click('.it-header'); /* send focusout */
 
   andThen(function() {
     assert.equal(patchEntry.numberOfCalls, 1, 'should PATCH /entries/1');
