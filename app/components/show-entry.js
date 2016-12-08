@@ -1,4 +1,7 @@
 import Ember from 'ember';
+import parseDuration  from '../utils/parse-duration';
+import formatDuration from '../utils/format-duration';
+import moment from 'moment';
 
 const { get, set, setProperties } = Ember;
 
@@ -22,17 +25,20 @@ export default Ember.Component.extend({
 
   initialProject: null,
 
-  /* use 'entry.project.name' dependent key triggers changes while the value remain the same */
-  projectName: Ember.computed(function() { return get(this, 'entry.project.name'); }),
-  entryProjectNameChanged: Ember.observer('entry.project.name', function() {
-    const projectName = get(this, 'entry.project.name');
-    if (get(this, 'projectName') !== projectName) {
-      set(this, 'projectName', projectName);
+  projectName: null,
+  projectNameChanged: Ember.observer('projectName', function() {
+    if (get(this, 'isEditing')) {
+      Ember.run.debounce(this, this._searchProjects, 1000);
     }
   }),
 
-  projectNameChanged: Ember.observer('projectName', function() {
-    Ember.run.debounce(this, this._searchProjects, 1000);
+  formattedDuration: null,
+  formattedDurationChanged: Ember.observer('formattedDuration', function() {
+    const duration = parseDuration(get(this, 'formattedDuration'));
+    if (duration && duration !== get(this, 'entry.durationInSeconds')) {
+      const newStoppedAt = moment(get(this, 'entry.startedAt')).add(duration, 's').toDate();
+      set(this, 'entry.stoppedAt', newStoppedAt);
+    }
   }),
 
   projectChoices: null,
@@ -89,7 +95,14 @@ export default Ember.Component.extend({
   },
 
   _openEdit(selector) {
+    const entry = get(this, 'entry');
+    setProperties(this, {
+      projectName: get(entry, 'project.name'),
+      formattedDuration: formatDuration(get(entry, 'durationInSeconds')),
+      projectChoices: null
+    });
     set(this, 'isEditing', true);
+
     Ember.run.scheduleOnce('afterRender', this, function() {
       this.$(selector).focus();
       this._watchFocusOut();
@@ -98,11 +111,7 @@ export default Ember.Component.extend({
 
   _closeEdit() {
     const timer = Ember.run.later(this, this._saveEntry, 5000);
-    setProperties(this, {
-      saveTimer: timer,
-      isEditing: false,
-      projectChoices: null
-    });
+    setProperties(this, { saveTimer: timer, isEditing: false });
     this._unwatchFocusOut();
   },
 

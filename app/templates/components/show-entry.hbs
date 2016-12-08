@@ -43,7 +43,13 @@
       {{/if}}
     {{/if}}
   </div>
-  <div class="entry-duration touch">{{format-duration entry.startedAt entry.stoppedAt}}</div>
+  <div {{action "editEntry" ".js-entry-edit-duration"}} class="entry-duration touch">
+    {{#if isEditing}}
+      {{input value=formattedDuration class="entry-edit-duration text-input js-entry-edit-duration" enter="clearFocus" selectOnFocus=true}}
+    {{else}}
+      {{format-duration entry.startedAt entry.stoppedAt}}
+    {{/if}}
+  </div>
   <div class="entry-started-at touch">{{format-hour entry.startedAt}}</div>
   <div class="entry-stopped-at touch">{{format-hour entry.stoppedAt}}</div>
 </div>
