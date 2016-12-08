@@ -239,7 +239,11 @@ test('delete entry send DELETE /entries/ID and hide the entry', function(assert)
 test('update entry send PATCH /entries/ID', function(assert) {
   logsIn(server);
 
-  const getEntriesData = [{ type: 'entries', id: '1', attributes: { title: 'my-entry' } }];
+  const getEntriesData = [{ type: 'entries', id: '1', attributes: {
+    title: 'my-entry',
+    'started-at': "2016-12-07T09:42:04.000Z",
+    'stopped-at': "2016-12-07T09:44:04.000Z"
+  } }];
   server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
 
   const patchEntry = server.patch(url('entries/1'), function() {

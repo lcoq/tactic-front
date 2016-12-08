@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import parseDuration  from '../utils/parse-duration';
 import formatDuration from '../utils/format-duration';
+import parseHour  from '../utils/parse-hour';
+import formatHour from '../utils/format-hour';
 import moment from 'moment';
 
 const { get, set, setProperties } = Ember;
@@ -38,6 +40,43 @@ export default Ember.Component.extend({
     if (duration && duration !== get(this, 'entry.durationInSeconds')) {
       const newStoppedAt = moment(get(this, 'entry.startedAt')).add(duration, 's').toDate();
       set(this, 'entry.stoppedAt', newStoppedAt);
+    }
+  }),
+
+  formattedStartedAt: null,
+  formattedStoppedAt: null,
+
+  formattedStartedAtChanged: Ember.observer('formattedStartedAt', function() {
+    const entry = get(this, 'entry');
+    const entryStartedAt = get(entry, 'startedAt');
+
+    const [ hours, minutes ] = parseHour(get(this, 'formattedStartedAt'));
+    const newStartedAt = moment(entryStartedAt).hours(hours).minutes(minutes).toDate();
+    const newStartedAtTime = newStartedAt.getTime();
+
+    if (!isNaN(newStartedAtTime) && newStartedAtTime !== entryStartedAt.getTime()) {
+      const stoppedAt = get(this, 'entry.stoppedAt');
+      const properties = { startedAt: newStartedAt };
+      if (moment(stoppedAt).isBefore(newStartedAt)) {
+        properties.stoppedAt = newStartedAt;
+      }
+      setProperties(entry, properties);
+    }
+  }),
+
+  formattedStoppedAtChanged: Ember.observer('formattedStoppedAt', function() {
+    const entry = get(this, 'entry');
+    const startedAt = get(entry, 'startedAt');
+
+    const [ hours, minutes ] = parseHour(get(this, 'formattedStoppedAt'));
+    let newStoppedAt = moment(startedAt).hours(hours).minutes(minutes).toDate();
+    const newStoppedAtTime = newStoppedAt.getTime();
+
+    if (!isNaN(newStoppedAtTime) && newStoppedAtTime !== get(entry, 'stoppedAt').getTime()) {
+      if (moment(startedAt).isAfter(newStoppedAt)) {
+        newStoppedAt = moment(newStoppedAt).add(1, 'day').toDate();
+      }
+      set(entry, 'stoppedAt', newStoppedAt);
     }
   }),
 
@@ -99,6 +138,8 @@ export default Ember.Component.extend({
     setProperties(this, {
       projectName: get(entry, 'project.name'),
       formattedDuration: formatDuration(get(entry, 'durationInSeconds')),
+      formattedStartedAt: formatHour(get(entry, 'startedAt')),
+      formattedStoppedAt: formatHour(get(entry, 'stoppedAt')),
       projectChoices: null
     });
     set(this, 'isEditing', true);

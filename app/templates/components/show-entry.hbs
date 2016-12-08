@@ -50,6 +50,18 @@
       {{format-duration entry.startedAt entry.stoppedAt}}
     {{/if}}
   </div>
-  <div class="entry-started-at touch">{{format-hour entry.startedAt}}</div>
-  <div class="entry-stopped-at touch">{{format-hour entry.stoppedAt}}</div>
+  <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch">
+    {{#if isEditing}}
+      {{input value=formattedStartedAt class="entry-edit-started-at text-input js-entry-edit-started-at" enter="clearFocus" selectOnFocus=true}}
+    {{else}}
+      {{format-hour entry.startedAt}}
+    {{/if}}
+  </div>
+  <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch">
+    {{#if isEditing}}
+      {{input value=formattedStoppedAt class="entry-edit-stopped-at text-input js-entry-edit-stopped-at" enter="clearFocus" selectOnFocus=true}}
+    {{else}}
+      {{format-hour entry.stoppedAt}}
+    {{/if}}
+  </div>
 </div>
