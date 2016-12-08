@@ -100,12 +100,19 @@
 }
 
 .entry-title, .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
+  display: flex;
+  align-items: center;
+  min-height: $btn-size;
+}
+
+.entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
   line-height: $btn-size;
 }
 
 .entry-title {
   padding-right: $sp;
   width: 60%;
+  line-height: 30px;
 }
 
 .entry-title-no-title, .entry-project-no-project {
@@ -114,7 +121,7 @@
 
 .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
   padding: 0 $sp;
-  text-align: center;
+  justify-content: center;
   flex-wrap: nowrap;
 }
 
