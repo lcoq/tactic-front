@@ -28,7 +28,7 @@ export default Ember.Component.extend({
   projectName: null,
   projectNameChanged: Ember.observer('projectName', function() {
     if (get(this, 'isEditing')) {
-      Ember.run.debounce(this, this._searchProjects, 1000);
+      Ember.run.debounce(this, this._searchProjects, 500);
     }
   }),
 
