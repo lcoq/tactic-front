@@ -41,7 +41,7 @@
   background-color: $clr7;
 
   .entry-actions {
-    display: block;
+    display: flex;
   }
 }
 
@@ -49,7 +49,7 @@
   background-color: $clr9;
 
   .entry-actions {
-    display: block;
+    display: flex;
   }
 }
 
@@ -57,7 +57,7 @@
   background-color: $clr11;
 
   .entry-actions {
-    display: block;
+    display: flex;
   }
 }
 
@@ -72,6 +72,7 @@
 
 .entry-actions {
   display: none;
+  flex-direction: column-reverse;
   position: absolute;
   left: 0;
   top: 50%;
@@ -155,4 +156,14 @@
   width: 100%;
   background-color: $clr3;
   z-index: 1;
+}
+
+.entry-edit-date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: $clr3;
+  padding: $sp;
+  font-size: $fs-xs;
 }

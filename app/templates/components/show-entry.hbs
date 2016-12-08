@@ -11,9 +11,13 @@
     <a {{action "deleteEntry"}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>
+    <a {{action "changeEntryDate"}} class="entry-action entry-action-delete touch it-entry-action-delete">
+      <img class="entry-action-delete-img" src="/assets/images/calendar.svg" alt="Change date" />
+    </a>
   {{/if}}
 </div>
 <div class="entry-content">
+  {{#if isEditingDate}}<div class="entry-edit-date js-datepicker" />{{/if}}
   <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
     {{#if isEditing}}
       {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus" selectOnFocus=true}}

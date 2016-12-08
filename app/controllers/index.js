@@ -71,8 +71,13 @@ export default Ember.Controller.extend({
       return get(this, 'store').query('project', { filter: { query: query } });
     },
     saveEntry(entry) {
+      const changedAttributes = Object.keys(entry.changedAttributes());
+      const dateChanged = changedAttributes.includes('startedAt') || changedAttributes.includes('stoppedAt');
       return entry.save().then(() => {
         get(this, 'currentWeek').reload();
+        if (dateChanged) {
+          this.notifyPropertyChange('model');
+        }
       });
     },
     deleteEntry(entry) {

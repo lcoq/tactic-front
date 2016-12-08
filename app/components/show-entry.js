@@ -24,6 +24,7 @@ export default Ember.Component.extend({
   isPending: Ember.computed.bool('saveTimer'),
 
   isEditing: false,
+  isEditingDate: false,
 
   initialProject: null,
 
@@ -145,14 +146,20 @@ export default Ember.Component.extend({
     set(this, 'isEditing', true);
 
     Ember.run.scheduleOnce('afterRender', this, function() {
-      this.$(selector).focus();
+      if (selector) {
+        this.$(selector).focus();
+      }
       this._watchFocusOut();
     });
   },
 
   _closeEdit() {
     const timer = Ember.run.later(this, this._saveEntry, 5000);
-    setProperties(this, { saveTimer: timer, isEditing: false });
+    setProperties(this, {
+      saveTimer: timer,
+      isEditing: false,
+      isEditingDate: false
+    });
     this._unwatchFocusOut();
   },
 
@@ -170,6 +177,37 @@ export default Ember.Component.extend({
 
   _updateInitialProject() {
     set(this, 'initialProject', get(this, 'entry.project'));
+  },
+
+  _initDatePicker(selector, initialDate, onSelect) {
+    Ember.run.scheduleOnce('afterRender', this, function() {
+      this.$(selector).datepicker({
+        firstDay: 1,
+        dateFormat: 'yymmdd',
+        prevText: '<',
+        nextText: '>',
+        onSelect: function(dateString) {
+          const date = moment(dateString, 'YYYYMMDD').toDate();
+          onSelect(date);
+        }
+      });
+      this.$(selector).datepicker('setDate', initialDate);
+    });
+  },
+
+  _updateDates(newDate) {
+    const entry = get(this, 'entry');
+    const startedAt = moment(get(entry, 'startedAt'));
+    const stoppedAt = moment(get(entry, 'stoppedAt'));
+
+    const newStartedAt = moment(newDate).hours(startedAt.hours()).minutes(startedAt.minutes()).seconds(startedAt.seconds());
+    const newStoppedAt = moment(newDate).hours(stoppedAt.hours()).minutes(stoppedAt.minutes()).seconds(stoppedAt.seconds());
+    /* TODO when stopped at is the next day */
+
+    setProperties(entry, {
+      startedAt: newStartedAt.toDate(),
+      stoppedAt: newStoppedAt.toDate()
+    });
   },
 
   actions: {
@@ -210,6 +248,20 @@ export default Ember.Component.extend({
     },
     revertDeleteEntry() {
       this._cancelDelete();
+    },
+    changeEntryDate() {
+      if (get(this, 'isEditingDate')) {
+        this._closeEdit();
+        return;
+      }
+      if (!get(this, 'isEditing')) {
+        this._openEdit();
+      }
+      set(this, 'isEditingDate', true);
+      this._initDatePicker('.js-datepicker', get(this, 'entry.startedAt'), (date) => {
+        this._updateDates(date);
+        this._closeEdit();
+      });
     }
   }
 });
