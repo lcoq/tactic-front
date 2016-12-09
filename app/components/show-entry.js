@@ -106,6 +106,7 @@ export default Ember.Component.extend({
   _watchFocusOut() {
     Ember.$('body').on('click.focus-out-entry-edit', (event) => {
       if (get(this, 'entry.isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
+        if (get(this, 'isDestroyed')) { return; }
         this.send('focusLost');
       }
     });
