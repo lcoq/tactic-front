@@ -20,11 +20,6 @@ export default Ember.Component.extend({
   isEditingDate: false,
 
   projectName: null,
-  projectNameChanged: Ember.observer('projectName', function() {
-    if (get(this, 'entry.isEditing')) {
-      Ember.run.debounce(this, this._searchProjects, 500);
-    }
-  }),
 
   formattedDuration: null,
   formattedDurationChanged: Ember.observer('formattedDuration', function() {
@@ -170,6 +165,10 @@ export default Ember.Component.extend({
     },
 
     /* project */
+
+    projectNameChanged() {
+      Ember.run.debounce(this, this._searchProjects, 500);
+    },
 
     clearProjectIfEmpty() {
       if (Ember.isEmpty(get(this, 'projectName'))) {

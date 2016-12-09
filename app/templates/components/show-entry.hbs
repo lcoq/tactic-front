@@ -31,7 +31,7 @@
   </div>
   <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
     {{#if entry.isEditing}}
-      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearProjectIfEmpty" selectOnFocus=true}}
+      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearProjectIfEmpty" selectOnFocus=true key-up="projectNameChanged"}}
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}
