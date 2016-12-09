@@ -26,6 +26,8 @@ export default Ember.Component.extend({
     }
   }),
 
+  projectChoices: null,
+
   formattedDuration: null,
   formattedDurationChanged: Ember.observer('formattedDuration', function() {
     const duration = parseDuration(get(this, 'formattedDuration'));
@@ -71,8 +73,6 @@ export default Ember.Component.extend({
       set(entry, 'stoppedAt', newStoppedAt);
     }
   }),
-
-  projectChoices: null,
 
   _searchProjects() {
     const query = get(this, 'projectName');
