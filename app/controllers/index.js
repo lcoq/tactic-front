@@ -2,10 +2,12 @@ import Ember from 'ember';
 import moment from 'moment';
 import EntryGroup from '../models/entry-group';
 
-const { get } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Controller.extend({
   currentWeek: Ember.inject.service(),
+
+  newEntry: null,
 
   entriesByDay: Ember.computed('model', function() {
     const entries = get(this, 'model') || [];
@@ -69,6 +71,19 @@ export default Ember.Controller.extend({
   actions: {
     searchProjects(query) {
       return get(this, 'store').query('project', { filter: { query: query } });
+    },
+    buildNewEntry() {
+      const entry = get(this, 'store').createRecord('entry');
+      set(this, 'newEntry', entry);
+    },
+    saveNewEntry() {
+      const entry = get(this, 'newEntry');
+      entry.save().then(() => {
+        get(this, 'model').pushObject(entry);
+        get(this, 'currentWeek').reload();
+        this.notifyPropertyChange('model');
+        this.send('buildNewEntry');
+      });
     },
     saveEntry(entry) {
       const changedAttributes = Object.keys(entry.changedAttributes());

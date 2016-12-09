@@ -267,6 +267,24 @@ test('update entry send PATCH /entries/ID', function(assert) {
   });
 });
 
+test('create entry send POST /entries', function(assert) {
+  logsIn(server);
+  stubIndexModelRequest(server);
+
+  const postEntry = server.post(url('entries'), function() {
+    return [ 200, {}, { data: { type: 'entries', id: '99', attributes: { title: 'new-entry' } } }];
+  });
+
+  click('.it-entry-create-start');
+  fillIn('.it-entry-create-title', "new-entry");
+  click('.it-entry-create-stop');
+
+  andThen(function() {
+    assert.equal(postEntry.numberOfCalls, 1, 'should POST /entries');
+    assert.equal(find(".it-entry-title:contains(new-entry)").length, 1, 'should add the created entry in the list');
+  });
+});
+
 test('click on username goes to login', function(assert) {
   logsIn(server);
   stubIndexModelRequest(server);

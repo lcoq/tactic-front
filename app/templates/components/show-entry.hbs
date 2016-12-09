@@ -35,7 +35,7 @@
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}
-            <li {{action "selectProject" project bubbles=false}}>{{project.name}}</li>
+            <li {{action "selectProject" project bubbles=false}} class="entry-edit-project-choice touch">{{project.name}}</li>
           {{/each}}
         </ul>
       {{/if}}

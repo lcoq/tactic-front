@@ -13,6 +13,7 @@
   color: $clr4;
   font-size: $fs-xxl;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .entry-group-header-duration {
@@ -100,7 +101,7 @@
   align-items: center;
 }
 
-.entry-title, .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
+.entry-title, .entry-duration, .entry-started-at, .entry-stopped-at {
   display: flex;
   align-items: center;
   min-height: $btn-size;
@@ -118,6 +119,7 @@
 
 .entry-title-no-title, .entry-project-no-project {
   font-style: italic;
+  white-space: nowrap;
 }
 
 .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
@@ -127,12 +129,15 @@
 }
 
 .entry-project {
+  flex-direction: column;
   position: relative;
   width: 18%;
+  text-align: center;
 }
 
 .entry-duration {
-  width: 12%;
+  width: 14%;
+  min-width: 80px;
 }
 
 .entry-started-at, .entry-stopped-at {
@@ -153,9 +158,18 @@
 
 .entry-edit-project-choices {
   position: absolute;
-  width: 100%;
   background-color: $clr3;
   z-index: 1;
+  min-width: 100%;
+}
+
+.entry-edit-project-choice {
+  padding: 0 $sp;
+  white-space: nowrap;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $clr7;
+  }
 }
 
 .entry-edit-date {
@@ -166,4 +180,69 @@
   background-color: $clr3;
   padding: $sp;
   font-size: $fs-xs;
+}
+
+.entry-create {
+  display: flex;
+  margin-bottom: $sp;
+}
+
+.entry-create-title, .entry-create-project {
+  border-bottom: 1px solid $clr3;
+
+  &:hover {
+    border-bottom: 1px solid $clr8;
+  }
+}
+
+.entry-create-title {
+  flex-grow: 1;
+  margin: 0 $sp 0 0;
+}
+
+.entry-create-project-container {
+  margin: 0 $sp;
+  position: relative;
+}
+
+.entry-create-project {
+  text-align: center;
+  border-bottom: 1px solid $clr3;
+}
+
+.entry-create-project-choices {
+  position: absolute;
+  background-color: $clr3;
+  z-index: 1;
+  line-height: $btn-size;
+  min-width: 100%;
+}
+
+.entry-create-project-choice {
+  padding: 0 $sp;
+  white-space: nowrap;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $clr7;
+  }
+}
+
+.entry-create-duration {
+  margin: 0 $sp;
+  text-align: center;
+  line-height: $btn-size;
+  color: $clr5;
+}
+
+.entry-create-start, .entry-create-stop {
+  padding: $sp-xs 60px;
+  color: $clr10;
+}
+
+.entry-create-start {
+  background-color: $clr14;
+}
+
+.entry-create-stop {
+  background-color: $clr15;
 }

@@ -1,0 +1,23 @@
+{{input value=entry.title class="entry-create-title text-input it-entry-create-title" placeholder="What are you working on ?" key-press="startTimer"}}
+<div class="entry-create-project-container">
+  {{input value=projectName class="entry-create-project text-input" placeholder="Project" selectOnFocus=true key-press="projectNameChanged"}}
+  {{#if projectChoices}}
+    <ul class="entry-create-project-choices">
+      {{#each projectChoices as |project|}}
+        <li {{action "selectProject" project bubbles=false}} class="entry-create-project-choice touch">{{project.name}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+</div>
+<div class="entry-create-duration touch">
+  {{#if isStarted}}
+    {{format-duration entry.startedAt entry.stoppedAt}}
+  {{else}}
+    00:00:00
+  {{/if}}
+</div>
+{{#if isStarted}}
+  <button {{action "stopTimer"}} class="entry-create-stop touch it-entry-create-stop">Stop</button>
+{{else}}
+  <button {{action "startTimer"}} class="entry-create-start touch it-entry-create-start">Start</button>
+{{/if}}

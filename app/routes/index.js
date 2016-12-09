@@ -12,6 +12,13 @@ export default Ember.Route.extend({
   },
 
   model() {
-    return get(this, 'store').query('entry', { include: 'project' });
+    return get(this, 'store').query('entry', { include: 'project' }).then((entries) => {
+      return entries.toArray();
+    });
+  },
+
+  setupController(controller) {
+    this._super(...arguments);
+    controller.send('buildNewEntry');
   }
 });

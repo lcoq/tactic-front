@@ -6,7 +6,8 @@ body {
 
 .app-content {
   display: flex;
+  flex-direction: column;
   max-width: 1080px;
   margin: auto;
-  padding: 20px 200px;
+  padding: 30px 200px;
 }
