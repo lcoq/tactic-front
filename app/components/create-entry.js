@@ -11,13 +11,6 @@ export default Ember.Component.extend({
   isStarted: Ember.computed.bool('timer'),
 
   projectName: null,
-  projectNameChanged: Ember.observer('projectName', function() {
-    if (!get(this, 'isStarted')) {
-      this.send('startTimer');
-    }
-    Ember.run.debounce(this, this._searchProjects, 500);
-  }),
-
   projectChoices: null,
 
   _searchProjects() {
@@ -57,6 +50,12 @@ export default Ember.Component.extend({
       set(entry, 'stoppedAt', new Date());
 
       get(this, 'saveEntry')();
+    },
+    projectNameChanged() {
+      if (!get(this, 'isStarted')) {
+        this.send('startTimer');
+      }
+      Ember.run.debounce(this, this._searchProjects, 500);
     },
     selectProject(project) {
       const entry = get(this, 'entry');
