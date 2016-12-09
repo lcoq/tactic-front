@@ -1,8 +1,10 @@
 <section class="entry-create-container">
   {{create-entry
     entry=newEntry
-    saveEntry=(action "saveNewEntry")
+    startTimer=(action "startTimer")
+    stopTimer=(action "stopTimer")
     searchProjects=(action "searchProjects")
+    selectProject=(action "selectProject")
   }}
 </section>
 <section class="entry-group-list">

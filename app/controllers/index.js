@@ -41,8 +41,11 @@ export default Ember.Controller.extend({
       const entry = get(this, 'store').createRecord('entry');
       set(this, 'newEntry', entry);
     },
-    saveNewEntry() {
-      const entry = get(this, 'newEntry');
+    startTimer(entry) {
+      entry.start();
+    },
+    stopTimer(entry) {
+      entry.stop();
       entry.save().then(() => {
         get(this, 'model').addEntry(entry);
         get(this, 'currentWeek').reload();
