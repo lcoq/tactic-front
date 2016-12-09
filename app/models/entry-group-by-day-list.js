@@ -11,12 +11,14 @@ export default Ember.Object.extend({
   addEntry(entry) {
     const groups = get(this, 'groups');
     this._addEntryAndPossiblyCreateGroup(groups, entry);
+    get(this, 'entries').pushObject(entry);
   },
 
   removeEntry(entry) {
     const groups = get(this, 'groups');
     const group = this._findGroupByEntry(groups, entry);
     this._removeEntryFromGroupAndPossiblyWholeGroup(groups, group, entry);
+    get(this, 'entries').removeObject(entry);
   },
 
   updateEntry(entry) {
