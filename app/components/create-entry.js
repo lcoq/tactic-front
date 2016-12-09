@@ -15,7 +15,6 @@ export default Ember.Component.extend({
 
   _searchProjects() {
     const query = get(this, 'projectName');
-    if (Ember.isEmpty(query)) { return; }
     get(this, 'searchProjects')(query).then((projects) => {
       set(this, 'projectChoices', projects);
     });

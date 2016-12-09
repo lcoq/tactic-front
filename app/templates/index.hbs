@@ -16,9 +16,17 @@
         {{#each group.entries as |entry|}}
           {{show-entry
             entry=entry
-            saveEntry=(action "saveEntry")
+
+            markEntryForDelete=(action "markEntryForDelete")
+            cancelDeleteEntry=(action "cancelDeleteEntry")
             deleteEntry=(action "deleteEntry")
+
+            editEntry=(action "editEntry")
+            stopEditEntry=(action "stopEditEntry")
+            revertEditEntry=(action "revertEditEntry")
+
             searchProjects=(action "searchProjects")
+            selectProject=(action "selectProject")
           }}
         {{/each}}
       </ul>

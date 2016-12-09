@@ -1,14 +1,14 @@
 <div class="entry-actions">
-  {{#if isDeleting}}
-    <a {{action "revertDeleteEntry"}} class="entry-action entry-action-revert touch">
+  {{#if entry.isDeleting}}
+    <a {{action "cancelDeleteEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
-  {{else if isPending}}
+  {{else if entry.isPending}}
     <a {{action "revertEditEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
   {{else}}
-    <a {{action "deleteEntry" bubbles=false}} class="entry-action entry-action-delete touch it-entry-action-delete">
+    <a {{action "markEntryForDelete" bubbles=false}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>
     <a {{action "changeEntryDate"}} class="entry-action entry-action-delete touch it-entry-action-delete">
@@ -19,7 +19,7 @@
 <div class="entry-content">
   {{#if isEditingDate}}<div class="entry-edit-date js-datepicker" />{{/if}}
   <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
-    {{#if isEditing}}
+    {{#if entry.isEditing}}
       {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus" selectOnFocus=true}}
     {{else}}
       {{#if entry.title}}
@@ -30,8 +30,8 @@
     {{/if}}
   </div>
   <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
-    {{#if isEditing}}
-      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearFocusAndPossiblyProject" selectOnFocus=true}}
+    {{#if entry.isEditing}}
+      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearProjectIfEmpty" selectOnFocus=true}}
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}
@@ -48,21 +48,21 @@
     {{/if}}
   </div>
   <div {{action "editEntry" ".js-entry-edit-duration"}} class="entry-duration touch">
-    {{#if isEditing}}
+    {{#if entry.isEditing}}
       {{input value=formattedDuration class="entry-edit-duration text-input js-entry-edit-duration" enter="clearFocus" selectOnFocus=true}}
     {{else}}
       {{format-duration entry.startedAt entry.stoppedAt}}
     {{/if}}
   </div>
   <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch">
-    {{#if isEditing}}
+    {{#if entry.isEditing}}
       {{input value=formattedStartedAt class="entry-edit-started-at text-input js-entry-edit-started-at" enter="clearFocus" selectOnFocus=true}}
     {{else}}
       {{format-hour entry.startedAt}}
     {{/if}}
   </div>
   <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch">
-    {{#if isEditing}}
+    {{#if entry.isEditing}}
       {{input value=formattedStoppedAt class="entry-edit-stopped-at text-input js-entry-edit-stopped-at" enter="clearFocus" selectOnFocus=true}}
     {{else}}
       {{format-hour entry.stoppedAt}}

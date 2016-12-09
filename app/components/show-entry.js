@@ -14,23 +14,14 @@ function elementIsOrIsIn($element, $container) {
 export default Ember.Component.extend({
   tagName: 'li',
   classNames: ['entry', 'it-entry'],
-  classNameBindings: ['isEditing:editing', 'isDeleting:deleting', 'isPending:pending'],
+  classNameBindings: ['entry.isEditing:editing', 'entry.isDeleting:deleting', 'entry.isPending:pending'],
   entry: null,
 
-  deleteTimer: null,
-  isDeleting: Ember.computed.bool('deleteTimer'),
-
-  saveTimer: null,
-  isPending: Ember.computed.bool('saveTimer'),
-
-  isEditing: false,
   isEditingDate: false,
-
-  initialProject: null,
 
   projectName: null,
   projectNameChanged: Ember.observer('projectName', function() {
-    if (get(this, 'isEditing')) {
+    if (get(this, 'entry.isEditing')) {
       Ember.run.debounce(this, this._searchProjects, 500);
     }
   }),
@@ -83,59 +74,17 @@ export default Ember.Component.extend({
 
   projectChoices: null,
 
-  didInsertElement() {
-    this._super(...arguments);
-    this._updateInitialProject();
-  },
-
   _searchProjects() {
     const query = get(this, 'projectName');
-    if (!get(this, 'isEditing') || Ember.isEmpty(query)) { return; }
+    if (!get(this, 'entry.isEditing')) { return; }
     get(this, 'searchProjects')(query).then((projects) => {
       set(this, 'projectChoices', projects);
     });
   },
 
-  _revertChanges() {
-    const entry = get(this, 'entry');
-    entry.rollbackAttributes();
-    entry.set('project', get(this, 'initialProject'));
-  },
-
-  _cancelSaveAndDelete() {
-    this._cancelDelete();
-    this._cancelSave();
-  },
-
-  _cancelDelete() {
-    const timer = get(this, 'deleteTimer');
-    if (timer) {
-      Ember.run.cancel(timer);
-      set(this, 'deleteTimer', null);
-    }
-  },
-
-  _cancelSave() {
-    const timer = get(this, 'saveTimer');
-    if (timer) {
-      Ember.run.cancel(timer);
-      set(this, 'saveTimer', null);
-    }
-  },
-
-  _saveEntry() {
-    set(this, 'saveTimer', null);
-    this.send('saveEntry');
-  },
-
-  _deleteEntry() {
-    set(this, 'deleteTimer', null);
-    const entry = get(this, 'entry');
-    get(this, 'deleteEntry')(entry);
-  },
-
   _openEdit(selector) {
     const entry = get(this, 'entry');
+
     setProperties(this, {
       projectName: get(entry, 'project.name'),
       formattedDuration: formatDuration(get(entry, 'durationInSeconds')),
@@ -143,31 +92,25 @@ export default Ember.Component.extend({
       formattedStoppedAt: formatHour(get(entry, 'stoppedAt')),
       projectChoices: null
     });
-    set(this, 'isEditing', true);
+
+    get(this, 'editEntry')(entry);
 
     Ember.run.scheduleOnce('afterRender', this, function() {
-      if (selector) {
-        this.$(selector).focus();
-      }
+      if (selector) { this.$(selector).focus(); }
       this._watchFocusOut();
     });
   },
 
-  _closeEdit(scheduleSave = true) {
-    if (scheduleSave) {
-      const timer = Ember.run.later(this, this._saveEntry, 3000);
-      set(this, 'saveTimer', timer);
-    }
-    setProperties(this, {
-      isEditing: false,
-      isEditingDate: false
-    });
+  _closeEdit() {
+    const entry = get(this, 'entry');
+    get(this, 'stopEditEntry')(entry);
+    set(this, 'isEditingDate', false);
     this._unwatchFocusOut();
   },
 
   _watchFocusOut() {
     Ember.$('body').on('click.focus-out-entry-edit', (event) => {
-      if (get(this, 'isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
+      if (get(this, 'entry.isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
         this.send('focusLost');
       }
     });
@@ -175,10 +118,6 @@ export default Ember.Component.extend({
 
   _unwatchFocusOut() {
     Ember.$('body').off('click.focus-out-entry-edit');
-  },
-
-  _updateInitialProject() {
-    set(this, 'initialProject', get(this, 'entry.project'));
   },
 
   _initDatePicker(selector, initialDate, onSelect) {
@@ -197,74 +136,60 @@ export default Ember.Component.extend({
     });
   },
 
-  _updateDates(newDate) {
-    const entry = get(this, 'entry');
-    const startedAt = moment(get(entry, 'startedAt'));
-    const stoppedAt = moment(get(entry, 'stoppedAt'));
-
-    const newStartedAt = moment(newDate).hours(startedAt.hours()).minutes(startedAt.minutes()).seconds(startedAt.seconds());
-    const newStoppedAt = moment(newDate).hours(stoppedAt.hours()).minutes(stoppedAt.minutes()).seconds(stoppedAt.seconds());
-    /* TODO when stopped at is the next day */
-
-    setProperties(entry, {
-      startedAt: newStartedAt.toDate(),
-      stoppedAt: newStoppedAt.toDate()
-    });
-  },
-
   actions: {
+
+    /* edit */
+
+    editEntry(selector) {
+      if (get(this, 'entry.isEditing')) { return; }
+      this._openEdit(selector);
+    },
+    revertEditEntry() {
+      const entry = get(this, 'entry');
+      get(this, 'revertEditEntry')(entry);
+    },
+
+    /* delete */
+
+    markEntryForDelete() {
+      const entry = get(this, 'entry');
+      get(this, 'markEntryForDelete')(entry);
+    },
+    cancelDeleteEntry() {
+      const entry = get(this, 'entry');
+      get(this, 'cancelDeleteEntry')(entry);
+    },
+
+    /* focus */
+
     clearFocus() {
       Ember.$('body').click();
-    },
-    clearFocusAndPossiblyProject() {
-      if (Ember.isEmpty(get(this, 'projectName'))) {
-        get(this, 'entry').set('project', null);
-      }
-      this.send('clearFocus');
     },
     focusLost() {
       this._closeEdit();
     },
-    editEntry(selector) {
-      if (get(this, 'isEditing')) { return; }
-      this._cancelSaveAndDelete();
-      this._openEdit(selector);
+
+    /* project */
+
+    clearProjectIfEmpty() {
+      if (Ember.isEmpty(get(this, 'projectName'))) {
+        this.send('selectProject', null);
+      }
     },
     selectProject(project) {
-      this._closeEdit();
-      get(this, 'entry').set('project', project);
-    },
-    revertEditEntry() {
-      this._cancelSave();
-      this._revertChanges();
-    },
-    saveEntry() {
       const entry = get(this, 'entry');
-      get(this, 'saveEntry')(entry).then(() => {
-        this._updateInitialProject();
-      });
+      get(this, 'selectProject')(entry, project);
     },
-    deleteEntry() {
-      const timer = Ember.run.later(this, this._deleteEntry, 3000);
-      set(this, 'deleteTimer', timer);
-      if (get(this, 'isEditing')) {
-        this._closeEdit(false);
-      }
-    },
-    revertDeleteEntry() {
-      this._cancelDelete();
-    },
+
+    /* date */
+
     changeEntryDate() {
-      if (get(this, 'isEditingDate')) {
-        this._closeEdit();
-        return;
-      }
-      if (!get(this, 'isEditing')) {
+      if (!get(this, 'entry.isEditing')) {
         this._openEdit();
       }
       set(this, 'isEditingDate', true);
       this._initDatePicker('.js-datepicker', get(this, 'entry.startedAt'), (date) => {
-        this._updateDates(date);
+        get(this, 'entry').updateToDate(date);
         this._closeEdit();
       });
     }
