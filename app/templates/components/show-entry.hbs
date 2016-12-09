@@ -8,7 +8,7 @@
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
   {{else}}
-    <a {{action "deleteEntry"}} class="entry-action entry-action-delete touch it-entry-action-delete">
+    <a {{action "deleteEntry" bubbles=false}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>
     <a {{action "changeEntryDate"}} class="entry-action entry-action-delete touch it-entry-action-delete">
