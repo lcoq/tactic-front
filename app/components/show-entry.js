@@ -155,7 +155,7 @@ export default Ember.Component.extend({
 
   _closeEdit(scheduleSave = true) {
     if (scheduleSave) {
-      const timer = Ember.run.later(this, this._saveEntry, 5000);
+      const timer = Ember.run.later(this, this._saveEntry, 3000);
       set(this, 'saveTimer', timer);
     }
     setProperties(this, {
@@ -245,7 +245,7 @@ export default Ember.Component.extend({
       });
     },
     deleteEntry() {
-      const timer = Ember.run.later(this, this._deleteEntry, 5000);
+      const timer = Ember.run.later(this, this._deleteEntry, 3000);
       set(this, 'deleteTimer', timer);
       if (get(this, 'isEditing')) {
         this._closeEdit(false);
