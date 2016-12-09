@@ -24,7 +24,7 @@ export default Ember.Component.extend({
   formattedDuration: null,
   formattedDurationChanged: Ember.observer('formattedDuration', function() {
     const duration = parseDuration(get(this, 'formattedDuration'));
-    if (duration && duration !== get(this, 'entry.durationInSeconds')) {
+    if (duration !== null && duration !== get(this, 'entry.durationInSeconds')) {
       const newStoppedAt = moment(get(this, 'entry.startedAt')).add(duration, 's').toDate();
       set(this, 'entry.stoppedAt', newStoppedAt);
     }
