@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import EntryGroupByDayList from '../models/entry-group-by-day-list';
 
 const { get, set } = Ember;
 
@@ -7,12 +6,6 @@ export default Ember.Controller.extend({
   currentWeek: Ember.inject.service(),
 
   newEntry: null,
-
-  entriesByDay: Ember.computed('model', function() {
-    return EntryGroupByDayList.create({
-      entries: get(this, 'model')
-    });
-  }),
 
   actions: {
     searchProjects(query) {
@@ -25,7 +18,7 @@ export default Ember.Controller.extend({
     saveNewEntry() {
       const entry = get(this, 'newEntry');
       entry.save().then(() => {
-        get(this, 'entriesByDay').addEntry(entry);
+        get(this, 'model').addEntry(entry);
         get(this, 'currentWeek').reload();
         this.send('buildNewEntry');
       });
@@ -36,13 +29,13 @@ export default Ember.Controller.extend({
       return entry.save().then(() => {
         get(this, 'currentWeek').reload();
         if (dateChanged) {
-          get(this, 'entriesByDay').updateEntry(entry);
+          get(this, 'model').updateEntry(entry);
         }
       });
     },
     deleteEntry(entry) {
       entry.destroyRecord().then(() => {
-        get(this, 'entriesByDay').removeEntry(entry);
+        get(this, 'model').removeEntry(entry);
         get(this, 'currentWeek').reload();
       });
     }
