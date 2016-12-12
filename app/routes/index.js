@@ -20,7 +20,9 @@ export default Ember.Route.extend({
 
   setupController(controller) {
     this._super(...arguments);
-    controller.send('buildNewEntry');
+    if (!controller.get('newEntry')) {
+      controller.send('buildNewEntry');
+    }
   },
 
   actions: {
