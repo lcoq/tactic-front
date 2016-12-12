@@ -23,13 +23,6 @@ test('it is yesterday', function(assert) {
   assert.ok(this.$().text().match(/yesterday/i), 'should be yesterday');
 });
 
-test('it is the number of days from now', function(assert) {
-  const day = moment().subtract(2, 'days').toDate();
-  set(this, 'day', day);
-  this.render(hbs`{{entry-group-day day}}`);
-  assert.ok(this.$().text().match(/2 days ago/i), 'should be 2 days ago');
-});
-
 test('it is the day and month when older than a week but in current year', function(assert) {
   const day = moment().subtract(10, 'days');
   set(this, 'day', day.toDate());
