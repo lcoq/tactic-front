@@ -37,7 +37,10 @@ export default DS.Model.extend({
 
     const newStartedAt = moment(date).hours(startedAt.hours()).minutes(startedAt.minutes()).seconds(startedAt.seconds());
     const newStoppedAt = moment(date).hours(stoppedAt.hours()).minutes(stoppedAt.minutes()).seconds(stoppedAt.seconds());
-    /* TODO when stopped at is the next day */
+
+    if (newStartedAt.isAfter(newStoppedAt)) {
+      newStoppedAt.add(1, 'day');
+    }
 
     setProperties(this, {
       startedAt: newStartedAt.toDate(),
