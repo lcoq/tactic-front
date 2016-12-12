@@ -111,7 +111,7 @@ export default Ember.Component.extend({
   },
 
   _watchFocusOut() {
-    Ember.$('body').on('click.focus-out-entry-edit', (event) => {
+    Ember.$('body').on('click.focus-out-entry-edit-' + get(this, 'elementId'), (event) => {
       if (get(this, 'entry.isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
         if (get(this, 'isDestroyed')) { return; }
         this.send('focusLost');
@@ -120,7 +120,7 @@ export default Ember.Component.extend({
   },
 
   _unwatchFocusOut() {
-    Ember.$('body').off('click.focus-out-entry-edit');
+    Ember.$('body').off('click.focus-out-entry-edit-' + get(this, 'elementId'));
   },
 
   _initDatePicker(selector, initialDate, onSelect) {
