@@ -87,7 +87,6 @@ export default Ember.Controller.extend({
 
     selectProject(entry, project) {
       set(entry, 'project', project);
-      this.send('stopEditEntry', entry);
     },
 
     /* deletion */

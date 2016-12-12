@@ -186,6 +186,7 @@ export default Ember.Component.extend({
     selectProject(project) {
       const entry = get(this, 'entry');
       get(this, 'selectProject')(entry, project);
+      get(this, 'stopEditEntry')(entry);
     },
 
     /* date */
