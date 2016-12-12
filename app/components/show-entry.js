@@ -33,7 +33,7 @@ export default Ember.Component.extend({
   formattedStartedAt: null,
   formattedStoppedAt: null,
 
-  formattedStartedAtChanged: Ember.observer('formattedStartedAt', function() {
+  formattedStartedAtChanged: function() {
     const entry = get(this, 'entry');
     const entryStartedAt = get(entry, 'startedAt');
 
@@ -49,9 +49,9 @@ export default Ember.Component.extend({
       }
       setProperties(entry, properties);
     }
-  }),
+  },
 
-  formattedStoppedAtChanged: Ember.observer('formattedStoppedAt', function() {
+  formattedStoppedAtChanged: function() {
     const entry = get(this, 'entry');
     const startedAt = get(entry, 'startedAt');
 
@@ -65,7 +65,7 @@ export default Ember.Component.extend({
       }
       set(entry, 'stoppedAt', newStoppedAt);
     }
-  }),
+  },
 
   projectChoices: null,
 
@@ -88,6 +88,9 @@ export default Ember.Component.extend({
       projectChoices: null
     });
 
+    this.addObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
+    this.addObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
+
     get(this, 'editEntry')(entry);
 
     Ember.run.scheduleOnce('afterRender', this, function() {
@@ -100,6 +103,10 @@ export default Ember.Component.extend({
     const entry = get(this, 'entry');
     get(this, 'stopEditEntry')(entry);
     set(this, 'isEditingDate', false);
+
+    this.removeObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
+    this.removeObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
+
     this._unwatchFocusOut();
   },
 
