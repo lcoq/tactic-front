@@ -5,13 +5,14 @@
 
 .entry-group-header {
   display: flex;
-  align-items: flex-end;
-  margin-bottom: $sp;
+  align-items: center;
+  background-color: $clr3;
+  padding: $sp-sm;
 }
 
 .entry-group-header-title {
   color: $clr4;
-  font-size: $fs-xxl;
+  font-size: $fs-lg;
   font-weight: bold;
   white-space: nowrap;
 }
@@ -20,14 +21,12 @@
   margin-left: $sp;
   color: $clr8;
   font-weight: bold;
+  font-size: $fs-sm;
 }
 
 .entry-group {
   &:first-of-type {
     margin-top: 30px;
-  }
-  &:not(:first-of-type) {
-    margin-top: 50px;
   }
 }
 
