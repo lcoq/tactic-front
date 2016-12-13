@@ -22,7 +22,8 @@
     "currentURL",
     "currentPath",
     "currentRouteName",
-    "stubIndexModelRequest"
+    "stubIndexModelRequest",
+    "stubLoginModelRequest"
   ],
   "node": false,
   "browser": false,

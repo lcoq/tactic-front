@@ -1,0 +1,107 @@
+.reviews-filters {
+  display: flex;
+  align-items: baseline;
+}
+
+.reviews-filter {
+  padding: 0 $sp-sm $sp $sp-sm;
+
+  &:first-of-type {
+    padding-left: 0;
+  }
+
+  &:last-of-type {
+    padding-right: 0;
+  }
+
+  &:hover {
+    .reviews-filter-header {
+      background-color: $clr10;
+    }
+    .reviews-filter-item-list {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.reviews-filter-users, .reviews-filter-projects {
+  width: 35%;
+}
+
+.reviews-filter-header {
+  position: relative;
+  padding: 0 $sp-sm;
+}
+
+.reviews-filter-header-title, .reviews-filter-header-count {
+  display: inline-block;
+  color: $clr5;
+}
+
+.reviews-filter-header-title {
+  padding: $sp-sm 0;
+  font-size: $fs-lg;
+}
+
+.reviews-filter-header-count {
+  font-style: italic;
+}
+
+.reviews-filter-item-list-container {
+  position: relative;
+  padding: 0 $sp-sm 0 0;
+}
+
+.reviews-filter-item-list {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  width: 100%;
+  padding: $sp-sm 0;
+  background-color: $clr3;
+}
+
+.reviews-filter-item {
+  padding: $sp-sm $sp;
+}
+
+.reviews-filter-item-checkbox-container {
+  display: flex;
+  align-items: baseline;
+}
+
+.reviews-filter-item-checkbox, .reviews-filter-item-checkbox-txt {
+  vertical-align: middle;
+  line-height: 30px;
+  color: $clr2;
+}
+
+.reviews-filter-item-checkbox {
+  flex-shrink: 0;
+  margin-right: $sp-sm;
+}
+
+.reviews-filter-from, .reviews-filter-to {
+  display: flex;
+  align-items: baseline;
+  cursor: pointer;
+
+  .reviews-filter-header-title {
+    font-size: $fs-xxl;
+  }
+}
+
+.reviews-filter-from-txt, .reviews-filter-to-txt {
+  margin-right: $sp;
+}
+
+.reviews-filter-from-date, .reviews-filter-to-date {
+  display: none;
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  background-color: $clr3;
+  padding: $sp;
+  font-size: $fs-xs;
+}
