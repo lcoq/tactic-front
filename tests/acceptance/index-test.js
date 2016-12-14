@@ -24,11 +24,6 @@ function logsIn(s, options) {
   click('.it-select-user');
 }
 
-function stubLogInModelRequest(s) {
-  const data = [{ type: 'users', id: '1', attributes: { name: 'louis' } }];
-  s.get(url('users'), function() { return [ 200, {}, { data: data }]; });
-}
-
 let server;
 
 moduleForAcceptance('Acceptance | index', {
@@ -42,8 +37,8 @@ moduleForAcceptance('Acceptance | index', {
   }
 });
 
-test('redirects to login when not authentified', function(assert) {
-  stubLogInModelRequest(server);
+test('redirects to login when not authenticated', function(assert) {
+  stubLoginModelRequest(server);
   visit('/');
   andThen(function() {
     assert.equal(currentURL(), '/login', 'should redirect to login');
@@ -53,7 +48,7 @@ test('redirects to login when not authentified', function(assert) {
 test('redirects to login when a session token is stored in cookies but is invalid', function(assert) {
   document.cookie = "token=session-token; path=/";
 
-  stubLogInModelRequest(server);
+  stubLoginModelRequest(server);
   const getSession = server.get(url('sessions'), function(request) {
     getSession.headers = request.requestHeaders;
     return [ 403, {}, {} ];

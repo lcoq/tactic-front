@@ -1,0 +1,14 @@
+{{reviews-filters
+  users=model.users
+  selectedUsers=selectedUsers
+  projects=model.projects
+  selectedProjects=selectedProjects
+  since=since
+  before=before
+}}
+{{entries-by-day
+  list=entriesByDay
+  didDeleteEntry=(action "didDeleteEntry")
+  didUpdateEntry=(action "didUpdateEntry")
+  searchProjects=(action "searchProjects")
+}}

@@ -111,6 +111,8 @@ export default Ember.Component.extend({
       isEditingDate: false
     });
 
+    this.$('.js-datepicker').datepicker('destroy');
+
     this.removeObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
     this.removeObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
 
