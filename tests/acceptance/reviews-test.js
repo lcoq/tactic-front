@@ -96,14 +96,14 @@ test('send GET users, GET projects, GET entries and display them when a valid se
     assert.equal(find('.it-reviews-filter-item-user').length, 2, 'should display 2 users');
 
     assert.equal(getProjects.numberOfCalls, 1, 'should GET projects');
-    assert.equal(find('.it-reviews-filter-item-project').length, 3, 'should display 3 projects');
+    assert.equal(find('.it-reviews-filter-item-project').length, 4, 'should display 4 projects (3 + "No project")');
 
     const getEntriesRequest = getEntries.requests.find(function(r) {
       const userIdFilter = r.queryParams['filter[user-id]'];
       const projectIdFilter = r.queryParams['filter[project-id]'];
       const sinceFilter = r.queryParams['filter[since]'];
       const beforeFilter = r.queryParams['filter[before]'];
-      return userIdFilter && userIdFilter.length === 2 && projectIdFilter && projectIdFilter.length === 3 && sinceFilter && beforeFilter;
+      return userIdFilter && userIdFilter.length === 2 && projectIdFilter && projectIdFilter.length === 4 && sinceFilter && beforeFilter;
     });
     assert.ok(getEntriesRequest, 'should GET entries with user-id, project-id, since and before filters');
     assert.equal(find('.it-entry').length, 1, 'should show returned entry');
