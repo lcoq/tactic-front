@@ -151,5 +151,5 @@ export default DS.Model.extend({
       Ember.run.cancel(timer);
       set(this, propertyName, null);
     }
-  },
+  }
 });

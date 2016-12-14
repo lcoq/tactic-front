@@ -1,0 +1,87 @@
+.project-list-title {
+  font-size: $fs-xxl;
+  font-weight: bold;
+  padding: $sp 0;
+}
+
+.project {
+  position: relative;
+  padding: $sp-sm;
+  line-height: $btn-size;
+}
+
+.project:hover {
+  background-color: $clr7;
+
+  .project-actions {
+    display: flex;
+  }
+}
+
+.project.deleting {
+  background-color: $clr9;
+
+  .project-actions {
+    display: flex;
+  }
+}
+
+.project.pending {
+  background-color: $clr11;
+
+  .project-actions {
+    display: flex;
+  }
+}
+
+.project.editing {
+  background-color: $clr10;
+
+  &:hover {
+    background-color: $clr10;
+  }
+
+  .project-actions {
+    display: flex;
+  }
+}
+
+.project-actions {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+}
+
+.project-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.project-action-delete-img {
+  width: 16px;
+  height: 16px;
+}
+
+.project-action-cancel-img {
+  width: 16px;
+  height: 16px;
+}
+
+.project-edit-name {
+  width: 100%;
+}
+
+.project-create {
+  display: flex;
+  align-items: center;
+  font-style: italic;
+}
+
+.project-create-plus {
+  font-weight: bold;
+  font-size: $fs-xl;
+  margin-right: $sp-xs;
+}

@@ -35,6 +35,10 @@
 .header-nav-section {
   z-index: 10;
   display: inline-block;
+
+  &.right {
+    margin-left: auto;
+  }
 }
 
 .header-nav-section-title {

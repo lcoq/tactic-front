@@ -1,0 +1,12 @@
+<section class="project-list-container">
+  <h1 class="project-list-title">Projects</h1>
+  <ul class="project-list">
+    {{#each model as |project|}}
+      {{show-project project=project}}
+    {{/each}}
+    <li class="project project-create it-project touch">
+      <span class="project-create-plus">+</span>
+      Create new
+    </li>
+  </ul>
+</section>

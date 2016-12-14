@@ -37,7 +37,7 @@ test('redirects to login when a session token is stored in cookies but is invali
     return [ 403, {}, {} ];
   });
 
-  visit('/');
+  visit('/reviews');
 
   andThen(function() {
     assert.equal(getSession.numberOfCalls, 1, 'should GET session');
