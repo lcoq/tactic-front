@@ -5,6 +5,10 @@
   </header>
   <div class="reviews-filter-item-list-container">
     <ul class="reviews-filter-item-list">
+      <li class="reviews-filter-item reviews-filter-item-toggle">
+        <a {{action "checkAllUsers"}}>Select all</a>
+        <a {{action "uncheckAllUsers"}}>Select none</a>
+      </li>
       {{#each users as |user|}}
         <li class="reviews-filter-item it-reviews-filter-item-user">
           <label class="reviews-filter-item-checkbox-container">
@@ -24,6 +28,10 @@
   </header>
   <div class="reviews-filter-item-list-container">
     <ul class="reviews-filter-item-list">
+      <li class="reviews-filter-item reviews-filter-item-toggle">
+        <a {{action "checkAllProjects"}}>Select all</a>
+        <a {{action "uncheckAllProjects"}}>Select none</a>
+      </li>
       {{#each projects as |project|}}
         <li class="reviews-filter-item reviews-filter-item-project it-reviews-filter-item-project">
           <label class="reviews-filter-item-checkbox-container">
