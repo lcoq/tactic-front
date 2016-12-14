@@ -12,24 +12,26 @@ export default DS.Model.extend({
   project: DS.belongsTo('project'),
   user: DS.belongsTo('user'),
 
-  deleteTimer: null,
-  saveTimer: null,
-  durationTimer: null,
-
-  isDeleting: Ember.computed.bool('deleteTimer'),
-  isPending: Ember.computed.bool('saveTimer'),
-  isStarted: Ember.computed.bool('durationTimer'),
-  isEditing: false,
-
-  initialProject: null,
-
-  updateInitialProject: Ember.on('didLoad', 'didUpdate', function() {
-    set(this, 'initialProject', get(this, 'project'));
+  durationInSeconds: Ember.computed('startedAt', 'stoppedAt', function() {
+    const startedAt = get(this, 'startedAt');
+    const stoppedAt = get(this, 'stoppedAt');
+    if (startedAt && stoppedAt) {
+      return moment(stoppedAt).diff(startedAt, 'seconds');
+    }
   }),
 
-  rollbackProject() {
-    set(this, 'project', get(this, 'initialProject'));
+  belongsToUserWithId(userId) {
+    return this.belongsTo('user').id() === userId;
   },
+
+  /* save */
+
+  saveTimer: null,
+  isPending: Ember.computed.bool('saveTimer'),
+
+  /* update */
+
+  isEditing: false,
 
   updateToDate(date) {
     const startedAt = moment(get(this, 'startedAt'));
@@ -48,6 +50,28 @@ export default DS.Model.extend({
     });
   },
 
+  /* delete */
+
+  deleteTimer: null,
+  isDeleting: Ember.computed.bool('deleteTimer'),
+
+  /* rollback */
+
+  initialProject: null,
+
+  updateInitialProject: Ember.on('didLoad', 'didUpdate', function() {
+    set(this, 'initialProject', get(this, 'project'));
+  }),
+
+  rollbackProject() {
+    set(this, 'project', get(this, 'initialProject'));
+  },
+
+  /* start & stop */
+
+  durationTimer: null,
+  isStarted: Ember.computed.bool('durationTimer'),
+
   start() {
     if (get(this, 'isStarted')) { return; }
     set(this, 'startedAt', new Date());
@@ -61,18 +85,6 @@ export default DS.Model.extend({
       durationTimer: null,
       stoppedAt: new Date()
     });
-  },
-
-  durationInSeconds: Ember.computed('startedAt', 'stoppedAt', function() {
-    const startedAt = get(this, 'startedAt');
-    const stoppedAt = get(this, 'stoppedAt');
-    if (startedAt && stoppedAt) {
-      return moment(stoppedAt).diff(startedAt, 'seconds');
-    }
-  }),
-
-  belongsToUserWithId(userId) {
-    return this.belongsTo('user').id() === userId;
   },
 
   _updateDurationAndRestartTimer() {
