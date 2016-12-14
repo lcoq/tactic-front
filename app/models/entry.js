@@ -55,6 +55,24 @@ export default DS.Model.extend({
   deleteTimer: null,
   isDeleting: Ember.computed.bool('deleteTimer'),
 
+  markForDelete() {
+    const timer = Ember.run.later(this, this.deleteEntry, 3000);
+    setProperties(this, { deleteTimer: timer, isEditing: false });
+  },
+
+  clearMarkForDelete() {
+    const timer = get(this, 'deleteTimer');
+    if (timer) {
+      Ember.run.cancel(timer);
+      set(this, 'deleteTimer', null);
+    }
+  },
+
+  deleteEntry() {
+    set(this, 'deleteTimer', null);
+    return this.destroyRecord();
+  },
+
   /* rollback */
 
   initialProject: null,

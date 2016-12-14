@@ -91,28 +91,9 @@ export default Ember.Controller.extend({
 
     /* deletion */
 
-    markEntryForDelete(entry) {
-      const timer = Ember.run.later(this, function() {
-        this.send('deleteEntry', entry);
-      }, 3000);
-
-      setProperties(entry, {
-        deleteTimer: timer,
-        isEditing: false
-      });
-    },
-
-    cancelDeleteEntry(entry) {
-      this.cancelDeleteEntry(entry);
-    },
-
-    deleteEntry(entry) {
-      set(entry, 'deleteTimer', null);
-      entry.destroyRecord().then(() => {
-        get(this, 'model').removeEntry(entry);
-        get(this, 'currentWeek').reload();
-      });
+    didDeleteEntry(entry) {
+      get(this, 'model').removeEntry(entry);
+      get(this, 'currentWeek').reload();
     }
-
   }
 });

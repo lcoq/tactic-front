@@ -139,6 +139,11 @@ export default Ember.Component.extend({
     });
   },
 
+  _didDeleteEntry() {
+    const entry = get(this, 'entry');
+    get(this, 'didDeleteEntry')(entry);
+  },
+
   actions: {
 
     /* edit */
@@ -156,11 +161,13 @@ export default Ember.Component.extend({
 
     markEntryForDelete() {
       const entry = get(this, 'entry');
-      get(this, 'markEntryForDelete')(entry);
+      entry.markForDelete();
+      entry.one('didDelete', this, this._didDeleteEntry);
     },
     cancelDeleteEntry() {
       const entry = get(this, 'entry');
-      get(this, 'cancelDeleteEntry')(entry);
+      entry.clearMarkForDelete();
+      entry.off('didDelete', this, this._didDeleteEntry);
     },
 
     /* focus */
