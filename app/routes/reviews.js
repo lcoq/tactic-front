@@ -12,9 +12,14 @@ export default Ember.Route.extend({
   },
 
   model() {
+    const projectsPromise = get(this, 'store').findAll('project').then((projects) => {
+      const noProject = Ember.Object.create({ id: '0', name: "No project" });
+      return [noProject].concat(projects.toArray());
+    });
+
     return Ember.RSVP.hash({
       users: get(this, 'store').findAll('user'),
-      projects: get(this, 'store').findAll('project')
+      projects: projectsPromise
     });
   }
 });

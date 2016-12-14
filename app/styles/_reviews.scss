@@ -66,6 +66,10 @@
   padding: $sp-sm $sp;
 }
 
+.reviews-filter-item-project:first-of-type {
+  font-style: italic;
+}
+
 .reviews-filter-item-checkbox-container {
   display: flex;
   align-items: baseline;
