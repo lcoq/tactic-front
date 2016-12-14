@@ -1,10 +1,8 @@
 <section class="entry-create-container">
   {{create-entry
     entry=newEntry
-    startTimer=(action "startTimer")
-    stopTimer=(action "stopTimer")
+    didCreateEntry=(action "didCreateEntry")
     searchProjects=(action "searchProjects")
-    selectProject=(action "selectProject")
   }}
 </section>
 <section class="entry-group-list">
@@ -18,12 +16,9 @@
         {{#each group.entries as |entry|}}
           {{show-entry
             entry=entry
-
             didDeleteEntry=(action "didDeleteEntry")
             didUpdateEntry=(action "didUpdateEntry")
-
             searchProjects=(action "searchProjects")
-            selectProject=(action "selectProject")
           }}
         {{/each}}
       </ul>

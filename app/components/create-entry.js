@@ -19,16 +19,13 @@ export default Ember.Component.extend({
 
   actions: {
     startTimer() {
-      const entry = get(this, 'entry');
-      get(this, 'startTimer')(entry);
+      get(this, 'entry').start();
     },
     stopTimer() {
       const entry = get(this, 'entry');
-      get(this, 'stopTimer')(entry);
-      setProperties(this, {
-        projectChoices: null,
-        projectName: null
-      });
+      entry.stop();
+      entry.save().then(() => { get(this, 'didCreateEntry')(entry); });
+      setProperties(this, { projectChoices: null, projectName: null });
     },
     clearProjectIfEmpty() {
       if (Ember.isEmpty(get(this, 'projectName'))) {
@@ -36,14 +33,12 @@ export default Ember.Component.extend({
       }
     },
     projectNameChanged() {
-      const entry = get(this, 'entry');
-      get(this, 'startTimer')(entry);
+      this.send('startTimer');
       Ember.run.debounce(this, this._searchProjects, 500);
     },
     selectProject(project) {
-      const entry = get(this, 'entry');
-      get(this, 'selectProject')(entry, project);
       setProperties(this, {
+        'entry.project': project,
         projectChoices: null,
         projectName: project ? get(project, 'name') : null
       });

@@ -205,8 +205,7 @@ export default Ember.Component.extend({
       }
     },
     selectProject(project) {
-      const entry = get(this, 'entry');
-      get(this, 'selectProject')(entry, project);
+      set(this, 'entry.project', project);
       this._closeEdit();
     },
 

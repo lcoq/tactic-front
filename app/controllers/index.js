@@ -9,25 +9,21 @@ export default Ember.Controller.extend({
 
   actions: {
 
-    /* new entry */
+    searchProjects(query) {
+      if (Ember.isEmpty(query)) { return Ember.RSVP.resolve(); }
+      return get(this, 'store').query('project', { filter: { query: query } });
+    },
 
     buildNewEntry() {
       const entry = get(this, 'store').createRecord('entry');
       set(this, 'newEntry', entry);
     },
-    startTimer(entry) {
-      entry.start();
-    },
-    stopTimer(entry) {
-      entry.stop();
-      entry.save().then(() => {
-        get(this, 'model').addEntry(entry);
-        get(this, 'currentWeek').reload();
-        this.send('buildNewEntry');
-      });
-    },
 
-    /* edit */
+    didCreateEntry(entry) {
+      get(this, 'model').addEntry(entry);
+      get(this, 'currentWeek').reload();
+      this.send('buildNewEntry');
+    },
 
     didUpdateEntry(entry, changedAttributes) {
       get(this, 'currentWeek').reload();
@@ -35,19 +31,6 @@ export default Ember.Controller.extend({
         get(this, 'model').updateEntry(entry);
       }
     },
-
-    /* projects */
-
-    searchProjects(query) {
-      if (Ember.isEmpty(query)) { return Ember.RSVP.resolve(); }
-      return get(this, 'store').query('project', { filter: { query: query } });
-    },
-
-    selectProject(entry, project) {
-      set(entry, 'project', project);
-    },
-
-    /* deletion */
 
     didDeleteEntry(entry) {
       get(this, 'model').removeEntry(entry);
