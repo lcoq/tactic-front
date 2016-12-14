@@ -5,23 +5,9 @@
     searchProjects=(action "searchProjects")
   }}
 </section>
-<section class="entry-group-list">
-  {{#each model.groups as |group|}}
-    <section class="entry-group it-entry-group">
-      <header class="entry-group-header">
-        <h2 class="entry-group-header-title" title={{moment-format group.day "YYYY-MM-DD"}}>{{entry-group-day group.day}}</h2>
-        <div class="entry-group-header-duration it-entry-group-duration">{{format-duration group.durationInSeconds}}</div>
-      </header>
-      <ul class="entry-group-item-list">
-        {{#each group.entries as |entry|}}
-          {{show-entry
-            entry=entry
-            didDeleteEntry=(action "didDeleteEntry")
-            didUpdateEntry=(action "didUpdateEntry")
-            searchProjects=(action "searchProjects")
-          }}
-        {{/each}}
-      </ul>
-    </section>
-  {{/each}}
-</section>
+{{entries-by-day
+  list=model
+  didDeleteEntry=(action "didDeleteEntry")
+  didUpdateEntry=(action "didUpdateEntry")
+  searchProjects=(action "searchProjects")
+}}

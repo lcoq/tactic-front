@@ -25,15 +25,11 @@ export default Ember.Controller.extend({
       this.send('buildNewEntry');
     },
 
-    didUpdateEntry(entry, changedAttributes) {
+    didUpdateEntry() {
       get(this, 'currentWeek').reload();
-      if (changedAttributes.startedAt || changedAttributes.stoppedAt) {
-        get(this, 'model').updateEntry(entry);
-      }
     },
 
-    didDeleteEntry(entry) {
-      get(this, 'model').removeEntry(entry);
+    didDeleteEntry() {
       get(this, 'currentWeek').reload();
     }
   }
