@@ -17,6 +17,8 @@ export default Ember.Component.extend({
   classNameBindings: ['entry.isEditing:editing', 'entry.isDeleting:deleting', 'entry.isPending:pending'],
   entry: null,
 
+  changedAttributes: null,
+
   isEditingDate: false,
 
   projectName: null,
@@ -91,7 +93,7 @@ export default Ember.Component.extend({
     this.addObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
     this.addObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
 
-    get(this, 'editEntry')(entry);
+    entry.startEdit();
 
     Ember.run.scheduleOnce('afterRender', this, function() {
       if (selector) { this.$(selector).focus(); }
@@ -101,8 +103,13 @@ export default Ember.Component.extend({
 
   _closeEdit() {
     const entry = get(this, 'entry');
-    get(this, 'stopEditEntry')(entry);
-    set(this, 'isEditingDate', false);
+    entry.stopEdit();
+    entry.one('didUpdate', this, this._didUpdateEntry);
+
+    setProperties(this, {
+      changedAttributes: entry.changedAttributes(),
+      isEditingDate: false
+    });
 
     this.removeObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
     this.removeObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
@@ -139,6 +146,12 @@ export default Ember.Component.extend({
     });
   },
 
+  _didUpdateEntry() {
+    const entry = get(this, 'entry');
+    const changedAttributes = get(this, 'changedAttributes');
+    get(this, 'didUpdateEntry')(entry, changedAttributes);
+  },
+
   _didDeleteEntry() {
     const entry = get(this, 'entry');
     get(this, 'didDeleteEntry')(entry);
@@ -154,7 +167,8 @@ export default Ember.Component.extend({
     },
     revertEditEntry() {
       const entry = get(this, 'entry');
-      get(this, 'revertEditEntry')(entry);
+      entry.cancelEdit();
+      entry.off('didUpdate', this, this._didUpdateEntry);
     },
 
     /* delete */
@@ -193,7 +207,7 @@ export default Ember.Component.extend({
     selectProject(project) {
       const entry = get(this, 'entry');
       get(this, 'selectProject')(entry, project);
-      get(this, 'stopEditEntry')(entry);
+      this._closeEdit();
     },
 
     /* date */

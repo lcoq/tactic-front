@@ -1,37 +1,11 @@
 import Ember from 'ember';
 
-const { get, set, setProperties } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Controller.extend({
   currentWeek: Ember.inject.service(),
 
   newEntry: null,
-
-  saveEntry(entry) {
-    set(entry, 'saveTimer', null);
-    const changedAttributes = Object.keys(entry.changedAttributes());
-    const dateChanged = changedAttributes.includes('startedAt') || changedAttributes.includes('stoppedAt');
-    return entry.save().then(() => {
-      get(this, 'currentWeek').reload();
-      if (dateChanged) { get(this, 'model').updateEntry(entry); }
-    });
-  },
-
-  cancelSaveEntry(entry) {
-    this._clearTimer(entry, 'saveTimer');
-  },
-
-  cancelDeleteEntry(entry) {
-    this._clearTimer(entry, 'deleteTimer');
-  },
-
-  _clearTimer(object, propertyName) {
-    const timer = get(object, propertyName);
-    if (timer) {
-      Ember.run.cancel(timer);
-      set(object, propertyName, null);
-    }
-  },
 
   actions: {
 
@@ -55,27 +29,11 @@ export default Ember.Controller.extend({
 
     /* edit */
 
-    editEntry(entry) {
-      this.cancelDeleteEntry(entry);
-      this.cancelSaveEntry(entry);
-      set(entry, 'isEditing', true);
-    },
-
-    revertEditEntry(entry) {
-      this.cancelSaveEntry(entry);
-      entry.rollbackAttributes();
-      entry.rollbackProject();
-    },
-
-    stopEditEntry(entry) {
-      const timer = Ember.run.later(this, function() {
-        this.saveEntry(entry);
-      }, 3000);
-
-      setProperties(entry, {
-        saveTimer: timer,
-        isEditing: false
-      });
+    didUpdateEntry(entry, changedAttributes) {
+      get(this, 'currentWeek').reload();
+      if (changedAttributes.startedAt || changedAttributes.stoppedAt) {
+        get(this, 'model').updateEntry(entry);
+      }
     },
 
     /* projects */
