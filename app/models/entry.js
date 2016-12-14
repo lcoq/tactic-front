@@ -29,9 +29,41 @@ export default DS.Model.extend({
   saveTimer: null,
   isPending: Ember.computed.bool('saveTimer'),
 
-  /* update */
+  saveEntry() {
+    set(this, 'saveTimer', null);
+    return this.save();
+  },
+
+  markForSave() {
+    const timer = Ember.run.later(this, this.saveEntry, 3000);
+    setProperties(this, { saveTimer: timer, isEditing: false });
+  },
+
+  clearMarkForSave() {
+    this._clearTimer('saveTimer');
+  },
+
+  /* edit */
 
   isEditing: false,
+
+  startEdit() {
+    this.clearMarkForDelete();
+    this.clearMarkForSave();
+    set(this, 'isEditing', true);
+  },
+
+  stopEdit() {
+    this.markForSave();
+  },
+
+  cancelEdit() {
+    this.clearMarkForSave();
+    this.rollbackAttributes();
+    this._rollbackProject();
+  },
+
+  /* update */
 
   updateToDate(date) {
     const startedAt = moment(get(this, 'startedAt'));
@@ -55,17 +87,31 @@ export default DS.Model.extend({
   deleteTimer: null,
   isDeleting: Ember.computed.bool('deleteTimer'),
 
+  markForDelete() {
+    const timer = Ember.run.later(this, this.deleteEntry, 3000);
+    setProperties(this, { deleteTimer: timer, isEditing: false });
+  },
+
+  clearMarkForDelete() {
+    this._clearTimer('deleteTimer');
+  },
+
+  deleteEntry() {
+    set(this, 'deleteTimer', null);
+    return this.destroyRecord();
+  },
+
   /* rollback */
 
   initialProject: null,
 
+  _rollbackProject() {
+    set(this, 'project', get(this, 'initialProject'));
+  },
+
   updateInitialProject: Ember.on('didLoad', 'didUpdate', function() {
     set(this, 'initialProject', get(this, 'project'));
   }),
-
-  rollbackProject() {
-    set(this, 'project', get(this, 'initialProject'));
-  },
 
   /* start & stop */
 
@@ -96,5 +142,14 @@ export default DS.Model.extend({
       const timer = Ember.run.later(this, this._updateDurationAndRestartTimer, 500);
       set(this, 'durationTimer', timer);
     }
-  }
+  },
+
+
+  _clearTimer(propertyName) {
+    const timer = get(this, propertyName);
+    if (timer) {
+      Ember.run.cancel(timer);
+      set(this, propertyName, null);
+    }
+  },
 });
