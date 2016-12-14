@@ -5,6 +5,8 @@ import moment from 'moment';
 const { get, set } = Ember;
 
 export default Ember.Controller.extend({
+  currentWeek: Ember.inject.service(),
+
   entries: Ember.computed('selectedUsers.@each.id', 'selectedProjects.@each.id', 'since', 'before', function() {
     return get(this, 'store').query('entry', {
       filter: {
@@ -106,6 +108,19 @@ export default Ember.Controller.extend({
         set(this, 'before', date);
         Ember.$('.js-before-datepicker').hide().datepicker('destroy');
       });
+    },
+
+    searchProjects(query) {
+      if (Ember.isEmpty(query)) { return Ember.RSVP.resolve(); }
+      return get(this, 'store').query('project', { filter: { query: query } });
+    },
+
+    didUpdateEntry() {
+      get(this, 'currentWeek').reload();
+    },
+
+    didDeleteEntry() {
+      get(this, 'currentWeek').reload();
     }
   }
 });
