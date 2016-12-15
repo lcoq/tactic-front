@@ -6,6 +6,10 @@ const { get, set, setProperties } = Ember;
 export default DS.Model.extend({
   name: DS.attr(),
 
+  /* invalid */
+
+  isInvalid: false,
+
   /* save */
 
   saveTimer: null,

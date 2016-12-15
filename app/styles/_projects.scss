@@ -18,6 +18,14 @@
   }
 }
 
+.project.invalid {
+  background-color: $clr9;
+
+  .project-actions {
+    display: flex;
+  }
+}
+
 .project.deleting {
   background-color: $clr9;
 
@@ -58,6 +66,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.project-action-invalid-img {
+  width: 16px;
+  height: 16px;
 }
 
 .project-action-delete-img {

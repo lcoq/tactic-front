@@ -1,5 +1,9 @@
 <div class="project-actions">
-  {{#if project.isDeleting}}
+  {{#if project.isInvalid}}
+    <a {{action "editProject"}} class="project-action project-action-edit touch">
+      <img class="project-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
+    </a>
+  {{else if project.isDeleting}}
     <a {{action "cancelDeleteProject"}} class="project-action project-action-revert touch">
       <img class="project-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
@@ -13,9 +17,9 @@
     </a>
   {{/if}}
 </div>
-<div {{action "editProject"}} class="project-name touch">
+<div {{action "editProject"}} class="project-name it-project-name touch">
   {{#if project.isEditing}}
-    {{input value=project.name class="project-edit-name text-input js-project-edit-name" selectOnFocus=true enter="clearFocus"}}
+    {{input value=project.name class="project-edit-name text-input js-project-edit-name it-project-edit-name" selectOnFocus=true enter="clearFocus"}}
   {{else}}
     {{project.name}}
   {{/if}}

@@ -2,9 +2,18 @@
   <h1 class="project-list-title">Projects</h1>
   <ul class="project-list">
     {{#each model as |project|}}
-      {{show-project project=project}}
+      {{show-project
+        project=project
+
+        startEdit=(action "startEdit")
+        stopEdit=(action "stopEdit")
+        cancelEdit=(action "cancelEdit")
+
+        markForDelete=(action "markForDelete")
+        didDeleteProject=(action "didDeleteProject")
+      }}
     {{/each}}
-    <li class="project project-create it-project touch">
+    <li {{action "buildProject"}} class="project project-create it-project it-project-create touch">
       <span class="project-create-plus">+</span>
       Create new
     </li>

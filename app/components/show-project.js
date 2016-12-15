@@ -9,16 +9,36 @@ function elementIsOrIsIn($element, $container) {
 export default Ember.Component.extend({
   tagName: 'li',
   classNames: ['project', 'it-project'],
-  classNameBindings: ['project.isEditing:editing', 'project.isDeleting:deleting', 'project.isPending:pending'],
+  classNameBindings: [
+    'project.isEditing:editing',
+    'project.isDeleting:deleting',
+    'project.isPending:pending',
+    'project.isInvalid:invalid'
+  ],
 
   project: null,
+
+  didInsertElement() {
+    this._super(...arguments);
+    if (get(this, 'project.isEditing')) {
+      this._onStartEdit();
+    }
+  },
 
   _didUpdateProject() {
     /* send action to controller */
   },
 
   _didDeleteProject() {
-    /* send action to controller */
+    const project = get(this, 'project');
+    get(this, 'didDeleteProject')(project);
+  },
+
+  _onStartEdit() {
+    Ember.run.scheduleOnce('afterRender', this, function() {
+      this.$('.js-project-edit-name').focus();
+      this._watchFocusOut();
+    });
   },
 
   _watchFocusOut() {
@@ -46,21 +66,19 @@ export default Ember.Component.extend({
     /* edit */
 
     editProject() {
-      get(this, 'project').startEdit();
-      Ember.run.scheduleOnce('afterRender', this, function() {
-        this.$('.js-project-edit-name').focus();
-      this._watchFocusOut();
-      });
+      const project = get(this, 'project');
+      get(this, 'startEdit')(project);
+      this._onStartEdit();
     },
     stopEditProject() {
       const project = get(this, 'project');
-      project.stopEdit();
+      get(this, 'stopEdit')(project);
       project.one('didUpdate', this, this._didUpdateProject);
       this._unwatchFocusOut();
     },
     revertEditProject() {
       const project = get(this, 'project');
-      project.cancelEdit();
+      get(this, 'cancelEdit')(project);
       project.off('didUpdate', this, this._didUpdateProject);
     },
 
@@ -68,7 +86,7 @@ export default Ember.Component.extend({
 
     markProjectForDelete() {
       const project = get(this, 'project');
-      project.markForDelete();
+      get(this, 'markForDelete')(project);
       project.one('didDelete', this, this._didDeleteProject);
     },
     cancelDeleteProject() {

@@ -12,7 +12,9 @@ export default Ember.Route.extend({
   },
 
   model() {
-    return get(this, 'store').findAll('project');
+    return get(this, 'store').query('project', {}).then((projects) => {
+      return projects.toArray();
+    });
   },
 
   actions: {

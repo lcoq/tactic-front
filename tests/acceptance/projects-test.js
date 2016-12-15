@@ -70,3 +70,24 @@ test('GET projects and display them when a valid session token is stored in cook
     assert.equal(find('.it-project').length, 4, 'should show 4 projects (3 projects + 1 "Create")');
   });
 });
+
+test('create a project', function(assert) {
+  document.cookie = "token=session-token; path=/";
+
+  const getSessionData = { type: 'sessions', id: '1', attributes: { token: 'session-token', name: 'louis' } };
+  server.get(url('sessions'), function() { return [ 200, {}, { data: getSessionData }]; });
+
+  server.get(url('entries'), function() { return [ 200, {}, { data: [] }]; });
+  server.get(url('projects'), function() { return [ 200, {}, { data: [] }]; });
+
+  const postProjectData = { type: 'projects', id: '99', attributes: { name: 'Toctoc' } };
+  const postProject = server.post(url('projects'), function() { return [ 200, {}, { data: postProjectData }]; });
+
+  visit('/projects');
+  click('.it-project-create');
+  // #click seems to remove the focus on the element which stops the project name edit
+
+  andThen(function() {
+    assert.equal(postProject.numberOfCalls, 1, 'should POST projects');
+  });
+});
