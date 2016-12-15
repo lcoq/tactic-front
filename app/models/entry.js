@@ -110,7 +110,10 @@ export default DS.Model.extend({
   },
 
   updateInitialProject: Ember.on('didLoad', 'didUpdate', function() {
-    set(this, 'initialProject', get(this, 'project'));
+    const project = get(this, 'project');
+    project.then(() => {
+      set(this, 'initialProject', get(this, 'project'));
+    });
   }),
 
   /* start & stop */
