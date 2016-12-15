@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { get, set, setProperties } = Ember;
+const { get } = Ember;
 
 export default Ember.Controller.extend({
 
@@ -12,30 +12,20 @@ export default Ember.Controller.extend({
 
     buildProject() {
       const newProject = get(this, 'store').createRecord('project');
-      newProject.startEdit();
+      newProject.edit();
       get(this, 'model').pushObject(newProject);
     },
 
     /* edit */
 
     startEdit(project) {
-      if (get(project, 'isInvalid')) {
-        set(project, 'isInvalid', false);
-      }
-      project.startEdit();
+      project.edit();
     },
     stopEdit(project) {
-      if (Ember.isEmpty(get(project, 'name'))) {
-        setProperties(project, {
-          isEditing: false,
-          isInvalid: true
-        });
-      } else {
-        project.stopEdit();
-      }
+      project.markForSave();
     },
     cancelEdit(project) {
-      project.cancelEdit();
+      project.clear();
       if (get(project, 'isDeleted')) {
         this._removeProject(project);
       }
@@ -44,11 +34,10 @@ export default Ember.Controller.extend({
     /* delete */
 
     markForDelete(project) {
-      if (get(project, 'isNew')) {
-        this.send('cancelEdit', project);
-      } else {
-        project.markForDelete();
-      }
+      project.markForDelete();
+    },
+    clearMarkForDelete(project) {
+      project.clear();
     },
     didDeleteProject(project) {
       this._removeProject(project);

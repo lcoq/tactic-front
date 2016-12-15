@@ -1,78 +1,46 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import ProjectStateManager from './project-state-manager';
 
-const { get, set, setProperties } = Ember;
+const { get, set } = Ember;
 
 export default DS.Model.extend({
   name: DS.attr(),
 
-  /* invalid */
+  _stateManager: null,
+  isClear: Ember.computed.reads('_stateManager.isClear'),
+  isEditing: Ember.computed.reads('_stateManager.isEditing'),
+  isInvalid: Ember.computed.reads('_stateManager.isInvalid'),
+  isPendingSave: Ember.computed.reads('_stateManager.isPendingSave'),
+  isPendingDelete: Ember.computed.reads('_stateManager.isPendingDelete'),
 
-  isInvalid: false,
+  init() {
+    this._super(...arguments);
+    set(this, '_stateManager', ProjectStateManager.create({ project: this }));
+  },
 
-  /* save */
+  edit() {
+    get(this, '_stateManager').send('edit');
+  },
 
-  saveTimer: null,
-  isPending: Ember.computed.bool('saveTimer'),
+  markForDelete() {
+    get(this, '_stateManager').send('markForDelete');
+  },
 
-  saveProject() {
-    set(this, 'saveTimer', null);
-    return this.save();
+  forceDelete() {
+    return get(this, '_stateManager').send('forceDelete');
   },
 
   markForSave() {
-    const timer = Ember.run.later(this, this.saveProject, 3000);
-    setProperties(this, { saveTimer: timer, isEditing: false });
+    get(this, '_stateManager').send('markForSave');
   },
 
-  clearMarkForSave() {
-    this._clearTimer('saveTimer');
+  forceSave() {
+    return get(this, '_stateManager').send('forceSave');
   },
 
-  /* edit */
-
-  isEditing: false,
-
-  startEdit() {
-    this.clearMarkForSave();
-    set(this, 'isEditing', true);
-  },
-
-  stopEdit() {
-    this.markForSave();
-  },
-
-  cancelEdit() {
-    this.clearMarkForSave();
-    this.rollbackAttributes();
-  },
-
-  /* delete */
-
-  deleteTimer: null,
-  isDeleting: Ember.computed.bool('deleteTimer'),
-
-  markForDelete() {
-    const timer = Ember.run.later(this, this.deleteProject, 3000);
-    setProperties(this, { deleteTimer: timer, isEditing: false });
-  },
-
-  clearMarkForDelete() {
-    this._clearTimer('deleteTimer');
-  },
-
-  deleteProject() {
-    set(this, 'deleteTimer', null);
-    return this.destroyRecord();
-  },
-
-
-
-  _clearTimer(propertyName) {
-    const timer = get(this, propertyName);
-    if (timer) {
-      Ember.run.cancel(timer);
-      set(this, propertyName, null);
-    }
+  clear() {
+    get(this, '_stateManager').send('clear');
   }
+
 });

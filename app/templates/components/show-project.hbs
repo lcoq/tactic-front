@@ -3,15 +3,18 @@
     <a {{action "editProject"}} class="project-action project-action-edit touch">
       <img class="project-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
     </a>
-  {{else if project.isDeleting}}
+  {{/if}}
+  {{#if project.isPendingDelete}}
     <a {{action "cancelDeleteProject"}} class="project-action project-action-revert touch">
       <img class="project-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
-  {{else if project.isPending}}
+  {{/if}}
+  {{#if isInvalidOrPendingSave}}
     <a {{action "revertEditProject"}} class="project-action project-action-revert touch">
       <img class="project-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
-  {{else}}
+  {{/if}}
+  {{#if project.isClear}}
     <a {{action "markProjectForDelete" bubbles=false}} class="project-action project-action-delete touch it-project-action-delete">
       <img class="project-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>

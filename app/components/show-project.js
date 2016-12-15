@@ -11,12 +11,14 @@ export default Ember.Component.extend({
   classNames: ['project', 'it-project'],
   classNameBindings: [
     'project.isEditing:editing',
-    'project.isDeleting:deleting',
-    'project.isPending:pending',
+    'project.isPendingDelete:deleting',
+    'project.isPendingSave:pending',
     'project.isInvalid:invalid'
   ],
 
   project: null,
+
+  isInvalidOrPendingSave: Ember.computed.or('project.isInvalid', 'project.isPendingSave'),
 
   didInsertElement() {
     this._super(...arguments);
@@ -67,6 +69,7 @@ export default Ember.Component.extend({
 
     editProject() {
       const project = get(this, 'project');
+      if (get(project, 'isEditing')) { return; }
       get(this, 'startEdit')(project);
       this._onStartEdit();
     },
@@ -91,7 +94,7 @@ export default Ember.Component.extend({
     },
     cancelDeleteProject() {
       const project = get(this, 'project');
-      project.clearMarkForDelete();
+      get(this, 'clearMarkForDelete')(project);
       project.off('didDelete', this, this._didDeleteProject);
     }
   }
