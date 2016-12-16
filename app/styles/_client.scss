@@ -1,0 +1,92 @@
+.client {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: $clr3;
+  padding: $sp-xs $sp-sm;
+  min-width: $btn-size-sm;
+  min-height: $btn-size-sm;
+}
+
+.client:hover, .client.invalid, .client.deleting, .client.pending, .client.editing {
+  .client-actions {
+    display: flex;
+  }
+}
+
+.client:hover {
+  background-color: $clr7;
+}
+
+.client.frozen:hover {
+  background-color: $clr3;
+}
+
+.client.invalid {
+  background-color: $clr9;
+}
+
+.client.deleting {
+  background-color: $clr16;
+}
+
+.client.pending {
+  background-color: $clr11;
+}
+
+.client.editing {
+  background-color: $clr10;
+  border-bottom: 2px solid $clr3;
+
+  &:hover {
+    background-color: $clr10;
+  }
+}
+
+.client-actions {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+}
+
+.client-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.client-action-invalid-img {
+  width: 16px;
+  height: 16px;
+}
+
+.client-action-delete-img {
+  width: 16px;
+  height: 16px;
+}
+
+.client-action-cancel-img {
+  width: 16px;
+  height: 16px;
+}
+
+.client-title {
+  display: flex;
+  align-items: center;
+  color: $clr4;
+  font-size: $fs-lg;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.client-create-plus {
+  font-weight: bold;
+  font-size: $fs-xl;
+  margin-right: $sp-xs;
+}
+
+.client-create-plus-txt {
+  font-style: italic;
+}

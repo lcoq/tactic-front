@@ -8,6 +8,12 @@ a {
   min-height: $btn-size;
 }
 
+.touch-sm {
+  cursor: pointer;
+  min-width: $btn-size-sm;
+  min-height: $btn-size-sm;
+}
+
 .text-input {
   min-width: $btn-size;
   min-height: $btn-size;

@@ -14,7 +14,7 @@
       <img class="project-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
   {{/if}}
-  {{#if project.isClear}}
+  {{#if isClearAndDeleteIsEnabled}}
     <a {{action "markProjectForDelete" bubbles=false}} class="project-action project-action-delete touch it-project-action-delete">
       <img class="project-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>

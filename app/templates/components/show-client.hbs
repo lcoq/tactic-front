@@ -1,0 +1,36 @@
+<div class="client-actions">
+  {{#if client.isInvalid}}
+    <a {{action "startEdit" bubbles=false}} class="client-action client-action-edit touch">
+      <img class="client-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
+    </a>
+  {{/if}}
+  {{#if client.isPendingDelete}}
+    <a {{action "cancelDelete" bubbles=false}} class="client-action client-action-revert touch">
+      <img class="client-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
+    </a>
+  {{/if}}
+  {{#if isInvalidOrPendingSave}}
+    <a {{action "revertEdit" bubbles=false}} class="client-action client-action-revert touch">
+      <img class="client-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
+    </a>
+  {{/if}}
+  {{#if client.isClear}}
+    <a {{action "markForDelete" bubbles=false}} class="client-action client-action-delete touch">
+      <img class="client-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
+    </a>
+  {{/if}}
+</div>
+<h2 class="client-title">
+  {{#if client.isEditing}}
+    {{input value=client.name class="client-edit-name text-input js-client-edit-name " selectOnFocus=true enter="clearFocus"}}
+  {{else}}
+    {{client.name}}
+  {{/if}}
+  {{#if client.errors.name}}
+    <ul class="input-error-message-list">
+      {{#each client.errors.name as |error|}}
+        <li class="input-error-message">{{error.message}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+</h2>

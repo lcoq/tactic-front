@@ -1,22 +1,47 @@
-<section class="project-list-container">
-  <h1 class="project-list-title">Projects</h1>
-  <ul class="project-list">
-    {{#each model as |project|}}
-      {{show-project
-        project=project
+<section class="project-group-list-container">
+  <h1 class="project-group-list-title">Projects</h1>
+  {{#each model.groups as |group|}}
+    <section class="project-group {{if group.client.isPendingDelete "deleting"}}">
+      {{show-client
+        client=group.client
 
-        startEdit=(action "startEdit")
-        stopEdit=(action "stopEdit")
-        cancelEdit=(action "cancelEdit")
+        startEdit=(action "startEditClient")
+        stopEdit=(action "stopEditClient")
+        cancelEdit=(action "cancelEditClient")
 
-        markForDelete=(action "markForDelete")
-        clearMarkForDelete=(action "clearMarkForDelete")
-        didDeleteProject=(action "didDeleteProject")
+        markForDelete=(action "markClientForDelete")
+        clearMarkForDelete=(action "clearMarkClientForDelete")
+        didDelete=(action "didDeleteClient")
       }}
-    {{/each}}
-    <li {{action "buildProject"}} class="project project-create it-project it-project-create touch">
-      <span class="project-create-plus">+</span>
-      Create new
-    </li>
-  </ul>
+      <ul class="project-group-item-list">
+        {{#each group.projects as |project|}}
+          {{show-project
+            project=project
+
+            deleteIsDisabled=group.client.isPendingDelete
+
+            startEdit=(action "startEditProject")
+            stopEdit=(action "stopEditProject")
+            cancelEdit=(action "cancelEditProject")
+
+            markForDelete=(action "markProjectForDelete")
+            clearMarkForDelete=(action "clearMarkProjectForDelete")
+            didDeleteProject=(action "didDeleteProject")
+          }}
+        {{/each}}
+        <li {{action "buildProject" group.client}} class="project project-create it-project it-project-create touch">
+          <span class="project-create-plus">+</span>
+          Create new project
+        </li>
+      </ul>
+    </section>
+  {{/each}}
+  <section class="project-group project-group-create">
+    <header {{action "buildClient"}} class="client touch-sm it-client">
+      <h2 class="client-title">
+        <span class="client-create-plus">+</span>
+        <span class="client-create-plus-txt">Create new client</span>
+      </h2>
+    </header>
+  </section>
 </section>

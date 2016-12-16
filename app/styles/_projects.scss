@@ -1,7 +1,11 @@
-.project-list-title {
+.project-group-list-title {
   font-size: $fs-xxl;
   font-weight: bold;
   padding: $sp 0;
+}
+
+.project-group.deleting {
+  background-color: $clr9;
 }
 
 .project {
@@ -10,36 +14,26 @@
   line-height: $btn-size;
 }
 
-.project:hover {
-  background-color: $clr7;
-
+.project:hover, .project.invalid, .project.deleting, .project.pending, .project.editing {
   .project-actions {
     display: flex;
   }
+}
+
+.project:hover {
+  background-color: $clr7;
 }
 
 .project.invalid {
   background-color: $clr9;
-
-  .project-actions {
-    display: flex;
-  }
 }
 
 .project.deleting {
   background-color: $clr9;
-
-  .project-actions {
-    display: flex;
-  }
 }
 
 .project.pending {
   background-color: $clr11;
-
-  .project-actions {
-    display: flex;
-  }
 }
 
 .project.editing {
@@ -47,10 +41,6 @@
 
   &:hover {
     background-color: $clr10;
-  }
-
-  .project-actions {
-    display: flex;
   }
 }
 

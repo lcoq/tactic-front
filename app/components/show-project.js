@@ -17,8 +17,12 @@ export default Ember.Component.extend({
   ],
 
   project: null,
+  deleteIsDisabled: false,
+
+  deleteIsEnabled: Ember.computed.not('deleteIsDisabled'),
 
   isInvalidOrPendingSave: Ember.computed.or('project.isInvalid', 'project.isPendingSave'),
+  isClearAndDeleteIsEnabled: Ember.computed.and('project.isClear', 'deleteIsEnabled'),
 
   didInsertElement() {
     this._super(...arguments);
