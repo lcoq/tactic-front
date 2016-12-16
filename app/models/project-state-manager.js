@@ -195,6 +195,9 @@ const PendingDeleteState = State.extend({
       this._cancelTimer();
       return this._delete();
     },
+    edit() {
+      this._transitionTo('editing');
+    },
     clear() {
       this._transitionTo('clear');
     }
