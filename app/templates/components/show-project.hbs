@@ -26,4 +26,11 @@
   {{else}}
     {{project.name}}
   {{/if}}
+  {{#if project.errors.name}}
+    <ul class="input-error-message-list">
+      {{#each project.errors.name as |error|}}
+        <li class="input-error-message">{{error.message}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
 </div>

@@ -51,8 +51,6 @@ export default Ember.Route.extend({
 
         Ember.RSVP.all(promises).then(function() {
           transition.retry();
-        }, () => {
-          /* a project cannot be saved */
         });
       }
     }

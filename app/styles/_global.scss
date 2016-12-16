@@ -12,3 +12,29 @@ a {
   min-width: $btn-size;
   min-height: $btn-size;
 }
+
+.input-error-message-list {
+  position: absolute;
+  left: 0;
+  margin-top: $sp-sm;
+  font-size: $fs-sm;
+  background-color: $clr15;
+  color: $clr10;
+  z-index: 1;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: - $sp-sm;
+    left: $sp-xs;
+    width: 0;
+    height: 0;
+    border-left: $sp-sm solid transparent;
+    border-right: $sp-sm solid transparent;
+    border-bottom: $sp-sm solid $clr15;
+  }
+}
+
+.input-error-message {
+  padding: 0 $sp-sm;
+}

@@ -158,7 +158,12 @@ const PendingSaveState = State.extend({
 
   _save() {
     set(this, 'saveTimer', null);
-    return this.project.save().then(() => { this.send('clear'); });
+    return this.project.save().then(() => {
+      this.send('clear');
+    }, () => {
+      this._transitionTo('invalid');
+      return Ember.RSVP.reject();
+    });
   },
 
   _cancelTimer() {
