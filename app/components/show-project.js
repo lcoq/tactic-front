@@ -27,16 +27,14 @@ export default Ember.Component.extend({
     }
   },
 
-  _didUpdateProject() {
-    /* send action to controller */
-  },
-
   _didDeleteProject() {
     const project = get(this, 'project');
     get(this, 'didDeleteProject')(project);
   },
 
   _onStartEdit() {
+    get(this, 'project').off('didDelete', this, this._didDeleteProject);
+
     Ember.run.scheduleOnce('afterRender', this, function() {
       this.$('.js-project-edit-name').focus();
       this._watchFocusOut();
@@ -76,13 +74,11 @@ export default Ember.Component.extend({
     stopEditProject() {
       const project = get(this, 'project');
       get(this, 'stopEdit')(project);
-      project.one('didUpdate', this, this._didUpdateProject);
       this._unwatchFocusOut();
     },
     revertEditProject() {
       const project = get(this, 'project');
       get(this, 'cancelEdit')(project);
-      project.off('didUpdate', this, this._didUpdateProject);
     },
 
     /* delete */
