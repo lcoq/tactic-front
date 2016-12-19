@@ -19,6 +19,7 @@ export default Ember.Component.extend({
 
     didDeleteEntry(entry) {
       get(this, 'list').removeEntry(entry);
+      get(this, 'didDeleteEntry')(entry);
     }
   }
 });
