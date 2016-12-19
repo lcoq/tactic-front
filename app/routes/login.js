@@ -4,6 +4,6 @@ const { get } = Ember;
 
 export default Ember.Route.extend({
   model() {
-    return get(this, 'store').findAll('user');
+    return get(this, 'store').query('user', {});
   }
 });
