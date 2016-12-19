@@ -15,11 +15,11 @@ export default Ember.Component.extend({
   before: null,
 
   selectedUsersCheckboxes: Ember.computed('users', function() {
-    return this._createCheckboxes(get(this, 'users'));
+    return this._createCheckboxes(get(this, 'users'), get(this, 'selectedUsers'));
   }),
 
   selectedProjectsCheckboxes: Ember.computed('projects', function() {
-    return this._createCheckboxes(get(this, 'projects'));
+    return this._createCheckboxes(get(this, 'projects'), get(this, 'selectedProjects'));
   }),
 
   _updateSelectedUsersOnMouseLeave() {
@@ -40,10 +40,12 @@ export default Ember.Component.extend({
     });
   },
 
-  _createCheckboxes(collection) {
+  _createCheckboxes(collection, selectedItems) {
     const checkboxes = Ember.Object.create();
+    let isChecked;
     collection.forEach(function(item) {
-      set(checkboxes, get(item, 'id'), true);
+      isChecked = selectedItems.includes(item);
+      set(checkboxes, get(item, 'id'), isChecked);
     });
     return checkboxes;
   },
