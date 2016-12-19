@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-const { get, set } = Ember;
+const { get, set, setProperties } = Ember;
 
 export default Ember.Component.extend({
   tagName: 'section',
@@ -105,13 +105,21 @@ export default Ember.Component.extend({
     },
     changeSinceDate() {
       this._initDatePicker('.js-since-datepicker', get(this, 'since'), (date) => {
-        set(this, 'since', date);
+        const properties = { since: date };
+        if (moment(date).isAfter(get(this, 'before'))) {
+          properties.before = date;
+        }
+        setProperties(this, properties);
         this.$('.js-since-datepicker').hide().datepicker('destroy');
       });
     },
     changeBeforeDate() {
       this._initDatePicker('.js-before-datepicker', get(this, 'before'), (date) => {
-        set(this, 'before', date);
+        const properties = { before: date };
+        if (moment(date).isBefore(get(this, 'since'))) {
+          properties.since = date;
+        }
+        setProperties(this, properties);
         this.$('.js-before-datepicker').hide().datepicker('destroy');
       });
     }
