@@ -44,7 +44,7 @@ export default Ember.Component.extend({
     const checkboxes = Ember.Object.create();
     let isChecked;
     collection.forEach(function(item) {
-      isChecked = selectedItems.includes(item);
+      isChecked = selectedItems.find(function(i) { return get(i, 'id') === get(item, 'id'); });
       set(checkboxes, get(item, 'id'), isChecked);
     });
     return checkboxes;
