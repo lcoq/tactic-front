@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import EntryGroupByDayList from '../models/entry-group-by-day-list';
+import EntryGroupByClientAndProjectList from '../models/entry-group-by-client-and-project-list';
 import moment from 'moment';
 
 const { get } = Ember;
@@ -18,9 +18,9 @@ export default Ember.Controller.extend({
     });
   }),
 
-  entriesByDay: Ember.computed('entries.[]', function() {
+  entriesByClientAndProject: Ember.computed('entries.[]', function() {
     const entries = get(this, 'entries');
-    return EntryGroupByDayList.create({ entries: entries.toArray() });
+    return EntryGroupByClientAndProjectList.create({ entries: entries.toArray() });
   }),
 
   selectedUsers: Ember.computed('model.users', function() {

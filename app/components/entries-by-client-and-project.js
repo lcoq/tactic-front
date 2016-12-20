@@ -4,7 +4,7 @@ const { get } = Ember;
 
 export default Ember.Component.extend({
   tagName: 'section',
-  classNames: ['entry-group-list'],
+  classNames: ['entry-root-group-list'],
 
   list: null,
 
@@ -12,12 +12,16 @@ export default Ember.Component.extend({
 
     didUpdateEntry(entry) {
       get(this, 'list').updateEntry(entry);
-      get(this, 'didUpdateEntry')(entry);
+      get(this, 'didUpdateEntry')(...arguments);
     },
 
     didDeleteEntry(entry) {
       get(this, 'list').removeEntry(entry);
-      get(this, 'didDeleteEntry')(entry);
+      get(this, 'didDeleteEntry')(...arguments);
+    },
+
+    searchProjects() {
+      return get(this, 'searchProjects')(...arguments);
     }
   }
 });

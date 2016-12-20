@@ -19,7 +19,8 @@ export default Ember.Route.extend({
 
     return Ember.RSVP.hash({
       users: get(this, 'store').query('user', {}),
-      projects: projectsPromise
+      projects: projectsPromise,
+      clients: get(this, 'store').query('client', {})
     });
   }
 });

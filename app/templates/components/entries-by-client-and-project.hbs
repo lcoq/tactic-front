@@ -1,0 +1,14 @@
+{{#each list.groups as |group|}}
+  <section class="entry-root-group">
+    <header class="entry-root-group-header">
+      <h2 class="entry-root-group-header-title">{{if group.client.name group.client.name "No client"}}</h2>
+      <div class="entry-root-group-header-duration">{{format-duration group.durationInSeconds}}</div>
+    </header>
+    {{entries-by-project
+      list=group
+      didDeleteEntry=(action "didDeleteEntry")
+      didUpdateEntry=(action "didUpdateEntry")
+      searchProjects=(action "searchProjects")
+    }}
+  </section>
+{{/each}}

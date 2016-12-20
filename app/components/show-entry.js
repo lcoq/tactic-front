@@ -18,8 +18,6 @@ export default Ember.Component.extend({
   classNameBindings: ['entry.isEditing:editing', 'entry.isDeleting:deleting', 'entry.isPending:pending'],
   entry: null,
 
-  changedAttributes: null,
-
   isEditingDate: false,
 
   projectName: null,
@@ -107,10 +105,7 @@ export default Ember.Component.extend({
     entry.stopEdit();
     entry.one('didUpdate', this, this._didUpdateEntry);
 
-    setProperties(this, {
-      changedAttributes: entry.changedAttributes(),
-      isEditingDate: false
-    });
+    set(this, 'isEditingDate', false);
 
     this.$('.js-datepicker').datepicker('destroy');
 
@@ -151,8 +146,7 @@ export default Ember.Component.extend({
 
   _didUpdateEntry() {
     const entry = get(this, 'entry');
-    const changedAttributes = get(this, 'changedAttributes');
-    get(this, 'didUpdateEntry')(entry, changedAttributes);
+    get(this, 'didUpdateEntry')(entry);
   },
 
   _didDeleteEntry() {
