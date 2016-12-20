@@ -8,7 +8,7 @@
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
   {{else}}
-    <a {{action "markEntryForDelete" bubbles=false}} class="entry-action entry-action-delete touch it-entry-action-delete">
+    <a {{action "markEntryForDelete"}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>
     <a {{action "changeEntryDate"}} class="entry-action entry-action-delete touch it-entry-action-delete">
@@ -18,54 +18,69 @@
 </div>
 <div class="entry-content">
   {{#if isEditingDate}}<div class="entry-edit-date js-datepicker" />{{/if}}
-  <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
-    {{#if entry.isEditing}}
+
+  {{#if entry.isEditing}}
+    <div class="entry-title touch it-entry-title">
       {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus" selectOnFocus=true}}
-    {{else}}
+    </div>
+  {{else}}
+    <div {{action "editEntry" ".js-entry-edit-title"}} class="entry-title touch it-entry-title">
       {{#if entry.title}}
         {{entry.title}}
       {{else}}
         <span class="entry-title-no-title">No title</span>
       {{/if}}
-    {{/if}}
-  </div>
-  <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
-    {{#if entry.isEditing}}
+    </div>
+  {{/if}}
+
+  {{#if entry.isEditing}}
+    <div class="entry-project touch it-entry-project">
       {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearProjectIfEmpty" selectOnFocus=true key-up="projectNameChanged"}}
       {{#if projectChoices}}
         <ul class="entry-edit-project-choices">
           {{#each projectChoices as |project|}}
-            <li {{action "selectProject" project bubbles=false}} class="entry-edit-project-choice touch">{{project.name}}</li>
+            <li {{action "selectProject" project}} class="entry-edit-project-choice touch">{{project.name}}</li>
           {{/each}}
         </ul>
       {{/if}}
-    {{else}}
+    </div>
+  {{else}}
+    <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
       {{#if entry.project}}
         {{entry.project.name}}
       {{else}}
         <span class="entry-project-no-project">No project</span>
       {{/if}}
-    {{/if}}
-  </div>
-  <div {{action "editEntry" ".js-entry-edit-duration"}} class="entry-duration touch">
-    {{#if entry.isEditing}}
+    </div>
+  {{/if}}
+
+  {{#if entry.isEditing}}
+    <div class="entry-duration touch">
       {{input value=formattedDuration class="entry-edit-duration text-input js-entry-edit-duration" enter="clearFocus" selectOnFocus=true}}
-    {{else}}
+    </div>
+  {{else}}
+    <div {{action "editEntry" ".js-entry-edit-duration"}} class="entry-duration touch">
       {{format-duration entry.startedAt entry.stoppedAt}}
-    {{/if}}
-  </div>
-  <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch">
-    {{#if entry.isEditing}}
+    </div>
+  {{/if}}
+
+  {{#if entry.isEditing}}
+    <div class="entry-started-at touch">
       {{input value=formattedStartedAt class="entry-edit-started-at text-input js-entry-edit-started-at" enter="clearFocus" selectOnFocus=true}}
-    {{else}}
+    </div>
+  {{else}}
+    <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch">
       {{format-hour entry.startedAt}}
-    {{/if}}
-  </div>
-  <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch">
-    {{#if entry.isEditing}}
+    </div>
+  {{/if}}
+
+  {{#if entry.isEditing}}
+    <div class="entry-stopped-at touch">
       {{input value=formattedStoppedAt class="entry-edit-stopped-at text-input js-entry-edit-stopped-at" enter="clearFocus" selectOnFocus=true}}
-    {{else}}
+    </div>
+  {{else}}
+    <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch">
       {{format-hour entry.stoppedAt}}
-    {{/if}}
-  </div>
+    </div>
+  {{/if}}
 </div>

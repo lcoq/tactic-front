@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import formatDuration from '../utils/format-duration';
+import config from '../config/environment';
 
 const { get, set, setProperties } = Ember;
 
@@ -7,8 +9,37 @@ export default Ember.Component.extend({
 
   entry: null,
 
+  clock: Ember.computed(function() { return new Date(); }),
+  clockTimer: null,
+
+  entryDuration: Ember.computed('entry.startedAt', 'clock', function() {
+    const startedAt = get(this, 'entry.startedAt');
+    const clock = get(this, 'clock');
+    return formatDuration(startedAt, clock);
+  }),
+
   projectName: null,
   projectChoices: null,
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const entry = get(this, 'entry');
+
+    if (get(entry, 'isStarted')) {
+      this._updateClockAndRestartTimer();
+      get(entry, 'project').then((project) => {
+        if (project) {
+          set(this, 'projectName', get(project, 'name'));
+        }
+      });
+    }
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    Ember.run.cancel(get(this, 'clockTimer'));
+    set(this, 'clockTimer', null);
+  },
 
   _searchProjects() {
     const query = get(this, 'projectName');
@@ -17,14 +48,36 @@ export default Ember.Component.extend({
     });
   },
 
+  _updateClockAndRestartTimer() {
+    this.notifyPropertyChange('clock');
+    if (config.environment === 'test') {
+      /* see https://github.com/emberjs/ember.js/issues/3008 */
+      set(this, 'clockTimer', 12);
+    } else {
+      const timer = Ember.run.later(this, this._updateClockAndRestartTimer, 500);
+      set(this, 'clockTimer', timer);
+    }
+  },
+
   actions: {
+    startTimerOrTriggerUpdate() {
+      const entry = get(this, 'entry');
+      if (!get(entry, 'isStarted')) {
+        this.send('startTimer');
+      } else {
+        get(this, 'didUpdateEntry')();
+      }
+    },
     startTimer() {
-      get(this, 'entry').start();
+      if (get(this, 'entry.isStarted')) { return; }
+      get(this, 'startTimer')();
+      this._updateClockAndRestartTimer();
     },
     stopTimer() {
-      const entry = get(this, 'entry');
-      entry.stop();
-      entry.save().then(() => { get(this, 'didCreateEntry')(entry); });
+      Ember.run.cancel(get(this, 'clockTimer'));
+      set(this, 'clockTimer', null);
+
+      get(this, 'stopTimer')();
       setProperties(this, { projectChoices: null, projectName: null });
     },
     clearProjectIfEmpty() {
@@ -37,11 +90,11 @@ export default Ember.Component.extend({
       Ember.run.debounce(this, this._searchProjects, 500);
     },
     selectProject(project) {
-      setProperties(this, {
-        'entry.project': project,
-        projectChoices: null,
-        projectName: project ? get(project, 'name') : null
-      });
+      const entry = get(this, 'entry');
+      const projectName = project ? get(project, 'name') : null;
+      set(entry, 'project', project);
+      setProperties(this, { projectChoices: null, projectName: projectName });
+      get(this, 'didUpdateEntry')();
     },
   }
 });

@@ -3,6 +3,7 @@ import parseDuration  from '../utils/parse-duration';
 import formatDuration from '../utils/format-duration';
 import parseHour  from '../utils/parse-hour';
 import formatHour from '../utils/format-hour';
+import scheduleOnce from '../utils/schedule-once';
 import moment from 'moment';
 
 const { get, set, setProperties } = Ember;
@@ -95,7 +96,7 @@ export default Ember.Component.extend({
 
     entry.startEdit();
 
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       if (selector) { this.$(selector).focus(); }
       this._watchFocusOut();
     });
@@ -133,7 +134,7 @@ export default Ember.Component.extend({
   },
 
   _initDatePicker(selector, initialDate, onSelect) {
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       this.$(selector).datepicker({
         firstDay: 1,
         dateFormat: 'yymmdd',

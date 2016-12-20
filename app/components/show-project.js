@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import scheduleOnce from '../utils/schedule-once';
 
 const { get } = Ember;
 
@@ -39,7 +40,7 @@ export default Ember.Component.extend({
   _onStartEdit() {
     get(this, 'project').off('didDelete', this, this._didDeleteProject);
 
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       this.$('.js-project-edit-name').focus();
       this._watchFocusOut();
     });

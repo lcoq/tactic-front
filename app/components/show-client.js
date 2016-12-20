@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import scheduleOnce from '../utils/schedule-once';
 
 const { get } = Ember;
 
@@ -28,13 +29,6 @@ export default Ember.Component.extend({
     }
   },
 
-  click() {
-    const client = get(this, 'client');
-    if (!get(client, 'isFrozen') && !get(client, 'isEditing')) {
-      this.send('startEdit');
-    }
-  },
-
   _didDelete() {
     const client = get(this, 'client');
     get(this, 'didDelete')(client);
@@ -43,7 +37,7 @@ export default Ember.Component.extend({
   _onStartEdit() {
     get(this, 'client').off('didDelete', this, this._didDelete);
 
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       this.$('.js-client-edit-name').focus();
       this._watchFocusOut();
     });
@@ -75,8 +69,10 @@ export default Ember.Component.extend({
 
     startEdit() {
       const client = get(this, 'client');
-      get(this, 'startEdit')(client);
-      this._onStartEdit();
+      if (!get(client, 'isFrozen')) {
+        get(this, 'startEdit')(client);
+        this._onStartEdit();
+      }
     },
     stopEdit() {
       const client = get(this, 'client');

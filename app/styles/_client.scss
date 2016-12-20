@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   background-color: $clr3;
-  padding: $sp-xs $sp-sm;
+  padding: 0 $sp-sm;
   min-width: $btn-size-sm;
   min-height: $btn-size-sm;
 }
@@ -18,8 +18,14 @@
   background-color: $clr7;
 }
 
-.client.frozen:hover {
-  background-color: $clr3;
+.client.frozen {
+  .client-title {
+    cursor: default;
+  }
+
+  &:hover {
+    background-color: $clr3;
+  }
 }
 
 .client.invalid {
@@ -75,6 +81,7 @@
 .client-title {
   display: flex;
   align-items: center;
+  width: 100%;
   color: $clr4;
   font-size: $fs-lg;
   font-weight: bold;

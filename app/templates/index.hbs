@@ -1,12 +1,14 @@
 <section class="entry-create-container">
   {{create-entry
-    entry=newEntry
-    didCreateEntry=(action "didCreateEntry")
+    entry=model.newEntry
+    startTimer=(action "startTimer")
+    stopTimer=(action "stopTimer")
     searchProjects=(action "searchProjects")
+    didUpdateEntry=(action "didUpdateNewEntry")
   }}
 </section>
 {{entries-by-day
-  list=model
+  list=model.entryList
   didDeleteEntry=(action "didDeleteEntry")
   didUpdateEntry=(action "didUpdateEntry")
   searchProjects=(action "searchProjects")

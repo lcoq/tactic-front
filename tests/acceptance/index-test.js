@@ -1,28 +1,11 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'tactic-front/tests/helpers/module-for-acceptance';
+import Ember from 'ember';
+
 import { setupServer, teardownServer } from '../helpers/fake-server';
-import ENV from '../../config/environment';
-
-function url(path) {
-  return '/' + ENV.APP.namespace + path;
-}
-
-function logsIn(s, options) {
-  const userId = options && options.userId || '1';
-
-  const postSessionsData = [{
-    type: 'sessions', id: '1',
-    attributes: { token: 'session-token', name: 'louis' },
-    relationships: { user: { type: 'users', id: userId } }
-  }];
-  s.post(url('sessions'), function() { return [ 200, {}, { data: postSessionsData }]; });
-
-  const getUsersData = [{ type: 'users', id: userId, attributes: { name: 'louis' } }];
-  s.get(url('users'), function() { return [ 200, {}, { data: getUsersData }]; });
-
-  visit('/login');
-  click('.it-select-user');
-}
+import defineRequestStubs from '../helpers/define-request-stubs';
+import indexRouteStubs from '../helpers/index-route-stubs';
+import loginRouteStubs from '../helpers/login-route-stubs';
 
 let server;
 
@@ -38,86 +21,85 @@ moduleForAcceptance('Acceptance | index', {
 });
 
 test('redirects to login when not authenticated', function(assert) {
-  stubLoginModelRequest(server);
+  defineRequestStubs(server, loginRouteStubs());
+
   visit('/');
   andThen(function() {
     assert.equal(currentURL(), '/login', 'should redirect to login');
   });
 });
 
-test('redirects to login when a session token is stored in cookies but is invalid', function(assert) {
-  document.cookie = "token=session-token; path=/";
+test('GET sessions and redirects to login when a session token is stored in cookies but is invalid', function(assert) {
+  const stubs = defineRequestStubs(server, Ember.merge(loginRouteStubs(), {
+    getSessions: {
+      path: 'sessions',
+      match(request) { return request.requestHeaders['Authorization'] === 'session-token'; },
+      status: 403
+    }
+  }));
 
-  stubLoginModelRequest(server);
-  const getSession = server.get(url('sessions'), function(request) {
-    getSession.headers = request.requestHeaders;
-    return [ 403, {}, {} ];
-  });
+  document.cookie = "token=session-token; path=/";
 
   visit('/');
 
   andThen(function() {
-    assert.equal(getSession.numberOfCalls, 1, 'should GET session');
-    assert.equal(getSession.headers['Authorization'], 'session-token', 'should have send session token on Authorization header');
+    assert.equal(stubs.getSessions.requests.length, 1, 'should GET session');
     assert.equal(currentURL(), '/login', 'should redirect to login');
   });
 });
 
-test('GET session, GET entries?include=project and display them grouped by day when a valid session token is stored in cookies', function(assert) {
+test('GET sessions, GET entries?include=project and display them grouped by day when a valid session token is stored in cookies', function(assert) {
   document.cookie = "token=session-token; path=/";
 
-  const getSessionData = { type: 'sessions', id: '1', attributes: { token: 'session-token', name: 'louis' } };
-  const getSession = server.get(url('sessions'), function() { return [ 200, {}, { data: getSessionData }]; });
-
-  const getEntriesData = [
-    {
-      type: 'entries', id: '1',
-      attributes: {
-        title: null,
-        'started-at': "2016-11-25T13:01:11.000Z",
-        'stopped-at': "2016-11-25T13:10:11.000Z"
-      },
-      relationships: {
-        project: { data: { type: 'projects', id: '1' } }
-      }
-    },
-    {
-      type: 'entries', id: '2',
-      attributes: {
-        title: 'entry2',
-        'started-at': "2016-11-24T11:04:10.000Z",
-        'stopped-at': "2016-11-24T12:07:12.000Z"
-      }
-    },
-    {
-      type: 'entries', id: '3',
-      attributes: {
-        title: 'entry3',
-        'started-at': "2016-11-24T09:53:12.000Z",
-        'stopped-at': "2016-11-24T10:27:18.000Z"
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getEntries: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 1 && request.queryParams.include === 'project'; },
+      body: {
+        data: [
+          {
+            type: 'entries', id: '1',
+            attributes: {
+              title: null,
+              'started-at': "2016-11-25T13:01:11.000Z",
+              'stopped-at': "2016-11-25T13:10:11.000Z"
+            },
+            relationships: {
+              project: { data: { type: 'projects', id: '1' } }
+            }
+          },
+          {
+            type: 'entries', id: '2',
+            attributes: {
+              title: 'entry2',
+              'started-at': "2016-11-24T11:04:10.000Z",
+              'stopped-at': "2016-11-24T12:07:12.000Z"
+            }
+          },
+          {
+            type: 'entries', id: '3',
+            attributes: {
+              title: 'entry3',
+              'started-at': "2016-11-24T09:53:12.000Z",
+              'stopped-at': "2016-11-24T10:27:18.000Z"
+            }
+          }
+        ],
+        included: [
+          {
+            type: 'projects', id: '1',
+            attributes: { name: 'Tactic' }
+          }
+        ]
       }
     }
-  ];
-  const getEntriesIncluded = [
-    {
-      type: 'projects', id: '1',
-      attributes: { name: 'Tactic' }
-    }
-  ];
-  const getEntries = server.get(url('entries'), function(request) {
-    if (!getEntries.requests) { getEntries.requests = []; }
-    getEntries.requests.push(request);
-    return [ 200, {}, { data: getEntriesData, included: getEntriesIncluded }];
-  });
+  }));
 
   visit('/');
 
   andThen(function() {
-    assert.equal(getSession.numberOfCalls, 1, 'should GET session');
-    const getEntriesRequest = getEntries.requests.find(function(r) {
-      return Object.keys(r.queryParams).length === 1 && r.queryParams.include === 'project';
-    });
-    assert.ok(getEntriesRequest, 'should GET entries?include=project');
+    assert.equal(stubs.getSessions.requests.length, 1, 'should GET session');
+    assert.equal(stubs.getEntries.requests.length, 1, 'should GET entries?include=project');
     assert.equal(currentURL(), '/', 'should stay on index');
 
     const $entryGroups = find('.it-entry-group');
@@ -137,69 +119,116 @@ test('GET session, GET entries?include=project and display them grouped by day w
   });
 });
 
-test('GET entries?filter[current-week]=1&include=project and display them grouped by user and project', function(assert) {
-  const currentUserId = '1';
-  logsIn(server, { userId: currentUserId });
-  stubIndexModelRequest(server);
+test('GET entries?filter[running]=1 and do not start the timer when no running entry is returned by the server', function(assert) {
+  document.cookie = "token=session-token; path=/";
 
-  const getEntriesData = [
-    {
-      type: 'entries', id: '1',
-      attributes: {
-        title: null,
-        'started-at': "2016-11-25T13:01:11.000Z",
-        'stopped-at': "2016-11-25T13:10:11.000Z"
-      },
-      relationships: {
-        project: { data: { type: 'projects', id: '1' } },
-        user: { data: { type: 'users', id: currentUserId } }
-      }
-    },
-    {
-      type: 'entries', id: '2',
-      attributes: {
-        title: 'entry2',
-        'started-at': "2016-11-24T11:04:10.000Z",
-        'stopped-at': "2016-11-24T12:07:12.000Z"
-      },
-      relationships: {
-        user: { data: { type: 'users', id: currentUserId } }
-      }
-    },
-    {
-      type: 'entries', id: '3',
-      attributes: {
-        title: 'entry3',
-        'started-at': "2016-11-24T09:53:12.000Z",
-        'stopped-at': "2016-11-24T10:27:18.000Z"
-      },
-      relationships: {
-        user: { data: { type: 'users', id: '2' } }
-      }
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getRunningEntry: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['filter[running]'] === '1' && request.queryParams['include'] === 'project'; },
+      body: { data: null }
     }
-  ];
-  const getEntriesIncluded = [
-    {
-      type: 'projects', id: '1',
-      attributes: { name: 'Tactic' }
-    }
-  ];
+  }));
 
-  const getEntries = server.get(url('entries'), function(request) {
-    if (!getEntries.requests) { getEntries.requests = []; }
-    getEntries.requests.push(request);
-    return [ 200, {}, { data: getEntriesData, included: getEntriesIncluded }];
+  visit('/');
+
+  andThen(function() {
+    assert.equal(stubs.getRunningEntry.requests.length, 1, 'should GET entries?filter[running=1]&include=project');
+    assert.equal(find('.it-entry-create-stop').length, 0, 'should not start the timer');
   });
+});
+
+test('GET entries?filter[running]=1 and starts the timer when a running entry is returned by the server', function(assert) {
+  document.cookie = "token=session-token; path=/";
+
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getRunningEntry: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['filter[running]'] === '1' && request.queryParams['include'] === 'project'; },
+      body: {
+        data: {
+          type: 'entries', id: '1',
+          attributes: {
+            title: "My entry",
+            'started-at': (new Date()).toISOString(),
+            'stopped-at': null
+          },
+          relationships: {
+            user: { data: { type: 'users', id: '1' } }
+          }
+        }
+      }
+    }
+  }));
+
+  visit('/');
+
+  andThen(function() {
+    assert.equal(stubs.getRunningEntry.requests.length, 1, 'should GET entries?filter[running=1]&include=project');
+    assert.equal(find('.it-entry-create-stop').length, 1, 'should start the timer');
+  });
+});
+
+test('GET entries?filter[current-week]=1&include=project and display them grouped by user and project', function(assert) {
+  document.cookie = "token=session-token; path=/";
+
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getCurrentWeekEntries: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['include'] === 'project' && request.queryParams['filter[current-week]'] === '1'; },
+      body: {
+        data: [
+          {
+            type: 'entries', id: '1',
+            attributes: {
+              title: null,
+              'started-at': "2016-11-25T13:01:11.000Z",
+              'stopped-at': "2016-11-25T13:10:11.000Z"
+            },
+            relationships: {
+              project: { data: { type: 'projects', id: '1' } },
+              user: { data: { type: 'users', id: '1' } }
+            }
+          },
+          {
+            type: 'entries', id: '2',
+            attributes: {
+              title: 'entry2',
+              'started-at': "2016-11-24T11:04:10.000Z",
+              'stopped-at': "2016-11-24T12:07:12.000Z"
+            },
+            relationships: {
+              user: { data: { type: 'users', id: '1' } }
+            }
+          },
+          {
+            type: 'entries', id: '3',
+            attributes: {
+              title: 'entry3',
+              'started-at': "2016-11-24T09:53:12.000Z",
+              'stopped-at': "2016-11-24T10:27:18.000Z"
+            },
+            relationships: {
+              user: { data: { type: 'users', id: '2' } }
+            }
+          }
+        ],
+        included: [
+          {
+            type: 'projects', id: '1',
+            attributes: { name: 'Tactic' }
+          }
+        ]
+      }
+    }
+
+  }));
+
+  visit('/');
 
   andThen(function() {
     assert.equal(currentURL(), '/', 'should start on index');
-
-    const getEntriesRequest = getEntries.requests.find(function(r) {
-      return Object.keys(r.queryParams).length === 2 &&
-        r.queryParams.include === 'project' &&
-        r.queryParams['filter[current-week]'] === '1';
-    });
-    assert.ok(getEntriesRequest, 'should GET entries?filter[current-week]=1&include=project');
+    assert.equal(stubs.getCurrentWeekEntries.requests.length, 1, 'should GET entries?filter[current-week]=1&include=project');
 
     const $currentUserDuration = find(".it-current-week-summary-user:contains(Me) .it-current-week-summary-user-total-duration");
     assert.equal($currentUserDuration.text(), '01:12:02', 'should compute current user entries total duration in week');
@@ -210,14 +239,35 @@ test('GET entries?filter[current-week]=1&include=project and display them groupe
 });
 
 test('delete entry send DELETE /entries/ID and hide the entry', function(assert) {
-  logsIn(server);
+  document.cookie = "token=session-token; path=/";
 
-  const getEntriesData = [{ type: 'entries', id: '1', attributes: { title: 'my-entry' } }];
-  server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getEntries: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 1 && request.queryParams.include === 'project'; },
+      body: {
+        data: [
+          {
+            type: 'entries', id: '1',
+            attributes: { title: 'my-entry' }
+          }
+        ]
+      }
+    },
 
-  const deleteEntry = server.delete(url('entries/1'), function() {
-    return [ 200, {}, { data: { type: 'entries', id: '1' } }];
-  });
+    deleteEntry: {
+      type: 'delete',
+      path: 'entries/1',
+      match() { return true; },
+      body: {
+        data: {
+          type: 'entries', id: '1'
+        }
+      }
+    }
+  }));
+
+  visit('/');
 
   andThen(function() {
     assert.equal(find(".it-entry-title:contains('my-entry')").length, 1, 'should show the entry before destroy');
@@ -226,30 +276,53 @@ test('delete entry send DELETE /entries/ID and hide the entry', function(assert)
   click('.it-entry:first .it-entry-action-delete');
 
   andThen(function() {
-    assert.equal(deleteEntry.numberOfCalls, 1, 'should DELETE /entries/1');
+    assert.equal(stubs.deleteEntry.requests.length, 1, 'should DELETE /entries/1');
     assert.equal(find(".it-entry-title:contains('my-entry')").length, 0, 'should no longer display the destroyed entry');
   });
 });
 
 test('update entry send PATCH /entries/ID', function(assert) {
-  logsIn(server);
+  document.cookie = "token=session-token; path=/";
 
-  const getEntriesData = [{ type: 'entries', id: '1', attributes: {
-    title: 'my-entry',
-    'started-at': "2016-12-07T09:42:04.000Z",
-    'stopped-at': "2016-12-07T09:44:04.000Z"
-  } }];
-  server.get(url('entries'), function() { return [ 200, {}, { data: getEntriesData }]; });
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    getEntries: {
+      path: 'entries',
+      match(request) { return Object.keys(request.queryParams).length === 1 && request.queryParams.include === 'project'; },
+      body: {
+        data: [
+          {
+            type: 'entries', id: '1',
+            attributes: {
+              title: 'my-entry',
+              'started-at': "2016-12-07T09:42:04.000Z",
+              'stopped-at': "2016-12-07T09:44:04.000Z"
+            }
+          }
+        ]
+      }
+    },
 
-  const patchEntry = server.patch(url('entries/1'), function() {
-    return [ 200, {}, { data: { type: 'entries', id: '1', attributes: { title: 'updated-entry' } } }];
-  });
+    patchEntry: {
+      type: 'patch',
+      path: 'entries/1',
+      match(request) {
+        const body = JSON.parse(request.requestBody);
+        return body.data && body.data.attributes && body.data.attributes.title === 'updated-entry';
+      },
+      body: {
+        data: {
+          type: 'entries', id: '1',
+          attributes: { title: 'updated-entry' }
+        }
+      }
+    }
+
+  }));
+
+  visit('/');
 
   andThen(function() {
     assert.equal(find(".it-entry-title:contains('my-entry')").length, 1, 'should show the entry before update');
-
-    /* ensure the updated entry is not reloaded while reloading the current week entries */
-    server.get(url('entries'), function() { return [ 200, {}, { data: [] }]; });
   });
 
   click('.it-entry:first .it-entry-title');
@@ -257,35 +330,77 @@ test('update entry send PATCH /entries/ID', function(assert) {
   click('.it-header'); /* send focusout */
 
   andThen(function() {
-    assert.equal(patchEntry.numberOfCalls, 1, 'should PATCH /entries/1');
+    assert.equal(stubs.patchEntry.requests.length, 1, 'should PATCH /entries/1');
     assert.equal(find(".it-entry-title:contains('updated-entry')").length, 1, 'should update the entry display');
   });
 });
 
-test('create entry send POST /entries', function(assert) {
-  logsIn(server);
-  stubIndexModelRequest(server);
+test('start entry send POST /entries, stop it send PATCH /entries', function(assert) {
+  document.cookie = "token=session-token; path=/";
 
-  const postEntry = server.post(url('entries'), function() {
-    return [ 200, {}, { data: { type: 'entries', id: '99', attributes: { title: 'new-entry' } } }];
-  });
+  const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
+    postEntry: {
+      type: 'post',
+      path: 'entries',
+      match(request) {
+        const body = JSON.parse(request.requestBody);
+        return body.data && body.data.attributes && body.data.attributes['started-at'];
+      },
+      body: {
+        data: {
+          type: 'entries', id: '99',
+          attributes: { title: null }
+        }
+      }
+    },
+
+    patchEntry: {
+      type: 'patch',
+      path: 'entries/99',
+      match(request) {
+        const body = JSON.parse(request.requestBody);
+        return body.data &&
+          body.data.attributes &&
+          body.data.attributes.title === 'new-entry' &&
+          body.data.attributes['started-at'] &&
+          body.data.attributes['stopped-at'];
+      },
+      body: {
+        data: {
+          type: 'entries', id: '99',
+          attributes: { title: 'new-entry' }
+        }
+      }
+    }
+
+  }));
+
+  visit('/');
 
   click('.it-entry-create-start');
+
+  andThen(function() {
+    assert.equal(stubs.postEntry.requests.length, 1, 'should POST /entries');
+  });
+
   fillIn('.it-entry-create-title', "new-entry");
   click('.it-entry-create-stop');
 
   andThen(function() {
-    assert.equal(postEntry.numberOfCalls, 1, 'should POST /entries');
+    assert.equal(stubs.patchEntry.requests.length, 1, 'should PATCH /entries/99');
     assert.equal(find(".it-entry-title:contains(new-entry)").length, 1, 'should add the created entry in the list');
   });
 });
 
 test('click on username goes to login', function(assert) {
-  logsIn(server);
-  stubIndexModelRequest(server);
+  document.cookie = "token=session-token; path=/";
 
-  andThen(function() { assert.equal(currentURL(), '/', 'should start on index'); });
+  defineRequestStubs(server, Ember.merge(
+    indexRouteStubs(),
+    loginRouteStubs()
+  ));
 
+  visit('/');
   click('.it-current-user');
 
   andThen(function() {

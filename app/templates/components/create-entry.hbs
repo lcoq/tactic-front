@@ -1,17 +1,17 @@
-{{input value=entry.title class="entry-create-title text-input it-entry-create-title" placeholder="What are you working on ?" key-up="startTimer"}}
+{{input value=entry.title class="entry-create-title text-input it-entry-create-title" placeholder="What are you working on ?" key-up="startTimerOrTriggerUpdate"}}
 <div class="entry-create-project-container">
   {{input value=projectName class="entry-create-project text-input" placeholder="Project" enter="clearProjectIfEmpty" selectOnFocus=true key-up="projectNameChanged"}}
   {{#if projectChoices}}
     <ul class="entry-create-project-choices">
       {{#each projectChoices as |project|}}
-        <li {{action "selectProject" project bubbles=false}} class="entry-create-project-choice touch">{{project.name}}</li>
+        <li {{action "selectProject" project}} class="entry-create-project-choice touch">{{project.name}}</li>
       {{/each}}
     </ul>
   {{/if}}
 </div>
 <div class="entry-create-duration touch">
   {{#if entry.isStarted}}
-    {{format-duration entry.startedAt entry.stoppedAt}}
+    {{entryDuration}}
   {{else}}
     00:00:00
   {{/if}}

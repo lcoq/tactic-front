@@ -1,7 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
 import moment from 'moment';
-import config from '../config/environment';
 
 const { get, set, setProperties } = Ember;
 
@@ -118,33 +117,16 @@ export default DS.Model.extend({
 
   /* start & stop */
 
-  durationTimer: null,
-  isStarted: Ember.computed.bool('durationTimer'),
+  isStarted: Ember.computed.and('startedAt', '_isNotStopped'),
+  _isNotStopped: Ember.computed.not('stoppedAt'),
 
   start() {
     if (get(this, 'isStarted')) { return; }
     set(this, 'startedAt', new Date());
-    this._updateDurationAndRestartTimer();
   },
 
   stop() {
-    const timer = get(this, 'durationTimer');
-    Ember.run.cancel(timer);
-    setProperties(this, {
-      durationTimer: null,
-      stoppedAt: new Date()
-    });
-  },
-
-  _updateDurationAndRestartTimer() {
     set(this, 'stoppedAt', new Date());
-    if (config.environment === 'test') {
-      // see https://github.com/emberjs/ember.js/issues/3008
-      set(this, 'durationTimer', 12);
-    } else {
-      const timer = Ember.run.later(this, this._updateDurationAndRestartTimer, 500);
-      set(this, 'durationTimer', timer);
-    }
   },
 
 

@@ -13,16 +13,18 @@ export default Ember.Route.extend({
   },
 
   model() {
-    return get(this, 'store').query('entry', { include: 'project' }).then((entries) => {
+    const store = get(this, 'store');
+    const entryList = store.query('entry', { include: 'project' }).then(function(entries) {
       return EntryGroupByDayList.create({ entries: entries.toArray() });
     });
-  },
-
-  setupController(controller) {
-    this._super(...arguments);
-    if (!controller.get('newEntry')) {
-      controller.send('buildNewEntry');
-    }
+    const runningEntry = store.queryRecord('entry', { filter: { running: 1 }, include: 'project' }).then(function(entry) {
+      if (!entry) {
+        return store.createRecord('entry');
+      } else {
+        return entry;
+      }
+    });
+    return Ember.RSVP.hash({ entryList: entryList, newEntry: runningEntry });
   },
 
   actions: {
@@ -31,7 +33,15 @@ export default Ember.Route.extend({
       transition.abort();
 
       const controller = this.controller;
-      const entries = get(controller, 'model.entries');
+      let promises = [];
+
+      const newEntryStateManager = get(controller, 'newEntryStateManager');
+
+      if (get(newEntryStateManager, 'isPendingSave')) {
+        promises.push(newEntryStateManager.send('forceSave'));
+      }
+
+      const entries = get(controller, 'model.entryList.entries');
 
       const deletePromises = entries.filterBy('isDeleting', true).map(function(entryToDelete) {
         entryToDelete.clearMarkForDelete();
@@ -46,7 +56,10 @@ export default Ember.Route.extend({
         return entryToUpdate.save();
       });
 
-      const promises = deletePromises.concat(updatePromises).concat(editPromises);
+      promises.pushObjects(deletePromises);
+      promises.pushObjects(updatePromises);
+      promises.pushObjects(editPromises);
+
       Ember.RSVP.all(promises).then(function() {
         transition.data.restored = true;
         transition.retry();

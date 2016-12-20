@@ -1,5 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import Ember from 'ember';
+
+const { set } = Ember;
 
 moduleForComponent('create-entry', 'Integration | Component | create entry', {
   integration: true
@@ -7,5 +10,6 @@ moduleForComponent('create-entry', 'Integration | Component | create entry', {
 
 test('it renders', function(assert) {
   assert.expect(0);
-  this.render(hbs`{{create-entry}}`);
+  set(this, 'entry', Ember.Object.create({ isStarted: false }));
+  this.render(hbs`{{create-entry entry=entry}}`);
 });
