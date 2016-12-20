@@ -44,3 +44,7 @@ a {
 .input-error-message {
   padding: 0 $sp-sm;
 }
+
+.only-print {
+  display: none !important;
+}

@@ -4,7 +4,7 @@ import EntryGroup from './entry-group';
 
 const { get, set } = Ember;
 
-export default Ember.Object.extend({
+export default EntryGroup.extend({
   entries: null,
   groups: null,
 

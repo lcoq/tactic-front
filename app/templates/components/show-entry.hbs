@@ -1,4 +1,4 @@
-<div class="entry-actions">
+<div class="entry-actions no-print">
   {{#if entry.isDeleting}}
     <a {{action "cancelDeleteEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
@@ -69,7 +69,7 @@
       {{input value=formattedStartedAt class="entry-edit-started-at text-input js-entry-edit-started-at" enter="clearFocus" selectOnFocus=true}}
     </div>
   {{else}}
-    <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch">
+    <div {{action "editEntry" ".js-entry-edit-started-at"}} class="entry-started-at touch no-print">
       {{format-hour entry.startedAt}}
     </div>
   {{/if}}
@@ -79,7 +79,7 @@
       {{input value=formattedStoppedAt class="entry-edit-stopped-at text-input js-entry-edit-stopped-at" enter="clearFocus" selectOnFocus=true}}
     </div>
   {{else}}
-    <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch">
+    <div {{action "editEntry" ".js-entry-edit-stopped-at"}} class="entry-stopped-at touch no-print">
       {{format-hour entry.stoppedAt}}
     </div>
   {{/if}}

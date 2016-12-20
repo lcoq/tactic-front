@@ -1,7 +1,11 @@
+<h2 class="entry-group-list-duration only-print">
+  Total: {{format-duration list.durationInSeconds}}
+</h2>
 {{#each list.groups as |group|}}
   <section class="entry-group it-entry-group">
     <header class="entry-group-header">
-      <h2 class="entry-group-header-title" title={{moment-format group.day "YYYY-MM-DD"}}>{{entry-group-day group.day}}</h2>
+      <h2 class="entry-group-header-title no-print" title={{moment-format group.day "YYYY-MM-DD"}}>{{entry-group-day group.day}}</h2>
+      <h2 class="entry-group-header-title only-print">{{moment-format group.day "YYYY-MM-DD"}}</h2>
       <div class="entry-group-header-duration it-entry-group-duration">{{format-duration group.durationInSeconds}}</div>
     </header>
     <ul class="entry-group-item-list">

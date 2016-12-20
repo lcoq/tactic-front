@@ -3,13 +3,19 @@
 @import "variables";
 @import "responsive";
 
-@import "global";
-@import "layout";
-@import "header";
-@import "calendar";
+@media screen {
+  @import "global";
+  @import "layout";
+  @import "header";
+  @import "calendar";
 
-@import "login";
-@import "entry";
-@import "reviews";
-@import "projects";
-@import "client";
+  @import "login";
+  @import "entry";
+  @import "reviews";
+  @import "projects";
+  @import "client";
+}
+
+@media print {
+  @import "print";
+}

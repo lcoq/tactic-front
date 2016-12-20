@@ -2,12 +2,12 @@
   <div class="header-brand-container">
     <h1 class="header-brand">Tactic</h1>
     {{#if isAuthenticated}}
-      {{#link-to "login" class="header-brand-user it-current-user"}}@ {{currentUserName}}{{/link-to}}
+      {{#link-to "login" class="header-brand-user it-current-user no-print"}}@ {{currentUserName}}{{/link-to}}
     {{/if}}
   </div>
 
   {{#if isAuthenticated}}
-    <nav class="header-nav">
+    <nav class="header-nav no-print">
       {{current-week-summary}}
       <section class="header-nav-section">
         {{#link-to "index" class="header-nav-section-title touch"}}
