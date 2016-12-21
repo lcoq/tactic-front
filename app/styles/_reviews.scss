@@ -25,11 +25,17 @@
   }
 }
 
-.reviews-filter-users, .reviews-filter-projects {
-  width: 35%;
+.reviews-filter-users, .reviews-filter-clients, .reviews-filter-projects {
+  width: 20%;
+
+  .reviews-filter-item-list {
+    min-width: 350px;
+  }
 }
 
 .reviews-filter-header {
+  display: flex;
+  align-items: center;
   position: relative;
   padding: 0 $sp-sm;
 }
@@ -41,6 +47,7 @@
 
 .reviews-filter-header-title {
   padding: $sp-sm 0;
+  margin-right: $sp-xs;
   font-size: $fs-lg;
 }
 

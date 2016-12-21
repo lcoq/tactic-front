@@ -1,10 +1,19 @@
 {{reviews-filters
   users=model.users
   selectedUsers=selectedUsers
-  projects=model.projects
+
+  clients=model.clients
+  selectedClients=selectedClients
+
+  projects=projects
   selectedProjects=selectedProjects
+
   since=since
   before=before
+
+  updateSelectedUsers=(action "updateSelectedUsers")
+  updateSelectedClients=(action "updateSelectedClients")
+  updateSelectedProjects=(action "updateSelectedProjects")
 }}
 {{entries-by-client-and-project
   list=entriesByClientAndProject

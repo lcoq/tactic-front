@@ -17,10 +17,15 @@ export default Ember.Route.extend({
       return [noProject].concat(projects.toArray());
     });
 
+    const clientsPromise = get(this, 'store').query('client', {}).then((clients) => {
+      const noClient = Ember.Object.create({ id: '0', name: "No client" });
+      return [noClient].concat(clients.toArray());
+    });
+
     return Ember.RSVP.hash({
       users: get(this, 'store').query('user', {}),
       projects: projectsPromise,
-      clients: get(this, 'store').query('client', {})
+      clients: clientsPromise
     });
   }
 });

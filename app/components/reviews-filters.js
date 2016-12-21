@@ -3,59 +3,87 @@ import moment from 'moment';
 
 const { get, set, setProperties } = Ember;
 
+function checkboxesProperty(type) {
+  return Ember.computed(type, function() {
+    const collection = get(this, type);
+    const selectedsProperty = Ember.String.camelize('selected_' + type);
+    const selecteds = get(this, selectedsProperty);
+    return createCheckboxes(collection, selecteds);
+  });
+}
+
+function createCheckboxes(collection, selectedItems) {
+  const checkboxes = Ember.Object.create();
+  let isChecked;
+  collection.forEach(function(item) {
+    isChecked = selectedItems.find(function(i) {
+      return get(i, 'id') === get(item, 'id');
+    });
+    set(checkboxes, get(item, 'id'), isChecked);
+  });
+  return checkboxes;
+}
+
+function changeAllCheck(checkboxes, check) {
+  Object.keys(checkboxes).forEach(function(key) {
+    set(checkboxes, key, check);
+  });
+}
+
+function toggleCheck(checkboxes, item) {
+  const id = get(item, 'id');
+  set(checkboxes, id, !get(checkboxes, id));
+}
+
 export default Ember.Component.extend({
   tagName: 'section',
   classNames: ['reviews-filters'],
 
   users: null,
   selectedUsers: null,
+
+  clients: null,
+  selectedClients: null,
+
   projects: null,
   selectedProjects: null,
+
   since: null,
   before: null,
 
-  selectedUsersCheckboxes: Ember.computed('users', function() {
-    return this._createCheckboxes(get(this, 'users'), get(this, 'selectedUsers'));
-  }),
+  selectedUsersCheckboxes: checkboxesProperty('users'),
+  selectedClientsCheckboxes: checkboxesProperty('clients'),
+  selectedProjectsCheckboxes: checkboxesProperty('projects'),
 
-  selectedProjectsCheckboxes: Ember.computed('projects', function() {
-    return this._createCheckboxes(get(this, 'projects'), get(this, 'selectedProjects'));
-  }),
 
-  _updateSelectedUsersOnMouseLeave() {
-    this.$('.js-reviews-filter-users').one('mouseleave', () => {
-      const checkboxes = get(this, 'selectedUsersCheckboxes');
-      const users = get(this, 'users');
-      const selectedUsers = users.filter(function(user) { return get(checkboxes, get(user, 'id')); });
-      set(this, 'selectedUsers', selectedUsers);
+  _changeAllCheckAndUpdateSelecteds(type, check) {
+    const checkboxesProperty = Ember.String.camelize('selected_' + type + '_checkboxes');
+    const checkboxes = get(this, checkboxesProperty);
+    changeAllCheck(checkboxes, check);
+    this._updateSelectedsOnMouseLeave(type);
+  },
+
+  _toggleCheckAndUpdateSelectedsOnMouseLeave(type, item) {
+    const checkboxesProperty = Ember.String.camelize('selected_' + type + '_checkboxes');
+    const checkboxes = get(this, checkboxesProperty);
+    toggleCheck(checkboxes, item);
+    this._updateSelectedsOnMouseLeave(type);
+  },
+
+  _updateSelectedsOnMouseLeave(type) {
+    const selector = '.js-reviews-filter-' + type;
+    const checkboxesProperty = Ember.String.camelize('selected_' + type + '_checkboxes');
+    const updateAction = Ember.String.camelize('update_selected_' + type);
+
+    this.$(selector).off('mouseleave');
+    this.$(selector).one('mouseleave', () => {
+      const checkboxes = get(this, checkboxesProperty);
+      const collection = get(this, type);
+      const selectedItems = collection.filter(function(item) {
+        return get(checkboxes, get(item, 'id'));
+      });
+      get(this, updateAction)(selectedItems);
     });
-  },
-
-  _updateSelectedProjectsOnMouseLeave() {
-    this.$('.js-reviews-filter-projects').one('mouseleave', () => {
-      const checkboxes = get(this, 'selectedProjectsCheckboxes');
-      const projects = get(this, 'projects');
-      const selectedProjects = projects.filter(function(project) { return get(checkboxes, get(project, 'id')); });
-      set(this, 'selectedProjects', selectedProjects);
-    });
-  },
-
-  _createCheckboxes(collection, selectedItems) {
-    const checkboxes = Ember.Object.create();
-    let isChecked;
-    collection.forEach(function(item) {
-      isChecked = selectedItems.find(function(i) { return get(i, 'id') === get(item, 'id'); });
-      set(checkboxes, get(item, 'id'), isChecked);
-    });
-    return checkboxes;
-  },
-
-  _checkAll(checkboxes) {
-    Object.keys(checkboxes).forEach(function(key) { set(checkboxes, key, true); });
-  },
-
-  _uncheckAll(checkboxes) {
-    Object.keys(checkboxes).forEach(function(key) { set(checkboxes, key, false); });
   },
 
   _initDatePicker(selector, initialDate, onSelect) {
@@ -75,34 +103,16 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    checkAllUsers() {
-      this._checkAll(get(this, 'selectedUsersCheckboxes'));
-      this._updateSelectedUsersOnMouseLeave();
+    checkAll(type) {
+      this._changeAllCheckAndUpdateSelecteds(type, true);
     },
-    uncheckAllUsers() {
-      this._uncheckAll(get(this, 'selectedUsersCheckboxes'));
-      this._updateSelectedUsersOnMouseLeave();
+    uncheckAll(type) {
+      this._changeAllCheckAndUpdateSelecteds(type, false);
     },
-    selectedUsersChanged(user) {
-      const checkboxes = get(this, 'selectedUsersCheckboxes');
-      const userId = get(user, 'id');
-      set(checkboxes, userId, !get(checkboxes, userId));
-      this._updateSelectedUsersOnMouseLeave();
+    selectedChanged(type, item) {
+      this._toggleCheckAndUpdateSelectedsOnMouseLeave(type, item);
     },
-    checkAllProjects() {
-      this._checkAll(get(this, 'selectedProjectsCheckboxes'));
-      this._updateSelectedProjectsOnMouseLeave();
-    },
-    uncheckAllProjects() {
-      this._uncheckAll(get(this, 'selectedProjectsCheckboxes'));
-      this._updateSelectedProjectsOnMouseLeave();
-    },
-    selectedProjectsChanged(project) {
-      const checkboxes = get(this, 'selectedProjectsCheckboxes');
-      const projectId = get(project, 'id');
-      set(checkboxes, projectId, !get(checkboxes, projectId));
-      this._updateSelectedProjectsOnMouseLeave();
-    },
+
     changeSinceDate() {
       this._initDatePicker('.js-since-datepicker', get(this, 'since'), (date) => {
         const properties = { since: date };

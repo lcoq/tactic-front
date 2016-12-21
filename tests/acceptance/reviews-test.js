@@ -48,7 +48,7 @@ test('redirects to login when a session token is stored in cookies but is invali
   });
 });
 
-test('send GET users, GET projects, GET entries and display them when a valid session token is stored in cookies', function(assert) {
+test('send GET users, GET clients, GET projects, GET entries and display them when a valid session token is stored in cookies', function(assert) {
   document.cookie = "token=session-token; path=/";
 
   const stubs = defineRequestStubs(server, Ember.merge(currentWeekStubs(), {
@@ -79,14 +79,41 @@ test('send GET users, GET projects, GET entries and display them when a valid se
       }
     },
 
+    getClients: {
+      path: 'clients',
+      match(request) { return Object.keys(request.queryParams).length === 0; },
+      body: {
+        data: [
+          {
+            type: 'clients', id: '1',
+            attributes: { name: 'Productivity' }
+          }
+        ]
+      }
+    },
+
     getProjects: {
       path: 'projects',
       match(request) { return Object.keys(request.queryParams).length === 0; },
       body: {
         data: [
-          { type: 'projects', id: '1', attributes: { name: 'Tactic' } },
-          { type: 'projects', id: '2', attributes: { name: 'Tictoc' } },
-          { type: 'projects', id: '3', attributes: { name: 'Toctoc' } }
+          {
+            type: 'projects', id: '1',
+            attributes: { name: 'Tactic' },
+            relationships: {
+              client: {
+                data: {
+                  type: 'clients', id: '1'
+                }
+              }
+            }
+          }, {
+            type: 'projects', id: '2',
+            attributes: { name: 'Tictoc' }
+          }, {
+            type: 'projects', id: '3',
+            attributes: { name: 'Toctoc' }
+          }
         ]
       }
     },
@@ -126,10 +153,12 @@ test('send GET users, GET projects, GET entries and display them when a valid se
 
     assert.equal(stubs.getSessions.requests.length, 1, 'should GET sessions');
     assert.equal(stubs.getUsers.requests.length, 1, 'should GET users');
+    assert.equal(stubs.getClients.requests.length, 1, 'should GET clients');
     assert.equal(stubs.getProjects.requests.length, 1, 'should GET projects');
     assert.equal(stubs.getEntries.requests.length, 1, 'should GET entries with user-id, project-id, since and before filters');
 
     assert.equal(find('.it-reviews-filter-item-user').length, 2, 'should display 2 users');
+    assert.equal(find('.it-reviews-filter-item-client').length, 2, 'should display 2 clients (1 + "No client")');
     assert.equal(find('.it-reviews-filter-item-project').length, 4, 'should display 4 projects (3 + "No project")');
     assert.equal(find('.it-entry').length, 1, 'should show returned entry');
   });
