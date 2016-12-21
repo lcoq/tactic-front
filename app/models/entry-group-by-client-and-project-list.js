@@ -78,7 +78,23 @@ export default EntryGroup.extend({
 
   _createGroupAndInsertIn(groups, client) {
     const group = EntryGroupByProjectList.create({ client: client });
-    groups.pushObject(group);
+    groups.insertAt(this._groupInsertIndex(groups, group), group);
     return group;
+  },
+
+  _groupInsertIndex(groups, group) {
+    const clientName = get(group, 'client.name');
+    if (!clientName) {
+      return 0;
+    }
+    const nextGroup = groups.find(function(g) {
+      return clientName < get(g, 'client.name');
+    });
+    const index = groups.indexOf(nextGroup);
+    if (index !== -1) {
+      return index;
+    } else {
+      return get(groups, 'length');
+    }
   }
 });

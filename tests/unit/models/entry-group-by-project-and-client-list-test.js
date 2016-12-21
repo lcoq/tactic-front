@@ -1,7 +1,8 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('model:entry-group-by-project-and-client-list', 'Unit | Model | entry group by project and client list', {
-  needs: ['model:entry-group-by-project-list', 'model:entry-group']
+moduleFor('model:entry-group-by-client-and-project-list', 'Unit | Model | entry group by project and client list', {
+  unit: true,
+  needs: []
 });
 
 test('it exists', function(assert) {
