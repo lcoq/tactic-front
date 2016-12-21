@@ -19,7 +19,7 @@ function createCheckboxes(collection, selectedItems) {
     isChecked = selectedItems.find(function(i) {
       return get(i, 'id') === get(item, 'id');
     });
-    set(checkboxes, get(item, 'id'), isChecked);
+    set(checkboxes, get(item, 'id'), !!isChecked);
   });
   return checkboxes;
 }
