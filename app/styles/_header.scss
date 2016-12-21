@@ -27,9 +27,10 @@
 
 .header-nav {
   display: flex;
-  width: 1080px;
+  flex-grow: 1;
+  max-width: 1200px;
   margin: auto;
-  padding: 0 200px;
+  padding: 0 100px 0 200px;
 }
 
 .header-nav-section {
