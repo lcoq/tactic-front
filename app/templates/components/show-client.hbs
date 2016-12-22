@@ -33,7 +33,7 @@
   </h2>
 {{else}}
   <h2 {{action "startEdit"}} class="client-title touch">
-    {{client.name}}
+    <span class="client-title-txt">{{client.name}}</span>
     {{#if client.errors.name}}
       <ul class="input-error-message-list">
         {{#each client.errors.name as |error|}}

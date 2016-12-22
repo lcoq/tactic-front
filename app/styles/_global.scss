@@ -21,12 +21,15 @@ a {
 
 .input-error-message-list {
   position: absolute;
+  top: calc(100% - #{$sp-sm});
   left: 0;
   margin-top: $sp-sm;
   font-size: $fs-sm;
+  font-weight: normal;
   background-color: $clr15;
   color: $clr10;
   z-index: 1;
+  line-height: $btn-size-sm;
 
   &:before {
     content: "";

@@ -83,6 +83,11 @@
   align-items: center;
   width: 100%;
   color: $clr4;
+}
+
+.client-title-txt {
+  display: flex;
+  align-items: center;
   font-size: $fs-lg;
   font-weight: bold;
   white-space: nowrap;
