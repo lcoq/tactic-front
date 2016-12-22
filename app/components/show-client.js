@@ -24,9 +24,15 @@ export default Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    if (get(this, 'client.isEditing')) {
-      this._onStartEdit();
-    }
+    const client = get(this, 'client');
+    client.one('didDelete', this, this._didDelete);
+    if (get(client, 'isEditing')) { this._onStartEdit(); }
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    const client = get(this, 'client');
+    client.off('didDelete', this, this._didDelete);
   },
 
   _didDelete() {
@@ -35,8 +41,6 @@ export default Ember.Component.extend({
   },
 
   _onStartEdit() {
-    get(this, 'client').off('didDelete', this, this._didDelete);
-
     scheduleOnce('afterRender', this, function() {
       this.$('.js-client-edit-name').focus();
       this._watchFocusOut();
@@ -89,12 +93,10 @@ export default Ember.Component.extend({
     markForDelete() {
       const client = get(this, 'client');
       get(this, 'markForDelete')(client);
-      client.one('didDelete', this, this._didDelete);
     },
     cancelDelete() {
       const client = get(this, 'client');
       get(this, 'clearMarkForDelete')(client);
-      client.off('didDelete', this, this._didDelete);
     }
   }
 });

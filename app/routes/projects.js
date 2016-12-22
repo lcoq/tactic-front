@@ -21,7 +21,9 @@ export default Ember.Route.extend({
         id: '0',
         name: "No client",
         projects: Ember.RSVP.resolve([]),
-        isFrozen: true
+        isFrozen: true,
+        one() {},
+        off() {}
       });
       const clients = [noClient].concat(hash.clients.toArray());
       const projects = hash.projects.toArray();
