@@ -70,6 +70,20 @@ export default Ember.Component.extend({
 
   projectChoices: null,
 
+  didInsertElement() {
+    this._super(...arguments);
+    const entry = get(this, 'entry');
+    entry.one('didDelete', this, this._didDeleteEntry);
+    entry.one('didUpdate', this, this._didUpdateEntry);
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    const entry = get(this, 'entry');
+    entry.off('didDelete', this, this._didDeleteEntry);
+    entry.off('didUpdate', this, this._didUpdateEntry);
+  },
+
   _searchProjects() {
     const query = get(this, 'projectName');
     if (!get(this, 'entry.isEditing')) { return; }
@@ -103,7 +117,6 @@ export default Ember.Component.extend({
   _closeEdit() {
     const entry = get(this, 'entry');
     entry.stopEdit();
-    entry.one('didUpdate', this, this._didUpdateEntry);
 
     set(this, 'isEditingDate', false);
 
@@ -147,6 +160,7 @@ export default Ember.Component.extend({
   _didUpdateEntry() {
     const entry = get(this, 'entry');
     get(this, 'didUpdateEntry')(entry);
+    entry.one('didUpdate', this, this._didUpdateEntry);
   },
 
   _didDeleteEntry() {
@@ -165,7 +179,6 @@ export default Ember.Component.extend({
     revertEditEntry() {
       const entry = get(this, 'entry');
       entry.cancelEdit();
-      entry.off('didUpdate', this, this._didUpdateEntry);
     },
 
     /* delete */
@@ -173,12 +186,10 @@ export default Ember.Component.extend({
     markEntryForDelete() {
       const entry = get(this, 'entry');
       entry.markForDelete();
-      entry.one('didDelete', this, this._didDeleteEntry);
     },
     cancelDeleteEntry() {
       const entry = get(this, 'entry');
       entry.clearMarkForDelete();
-      entry.off('didDelete', this, this._didDeleteEntry);
     },
 
     /* focus */
