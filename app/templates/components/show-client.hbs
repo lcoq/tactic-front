@@ -1,15 +1,23 @@
 <div class="client-actions">
+  {{#if client.isSaveErrored}}
+    <a {{action "retrySave"}} class="client-action client-action-retry touch">
+    </a>
+  {{/if}}
+  {{#if client.isDeleteErrored}}
+    <a {{action "retryDelete"}} class="client-action client-action-retry touch">
+    </a>
+  {{/if}}
   {{#if client.isInvalid}}
     <a {{action "startEdit"}} class="client-action client-action-edit touch">
       <img class="client-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
     </a>
   {{/if}}
-  {{#if client.isPendingDelete}}
+  {{#if client.isPendingDeleteOrDeleteErrored}}
     <a {{action "cancelDelete"}} class="client-action client-action-revert touch">
       <img class="client-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
   {{/if}}
-  {{#if isInvalidOrPendingSave}}
+  {{#if canRevert}}
     <a {{action "revertEdit"}} class="client-action client-action-revert touch">
       <img class="client-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>

@@ -19,6 +19,10 @@ export default Ember.Object.extend({
     return action.call(this);
   },
 
+  sendToCurrentState(actionName) {
+    return this.manager.send(actionName);
+  },
+
   _transitionTo(stateName) {
     this.manager._transitionTo(stateName);
   }

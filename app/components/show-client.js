@@ -15,12 +15,14 @@ export default Ember.Component.extend({
     'client.isEditing:editing',
     'client.isPendingDelete:deleting',
     'client.isPendingSave:pending',
-    'client.isInvalid:invalid'
+    'client.isInvalid:invalid',
+    'client.isSaveErrored:save-errored',
+    'client.isDeleteErrored:delete-errored'
   ],
 
   client: null,
 
-  isInvalidOrPendingSave: Ember.computed.or('client.isInvalid', 'client.isPendingSave'),
+  canRevert: Ember.computed.or('client.isInvalid', 'client.isPendingSaveOrSaveErrored'),
 
   didInsertElement() {
     this._super(...arguments);
@@ -97,6 +99,18 @@ export default Ember.Component.extend({
     cancelDelete() {
       const client = get(this, 'client');
       get(this, 'clearMarkForDelete')(client);
+    },
+
+    /* retry */
+
+    retrySave() {
+      const client = get(this, 'client');
+      get(this, 'retrySave')(client);
+    },
+
+    retryDelete() {
+      const client = get(this, 'client');
+      get(this, 'retryDelete')(client);
     }
   }
 });

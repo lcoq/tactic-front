@@ -8,7 +8,7 @@
   min-height: $btn-size-sm;
 }
 
-.client:hover, .client.invalid, .client.deleting, .client.pending, .client.editing {
+.client:hover, .client.invalid, .client.save-errored, .client.delete-errored, .client.deleting, .client.pending, .client.editing {
   .client-actions {
     display: flex;
   }
@@ -28,11 +28,11 @@
   }
 }
 
-.client.invalid {
+.client.invalid, .client.save-errored {
   background-color: $clr9;
 }
 
-.client.deleting {
+.client.deleting, .client.delete-errored {
   background-color: $clr16;
 }
 
@@ -63,19 +63,20 @@
   align-items: center;
 }
 
-.client-action-invalid-img {
+.client-action-invalid-img, .client-action-delete-img, .client-action-cancel-img {
   width: 16px;
   height: 16px;
 }
 
-.client-action-delete-img {
-  width: 16px;
-  height: 16px;
-}
+.client-action-retry {
+  background-image: url('/assets/images/offline.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
 
-.client-action-cancel-img {
-  width: 16px;
-  height: 16px;
+  &:hover {
+    background-image: url('/assets/images/refresh.svg');
+  }
 }
 
 .client-title {

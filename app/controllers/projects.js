@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
   _clearMarkClientForDeleteForProject(project) {
     const group = get(this, 'model').findGroupByProject(project);
     const client = get(group, 'client');
-    if (get(client, 'isPendingDelete')) {
+    if (get(client, 'isPendingDeleteOrDeleteErrored')) {
       this.send('clearMarkClientForDelete', client);
     }
   },
@@ -49,6 +49,16 @@ export default Ember.Controller.extend({
       get(this, 'model').removeClient(client);
     },
 
+    /* retry */
+
+    retrySaveClient(client) {
+      client.retry();
+    },
+
+    retryDeleteClient(client) {
+      client.retry();
+    },
+
 
     /* PROJECTS */
 
@@ -87,6 +97,16 @@ export default Ember.Controller.extend({
     },
     didDeleteProject(project) {
       get(this, 'model').removeProject(project);
+    },
+
+    /* retry */
+
+    retrySaveProject(project) {
+      project.retry();
+    },
+
+    retryDeleteProject(project) {
+      project.retry();
     }
   }
 });

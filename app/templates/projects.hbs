@@ -1,7 +1,7 @@
 <section class="project-group-list-container">
   <h1 class="project-group-list-title">Projects</h1>
   {{#each model.groups as |group|}}
-    <section class="project-group {{if group.client.isPendingDelete "deleting"}}">
+    <section class="project-group {{if group.client.isPendingDeleteOrDeleteErrored "deleting"}}">
       {{show-client
         client=group.client
 
@@ -12,6 +12,9 @@
         markForDelete=(action "markClientForDelete")
         clearMarkForDelete=(action "clearMarkClientForDelete")
         didDelete=(action "didDeleteClient")
+
+        retrySave=(action "retrySaveClient")
+        retryDelete=(action "retryDeleteClient")
       }}
       <ul class="project-group-item-list">
         {{#each group.projects as |project|}}
@@ -27,6 +30,9 @@
             markForDelete=(action "markProjectForDelete")
             clearMarkForDelete=(action "clearMarkProjectForDelete")
             didDeleteProject=(action "didDeleteProject")
+
+            retrySave=(action "retrySaveProject")
+            retryDelete=(action "retryDeleteProject")
           }}
         {{/each}}
         <li {{action "buildProject" group.client}} class="project project-create it-project it-project-create touch">

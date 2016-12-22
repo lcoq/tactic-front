@@ -14,7 +14,9 @@ export default Ember.Component.extend({
     'project.isEditing:editing',
     'project.isPendingDelete:deleting',
     'project.isPendingSave:pending',
-    'project.isInvalid:invalid'
+    'project.isInvalid:invalid',
+    'project.isSaveErrored:errored',
+    'project.isDeleteErrored:errored'
   ],
 
   project: null,
@@ -22,7 +24,7 @@ export default Ember.Component.extend({
 
   deleteIsEnabled: Ember.computed.not('deleteIsDisabled'),
 
-  isInvalidOrPendingSave: Ember.computed.or('project.isInvalid', 'project.isPendingSave'),
+  canRevert: Ember.computed.or('project.isInvalid', 'project.isPendingSaveOrSaveErrored'),
   isClearAndDeleteIsEnabled: Ember.computed.and('project.isClear', 'deleteIsEnabled'),
 
   didInsertElement() {
@@ -99,6 +101,18 @@ export default Ember.Component.extend({
     cancelDeleteProject() {
       const project = get(this, 'project');
       get(this, 'clearMarkForDelete')(project);
+    },
+
+    /* retry */
+
+    retrySaveProject() {
+      const project = get(this, 'project');
+      get(this, 'retrySave')(project);
+    },
+
+    retryDeleteProject() {
+      const project = get(this, 'project');
+      get(this, 'retryDelete')(project);
     }
   }
 });

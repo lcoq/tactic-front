@@ -10,8 +10,16 @@ export default Ember.Mixin.create({
   isClear: Ember.computed.reads('_stateManager.isClear'),
   isEditing: Ember.computed.reads('_stateManager.isEditing'),
   isInvalid: Ember.computed.reads('_stateManager.isInvalid'),
+
   isPendingSave: Ember.computed.reads('_stateManager.isPendingSave'),
+  isSaveErrored: Ember.computed.reads('_stateManager.isSaveErrored'),
+  isPendingSaveOrSaveErrored: Ember.computed.reads('_stateManager.isPendingSaveOrSaveErrored'),
+
   isPendingDelete: Ember.computed.reads('_stateManager.isPendingDelete'),
+  isDeleteErrored: Ember.computed.reads('_stateManager.isDeleteErrored'),
+  isPendingDeleteOrDeleteErrored: Ember.computed.reads('_stateManager.isPendingDeleteOrDeleteErrored'),
+
+  isErrored: Ember.computed.reads('_stateManager.isErrored'),
 
   init() {
     this._super(...arguments);
@@ -40,5 +48,9 @@ export default Ember.Mixin.create({
 
   clear() {
     get(this, '_stateManager').send('clear');
+  },
+
+  retry() {
+    return get(this, '_stateManager').send('retry');
   }
 });

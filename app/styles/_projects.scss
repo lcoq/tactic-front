@@ -14,7 +14,7 @@
   line-height: $btn-size;
 }
 
-.project:hover, .project.invalid, .project.deleting, .project.pending, .project.editing {
+.project:hover, .project.invalid, .project.errored, .project.deleting, .project.pending, .project.editing {
   .project-actions {
     display: flex;
   }
@@ -24,7 +24,7 @@
   background-color: $clr7;
 }
 
-.project.invalid {
+.project.invalid, .project.errored {
   background-color: $clr9;
 }
 
@@ -58,19 +58,20 @@
   align-items: center;
 }
 
-.project-action-invalid-img {
+.project-action-invalid-img, .project-action-delete-img, .project-action-cancel-img {
   width: 16px;
   height: 16px;
 }
 
-.project-action-delete-img {
-  width: 16px;
-  height: 16px;
-}
+.project-action-retry {
+  background-image: url('/assets/images/offline.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
 
-.project-action-cancel-img {
-  width: 16px;
-  height: 16px;
+  &:hover {
+    background-image: url('/assets/images/refresh.svg');
+  }
 }
 
 .project-edit-name {

@@ -57,6 +57,44 @@ const InvalidState = State.extend({
   }
 });
 
+const SaveErrorState = State.extend({
+  name: 'saveError',
+  isSaveErrored: true,
+
+  actions: {
+    retry() {
+      this._transitionTo('pendingSave');
+      return this.sendToCurrentState('forceSave');
+    },
+    edit() {
+      this._transitionTo('editing');
+    },
+    clear() {
+      this._transitionTo('clear');
+    }
+  }
+});
+
+const DeleteErrorState = State.extend({
+  name: 'deleteError',
+  isDeleteErrored: true,
+
+  actions: {
+    retry() {
+      this._transitionTo('pendingDelete');
+      return this.sendToCurrentState('forceDelete');
+    },
+    edit() {
+      const source = get(this, 'source');
+      source.rollbackAttributes();
+      this._transitionTo('editing');
+    },
+    clear() {
+      this._transitionTo('clear');
+    }
+  }
+});
+
 const PendingSaveState = State.extend({
   name: 'pendingSave',
   isPendingSave: true,
@@ -87,10 +125,15 @@ const PendingSaveState = State.extend({
 
   _save() {
     set(this, 'saveTimer', null);
-    return get(this, 'source').save().then(() => {
+    const source = get(this, 'source');
+    return source.save().then(() => {
       this.send('clear');
     }, () => {
-      this._transitionTo('invalid');
+      if (get(source, 'isValid')) {
+        this._transitionTo('saveError');
+      } else {
+        this._transitionTo('invalid');
+      }
       return Ember.RSVP.reject();
     });
   },
@@ -134,7 +177,13 @@ const PendingDeleteState = State.extend({
 
   _delete() {
     set(this, 'deleteTimer', null);
-    return get(this, 'source').destroyRecord().then(() => { this.send('clear'); });
+    const source = get(this, 'source');
+    return source.destroyRecord().then(() => {
+      this.send('clear');
+    }, () => {
+      this._transitionTo('deleteError');
+      return Ember.RSVP.reject();
+    });
   },
 
   _cancelTimer() {
@@ -150,19 +199,29 @@ export default StateManager.extend({
   isClear: Ember.computed.reads('currentState.isClear'),
   isEditing: Ember.computed.reads('currentState.isEditing'),
   isInvalid: Ember.computed.reads('currentState.isInvalid'),
+
   isPendingSave: Ember.computed.reads('currentState.isPendingSave'),
+  isSaveErrored: Ember.computed.reads('currentState.isSaveErrored'),
+  isPendingSaveOrSaveErrored: Ember.computed.or('isPendingSave', 'isSaveErrored'),
+
   isPendingDelete: Ember.computed.reads('currentState.isPendingDelete'),
+  isDeleteErrored: Ember.computed.reads('currentState.isDeleteErrored'),
+  isPendingDeleteOrDeleteErrored: Ember.computed.or('isPendingDelete', 'isDeleteErrored'),
+
+  isErrored: Ember.computed.or('isSaveErrored', 'isDeleteErrored'),
 
   stateClasses: [
     ClearState,
     EditingState,
     InvalidState,
     PendingSaveState,
-    PendingDeleteState
+    SaveErrorState,
+    PendingDeleteState,
+    DeleteErrorState
   ],
 
   checkDirty(source) {
-    return Object.keys(source.changedAttributes()).length !== 0;
+    return Object.keys(source.changedAttributes()).length !== 0 || get(source, 'isDeleted');
   },
 
   checkValid() {
