@@ -48,13 +48,9 @@
   line-height: $btn-size;
   padding: 0 $sp;
 
-  &:hover {
+  &:hover, &.link-active {
     color: $clr4;
     background-color: $clr6;
-  }
-
-  &.link-active {
-    display: none;
   }
 }
 
