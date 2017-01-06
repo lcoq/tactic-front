@@ -5,7 +5,7 @@ import moment from 'moment';
 const { get, set } = Ember;
 
 export default Ember.Controller.extend({
-  currentWeek: Ember.inject.service(),
+  userSummary: Ember.inject.service(),
 
   entries: Ember.computed('selectedUsers.@each.id', 'selectedProjects.@each.id', 'since', 'before', function() {
     const selectedUserIds = get(this, 'selectedUsers').mapBy('id');
@@ -92,11 +92,11 @@ export default Ember.Controller.extend({
     },
 
     didUpdateEntry() {
-      get(this, 'currentWeek').reload();
+      get(this, 'userSummary').reload();
     },
 
     didDeleteEntry() {
-      get(this, 'currentWeek').reload();
+      get(this, 'userSummary').reload();
     }
   }
 });

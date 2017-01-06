@@ -169,13 +169,50 @@ test('GET entries?filter[running]=1 and starts the timer when a running entry is
   });
 });
 
-test('GET entries?filter[current-week]=1&include=project and display them grouped by user and project', function(assert) {
+test('GET entries for user summary and display total for week and month', function(assert) {
   document.cookie = "token=session-token; path=/";
 
   const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
     getCurrentWeekEntries: {
       path: 'entries',
-      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['include'] === 'project' && request.queryParams['filter[current-week]'] === '1'; },
+      match(request) { return  Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-week]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
+      body: {
+        data: [
+          {
+            type: 'entries', id: '1',
+            attributes: {
+              title: null,
+              'started-at': "2016-11-25T13:01:11.000Z",
+              'stopped-at': "2016-11-25T13:10:11.000Z"
+            },
+            relationships: {
+              project: { data: { type: 'projects', id: '1' } },
+              user: { data: { type: 'users', id: '1' } }
+            }
+          },
+          {
+            type: 'entries', id: '2',
+            attributes: {
+              title: 'entry2',
+              'started-at': "2016-11-24T11:04:10.000Z",
+              'stopped-at': "2016-11-24T12:07:12.000Z"
+            },
+            relationships: {
+              user: { data: { type: 'users', id: '1' } }
+            }
+          }
+        ],
+        included: [
+          {
+            type: 'projects', id: '1',
+            attributes: { name: 'Tactic' }
+          }
+        ]
+      }
+    },
+    getCurrentMonthEntries: {
+      path: 'entries',
+      match(request) { return  Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-month]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
       body: {
         data: [
           {
@@ -202,14 +239,14 @@ test('GET entries?filter[current-week]=1&include=project and display them groupe
             }
           },
           {
-            type: 'entries', id: '3',
+            type: 'entries', id: '5',
             attributes: {
-              title: 'entry3',
-              'started-at': "2016-11-24T09:53:12.000Z",
-              'stopped-at': "2016-11-24T10:27:18.000Z"
+              title: 'entry5',
+              'started-at': "2016-11-20T11:22:10.000Z",
+              'stopped-at': "2016-11-20T13:12:12.000Z"
             },
             relationships: {
-              user: { data: { type: 'users', id: '2' } }
+              user: { data: { type: 'users', id: '1' } }
             }
           }
         ],
@@ -228,13 +265,14 @@ test('GET entries?filter[current-week]=1&include=project and display them groupe
 
   andThen(function() {
     assert.equal(currentURL(), '/', 'should start on index');
-    assert.equal(stubs.getCurrentWeekEntries.requests.length, 1, 'should GET entries?filter[current-week]=1&include=project');
+    assert.equal(stubs.getCurrentWeekEntries.requests.length, 1, 'should GET entries for the week');
+    assert.equal(stubs.getCurrentMonthEntries.requests.length, 1, 'should GET entries for the month');
 
-    const $currentUserDuration = find(".it-current-week-summary-user:contains(Me) .it-current-week-summary-user-total-duration");
-    assert.equal($currentUserDuration.text(), '01:12:02', 'should compute current user entries total duration in week');
+    const $currentWeekDuration = find(".it-user-summary-section:contains(week) .it-user-summary-duration");
+    assert.equal($currentWeekDuration.text(), '01:12:02', 'should give total duration for the week');
 
-    const $allUserDuration = find(".it-current-week-summary-user:contains(Everyone) .it-current-week-summary-user-total-duration");
-    assert.equal($allUserDuration.text(), '01:46:08', 'should compute all users entries total duration in week');
+    const $currentMonthDuration = find(".it-user-summary-section:contains(month) .it-user-summary-duration");
+    assert.equal($currentMonthDuration.text(), '03:02:04', 'should compute all users entries total duration in month');
   });
 });
 
@@ -327,7 +365,7 @@ test('update entry send PATCH /entries/ID', function(assert) {
 
   click('.it-entry:first .it-entry-title');
   fillIn('.it-entry-edit-title', "updated-entry");
-  click('.it-header'); /* send focusout */
+  click('.it-header'); // send focusout
 
   andThen(function() {
     assert.equal(stubs.patchEntry.requests.length, 1, 'should PATCH /entries/1');

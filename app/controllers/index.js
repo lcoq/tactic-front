@@ -4,7 +4,7 @@ import RunningEntryStateManager from '../models/running-entry-state-manager';
 const { get, set } = Ember;
 
 export default Ember.Controller.extend({
-  currentWeek: Ember.inject.service(),
+  userSummary: Ember.inject.service(),
 
   newEntryStateManager: Ember.computed('model.newEntry', function() {
     const entry = get(this, 'model.newEntry');
@@ -30,7 +30,7 @@ export default Ember.Controller.extend({
       stateManager.send('stop');
       return stateManager.send('save').then(() => {
         get(this, 'model.entryList').addEntry(entry);
-        get(this, 'currentWeek').reload();
+        get(this, 'userSummary').reload();
         this.send('buildNewEntry');
       });
     },
@@ -46,11 +46,11 @@ export default Ember.Controller.extend({
     },
 
     didUpdateEntry() {
-      get(this, 'currentWeek').reload();
+      get(this, 'userSummary').reload();
     },
 
     didDeleteEntry() {
-      get(this, 'currentWeek').reload();
+      get(this, 'userSummary').reload();
     }
   }
 });
