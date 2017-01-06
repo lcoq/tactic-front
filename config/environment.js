@@ -32,7 +32,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.APP.host = 'https://tactic.herokuapp.com';
   }
 
   return ENV;
