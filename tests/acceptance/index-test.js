@@ -175,7 +175,7 @@ test('GET entries for user summary and display total for week and month', functi
   const stubs = defineRequestStubs(server, Ember.merge(indexRouteStubs(), {
     getCurrentWeekEntries: {
       path: 'entries',
-      match(request) { return  Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-week]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
+      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-week]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
       body: {
         data: [
           {
@@ -212,7 +212,7 @@ test('GET entries for user summary and display total for week and month', functi
     },
     getCurrentMonthEntries: {
       path: 'entries',
-      match(request) { return  Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-month]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
+      match(request) { return Object.keys(request.queryParams).length === 2 && request.queryParams['filter[current-month]'] === '1' && request.queryParams['filter[user-id]'].length === 1; },
       body: {
         data: [
           {

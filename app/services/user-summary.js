@@ -8,12 +8,12 @@ export default Ember.Service.extend({
 
   weeekEntries: [],
   monthEntries: [],
-  
+
   currentUserId: Ember.computed.reads('authentication.userId'),
-  
+
   currentUserIdChanged: Ember.observer('currentUserId', function() {
     this.reload();
-  }),  
+  }),
 
   start() {
     this.reload();
@@ -44,5 +44,5 @@ export default Ember.Service.extend({
         'user-id': [get(this, 'currentUserId')]
       }
     });
-  }  
+  }
 });

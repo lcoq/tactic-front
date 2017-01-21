@@ -9,6 +9,6 @@ export default function userSummaryStubs() {
       path: 'entries',
       match(request) { return request.queryParams['filter[current-month]'] === '1'; },
       body: { data: [] }
-    }    
+    }
   };
 }
