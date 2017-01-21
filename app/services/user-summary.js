@@ -6,8 +6,14 @@ export default Ember.Service.extend({
   store: Ember.inject.service(),
   authentication: Ember.inject.service(),
 
-  weeekEntries: [],
-  monthEntries: [],
+  weeekEntries: null,
+  monthEntries: null,
+
+  init() {
+    this._super(...arguments);
+    set(this, 'weekEntries', []);
+    set(this, 'monthEntries', []);
+  },
 
   currentUserId: Ember.computed.reads('authentication.userId'),
 
