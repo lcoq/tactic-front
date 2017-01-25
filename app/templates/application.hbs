@@ -8,7 +8,6 @@
 
   {{#if isAuthenticated}}
     <nav class="header-nav no-print">
-      {{current-week-summary}}
       <section class="header-nav-section">
         {{#link-to "index" class="header-nav-section-title touch"}}
           Timer
@@ -24,6 +23,7 @@
           Projects
         {{/link-to}}
       </section>
+      {{user-summary}}
     </nav>
   {{/if}}
 

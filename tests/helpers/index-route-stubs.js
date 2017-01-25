@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import currentWeekStubs from './current-week-stubs';
+import userSummaryStubs from './user-summary-stubs';
 
 function getSessionsStub() {
   return {
@@ -38,7 +38,7 @@ function getEntriesStub() {
 }
 
 export default function indexRouteStubs() {
-  return Ember.merge(currentWeekStubs(), {
+  return Ember.merge(userSummaryStubs(), {
     getSessions: getSessionsStub(),
     getRunningEntry: runningEntryStub(),
     getEntries: getEntriesStub()

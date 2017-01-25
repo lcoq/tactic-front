@@ -27,9 +27,8 @@
 
 .header-nav {
   display: flex;
-  flex-grow: 1;
-  max-width: 1200px;
-  margin: auto;
+  align-items: center;
+  width: 100%;
   padding: 0 100px 0 200px;
 }
 
@@ -55,48 +54,28 @@
 }
 
 .header-nav-section-week {
+  margin-left: auto;
   background-color: $clr4;
 }
 
-.header-nav-section:hover .header-nav-section-content {
+.header-user-summary-container {
   display: flex;
-  flex-direction: column;
 }
 
-.header-nav-section-content {
-  position: absolute;
-  display: none;
-  padding: $sp-sm $sp;
-  min-width: 220px;
-  background-color: $clr5;
+.header-user-summary-section {
+  padding: 5px;
+  background-color: $clr4;
+
+  &:not(:last-of-type) {
+    margin-right: 5px;
+  }
 }
 
-.header-nav-sub-title {
-  padding: $sp-sm 0;
-  font-size: $fs-lg;
-  font-weight: bold;
+.header-user-summary-label {
+  font-size: 0.8em;
 }
 
-.header-nav-sub-list {
-  margin-left: $sp-xs;
-}
-
-.header-nav-sub-item {
-  display: flex;
-  padding: $sp-sm 0;
-}
-
-.header-nav-sub-item-label {
-  flex-grow: 1;
-}
-
-.header-nav-sub-item-duration {
-  padding-left: $sp;
-}
-
-.header-nav-sub-item-total {
-  padding-right: $sp-sm;
-  text-align: right;
-  font-variant: small-caps;
+.header-user-summary-duration {
+  font-size: 0.9em;
   font-weight: bold;
 }

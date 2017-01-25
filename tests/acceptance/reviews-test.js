@@ -5,7 +5,7 @@ import Ember from 'ember';
 import { setupServer, teardownServer } from '../helpers/fake-server';
 import defineRequestStubs from '../helpers/define-request-stubs';
 import loginRouteStubs from '../helpers/login-route-stubs';
-import currentWeekStubs from '../helpers/current-week-stubs';
+import userSummaryStubs from '../helpers/user-summary-stubs';
 
 let server;
 
@@ -51,7 +51,7 @@ test('redirects to login when a session token is stored in cookies but is invali
 test('send GET users, GET clients, GET projects, GET entries and display them when a valid session token is stored in cookies', function(assert) {
   document.cookie = "token=session-token; path=/";
 
-  const stubs = defineRequestStubs(server, Ember.merge(currentWeekStubs(), {
+  const stubs = defineRequestStubs(server, Ember.merge(userSummaryStubs(), {
     getSessions: {
       path: 'sessions',
       match(request) { return request.requestHeaders['Authorization'] === 'session-token'; },
