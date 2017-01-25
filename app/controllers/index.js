@@ -21,16 +21,21 @@ export default Ember.Controller.extend({
     startTimer() {
       const stateManager = get(this, 'newEntryStateManager');
       stateManager.send('start');
-      stateManager.send('save');
     },
 
     stopTimer() {
       const stateManager = get(this, 'newEntryStateManager');
       const entry = get(this, 'model.newEntry');
-      stateManager.send('stop');
-      return stateManager.send('save').then(() => {
+      stateManager.send('stop').then(() => {
         get(this, 'model.entryList').addEntry(entry);
         get(this, 'userSummary').reload();
+        this.send('buildNewEntry');
+      }, () => {
+        if (get(stateManager, 'isSaveErrored')) {
+          // TODO move new entry state manager logic to the entry state manager ?
+          get(entry, '_stateManager')._transitionTo('saveError');
+        }
+        get(this, 'model.entryList').addEntry(entry);
         this.send('buildNewEntry');
       });
     },

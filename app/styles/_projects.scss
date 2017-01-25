@@ -24,11 +24,7 @@
   background-color: $clr7;
 }
 
-.project.invalid, .project.errored {
-  background-color: $clr9;
-}
-
-.project.deleting {
+.project.invalid, .project.errored, .project.deleting {
   background-color: $clr9;
 }
 

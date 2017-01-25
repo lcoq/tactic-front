@@ -6,8 +6,10 @@ const { get, set, setProperties } = Ember;
 
 export default Ember.Component.extend({
   classNames: ['entry-create'],
+  classNameBindings: ['stateManager.isSaveErrored:errored'],
 
   entry: null,
+  stateManager: null,
 
   clock: Ember.computed(function() { return new Date(); }),
   clockTimer: null,
@@ -96,5 +98,9 @@ export default Ember.Component.extend({
       setProperties(this, { projectChoices: null, projectName: projectName });
       get(this, 'didUpdateEntry')();
     },
+    retrySaveEntry() {
+      const stateManager = get(this, 'stateManager');
+      stateManager.send('retry');
+    }
   }
 });

@@ -1,4 +1,8 @@
 <div class="entry-actions no-print">
+  {{#if entry.isErrored}}
+    <a {{action "retrySaveOrDeleteEntry"}} class="entry-action entry-action-retry touch">
+    </a>
+  {{/if}}
   {{#if canRevert}}
     <a {{action "revertEditEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />

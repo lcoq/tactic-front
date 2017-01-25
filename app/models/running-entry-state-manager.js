@@ -16,17 +16,17 @@ const ClearState = State.extend({
     start() {
       const entry = get(this, 'entry');
       entry.start();
+      this._transitionTo('pendingSave');
+      return this.sendToCurrentState('forceSave');
     },
     stop() {
       const entry = get(this, 'entry');
       entry.stop();
+      this._transitionTo('pendingSave');
+      return this.sendToCurrentState('forceSave');
     },
     update() {
       this._transitionTo('pendingSave');
-    },
-    save() {
-      const entry = get(this, 'entry');
-      return entry.save();
     }
   }
 });
@@ -57,15 +57,24 @@ const PendingSaveState = State.extend({
     stop() {
       this._cancelTimer();
       get(this, 'entry').stop();
-      this._transitionTo('clear');
+      return this._save();
     }
   },
 
+  _savePromise: null,
+
   _save() {
     const entry = get(this, 'entry');
-    return entry.save().then(() => {
-      this._transitionTo('clear');
+    const previousPromise = get(this, '_savePromise') || Ember.RSVP.resolve();
+    const saveEntry = () => { return entry.save(); };
+    const promise = previousPromise.then(saveEntry, saveEntry).then(() => {
+      this._transitionTo('clear'); // TODO prevent transition clear -> clear ?
+    }, () => {
+      this._transitionTo('saveError');
+      return Ember.RSVP.reject();
     });
+    set(this, '_savePromise', promise);
+    return promise;
   },
 
   _startTimer() {
@@ -82,14 +91,37 @@ const PendingSaveState = State.extend({
   }
 });
 
+const SaveErrorState = State.extend({
+  name: 'saveError',
+  isSaveErrored: true,
+
+  actions: {
+    retry() {
+      this._transitionTo('pendingSave');
+      return this.sendToCurrentState('forceSave');
+    },
+    update() {
+      this._transitionTo('pendingSave');
+    },
+    stop() {
+      const entry = get(this, 'entry');
+      entry.stop();
+      this._transitionTo('pendingSave');
+      return this.sendToCurrentState('forceSave');
+    }
+  }
+});
+
 export default StateManager.extend({
   entry: Ember.computed.alias('source'),
 
   isClear: Ember.computed.reads('currentState.isClear'),
   isPendingSave: Ember.computed.reads('currentState.isPendingSave'),
+  isSaveErrored: Ember.computed.reads('currentState.isSaveErrored'),
 
   stateClasses: [
     ClearState,
-    PendingSaveState
+    PendingSaveState,
+    SaveErrorState
   ]
 });

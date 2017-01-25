@@ -69,28 +69,28 @@
   min-width: 600px;
 }
 
-.entry:hover {
-  background-color: $clr7;
-
+.entry:hover, .entry.errored, .entry.deleting, .entry.pending {
   .entry-actions {
     display: flex;
   }
 }
 
-.entry.deleting {
-  background-color: $clr9;
-
+.entry-create.errored {
   .entry-actions {
     display: flex;
   }
+}
+
+.entry:hover {
+  background-color: $clr7;
+}
+
+.entry.errored, .entry.deleting {
+  background-color: $clr9;
 }
 
 .entry.pending {
   background-color: $clr11;
-
-  .entry-actions {
-    display: flex;
-  }
 }
 
 .entry.editing {
@@ -116,14 +116,20 @@
   align-items: center;
 }
 
-.entry-action-delete-img {
+.entry-action-delete-img, .entry-action-cancel-img {
   width: 16px;
   height: 16px;
 }
 
-.entry-action-cancel-img {
-  width: 16px;
-  height: 16px;
+.entry-action-retry {
+  background-image: url('/assets/images/offline.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+
+  &:hover {
+    background-image: url('/assets/images/refresh.svg');
+  }
 }
 
 .entry-content {
@@ -213,6 +219,7 @@
 }
 
 .entry-create {
+  position: relative;
   display: flex;
   margin-bottom: $sp;
 }

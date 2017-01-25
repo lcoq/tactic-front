@@ -1,3 +1,9 @@
+<div class="entry-actions no-print">
+  {{#if stateManager.isSaveErrored}}
+    <a {{action "retrySaveEntry"}} class="entry-action entry-action-retry touch">
+    </a>
+  {{/if}}
+</div>
 {{input value=entry.title class="entry-create-title text-input it-entry-create-title" placeholder="What are you working on ?" key-up="startTimerOrTriggerUpdate"}}
 <div class="entry-create-project-container">
   {{input value=projectName class="entry-create-project text-input" placeholder="Project" enter="clearProjectIfEmpty" selectOnFocus=true key-up="projectNameChanged"}}

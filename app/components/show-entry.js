@@ -19,6 +19,8 @@ export default Ember.Component.extend({
     'entry.isEditing:editing',
     'entry.isPendingDelete:deleting',
     'entry.isPendingSave:pending',
+    'entry.isSaveErrored:errored',
+    'entry.isDeleteErrored:errored'
   ],
   entry: null,
 
@@ -80,6 +82,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
     const entry = get(this, 'entry');
     entry.one('didDelete', this, this._didDeleteEntry);
+    entry.one('didCreate', this, this._didUpdateEntry);
     entry.one('didUpdate', this, this._didUpdateEntry);
   },
 
@@ -87,6 +90,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
     const entry = get(this, 'entry');
     entry.off('didDelete', this, this._didDeleteEntry);
+    entry.off('didCreate', this, this._didUpdateEntry);
     entry.off('didUpdate', this, this._didUpdateEntry);
   },
 
@@ -176,6 +180,13 @@ export default Ember.Component.extend({
 
   actions: {
 
+    clearFocus() {
+      Ember.$('body').click();
+    },
+    focusLost() {
+      this._closeEdit();
+    },
+
     /* edit */
 
     editEntry(selector) {
@@ -194,13 +205,11 @@ export default Ember.Component.extend({
       entry.markForDelete();
     },
 
-    /* focus */
+    /* retry */
 
-    clearFocus() {
-      Ember.$('body').click();
-    },
-    focusLost() {
-      this._closeEdit();
+    retrySaveOrDeleteEntry() {
+      const entry = get(this, 'entry');
+      entry.retry();
     },
 
     /* project */

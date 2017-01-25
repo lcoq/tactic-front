@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import EntryGroupByDayList from '../models/entry-group-by-day-list';
 
-const { get, set } = Ember;
+const { get } = Ember;
 
 export default Ember.Route.extend({
   authentication: Ember.inject.service(),
@@ -29,43 +29,50 @@ export default Ember.Route.extend({
 
   actions: {
     willTransition(transition) {
-      if (transition.data.restored) { return; }
-      transition.abort();
-
       const controller = this.controller;
       let promises = [];
 
-      const newEntryStateManager = get(controller, 'newEntryStateManager');
+      /* new entry */
 
-      if (get(newEntryStateManager, 'isPendingSave')) {
-        promises.push(newEntryStateManager.send('forceSave'));
-      }
+      const newEntryStateManager = get(controller, 'newEntryStateManager');
+      const newEntryIsPendingSave = get(newEntryStateManager, 'isPendingSave');
+      const newEntryIsSaveErrored = get(newEntryStateManager, 'isSaveErrored');
+
+      /* entry list */
 
       const entries = get(controller, 'model.entryList.entries');
+      entries.filterBy('isEditing', true).forEach(function(e) { e.markForSave(); });
 
-      const deletePromises = entries.filterBy('isDeleting', true).map(function(entryToDelete) {
-        entryToDelete.clearMarkForDelete();
-        return entryToDelete.destroyRecord();
-      });
-      const updatePromises = entries.filterBy('isPending', true).map(function(entryToUpdate) {
-        entryToUpdate.clearMarkForSave();
-        return entryToUpdate.save();
-      });
-      const editPromises = entries.filterBy('isEditing', true).map(function(entryToUpdate) {
-        set(entryToUpdate, 'isEditing', false);
-        return entryToUpdate.save();
-      });
+      const pendingDeleteEntries = entries.filterBy('isPendingDelete', true);
+      const pendingSaveEntries = entries.filterBy('isPendingSave', true);
+      const erroredEntries = entries.filterBy('isErrored', true);
 
-      promises.pushObjects(deletePromises);
-      promises.pushObjects(updatePromises);
-      promises.pushObjects(editPromises);
+      const hasPendingEntriesFromList = get(pendingDeleteEntries, 'length') > 0 || get(pendingSaveEntries, 'length') > 0 || get(erroredEntries, 'length') > 0;
 
-      Ember.RSVP.all(promises).then(function() {
-        transition.data.restored = true;
-        transition.retry();
-      }, () => {
-        /* an entry cannot be saved */
-      });
+      if (newEntryIsPendingSave || newEntryIsSaveErrored || hasPendingEntriesFromList) {
+        transition.abort();
+
+        const deletePromises = pendingDeleteEntries.map(function(e) { return e.forceDelete(); });
+        const updatePromises = pendingSaveEntries.map(function(e) { return e.forceSave(); });
+        const retryPromises = erroredEntries.map(function(e) { return e.retry(); });
+        promises.pushObjects(deletePromises);
+        promises.pushObjects(updatePromises);
+        promises.pushObjects(retryPromises);
+
+        let newEntryPromise = Ember.RSVP.resolve();
+        if (newEntryIsPendingSave) {
+          newEntryPromise = newEntryStateManager.send('forceSave');
+        } else if (newEntryIsSaveErrored) {
+          newEntryPromise = newEntryStateManager.send('retry');
+        }
+        promises.pushObject(newEntryPromise);
+
+        Ember.RSVP.all(promises).then(function() {
+          transition.retry();
+        }, () => {
+          alert("Some edits cannot be saved, please review your changes or try again.");
+        });
+      }
     }
   }
 });
