@@ -1,13 +1,10 @@
 <div class="entry-actions no-print">
-  {{#if entry.isDeleting}}
-    <a {{action "cancelDeleteEntry"}} class="entry-action entry-action-revert touch">
-      <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
-    </a>
-  {{else if entry.isPending}}
+  {{#if canRevert}}
     <a {{action "revertEditEntry"}} class="entry-action entry-action-revert touch">
       <img class="entry-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>
-  {{else}}
+  {{/if}}
+  {{#if entry.isClear}}
     <a {{action "markEntryForDelete"}} class="entry-action entry-action-delete touch it-entry-action-delete">
       <img class="entry-action-delete-img" src="/assets/images/trash.svg" alt="Delete" />
     </a>

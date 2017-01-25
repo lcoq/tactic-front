@@ -13,7 +13,7 @@ const ClearState = State.extend({
   enter() {
     const source = get(this, 'source');
     if (this.manager.checkDirty(source)) {
-      source.rollbackAttributes();
+      this.manager.rollback(source);
     }
   },
 
@@ -86,7 +86,7 @@ const DeleteErrorState = State.extend({
     },
     edit() {
       const source = get(this, 'source');
-      source.rollbackAttributes();
+      this.manager.rollback(source);
       this._transitionTo('editing');
     },
     clear() {
@@ -226,5 +226,9 @@ export default StateManager.extend({
 
   checkValid() {
     return true;
+  },
+
+  rollback(source) {
+    source.rollbackAttributes();
   }
 });

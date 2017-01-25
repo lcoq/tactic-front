@@ -1,15 +1,18 @@
 import DS from 'ember-data';
 import Ember from 'ember';
 import moment from 'moment';
+import EntryStateManager from './entry-state-manager';
+import MutableRecordStateManagerMixin from '../mixins/mutable-record-state-manager-mixin';
 
 const { get, set, setProperties } = Ember;
 
-export default DS.Model.extend({
+export default DS.Model.extend(MutableRecordStateManagerMixin, {
   title: DS.attr(),
   startedAt: DS.attr('date'),
   stoppedAt: DS.attr('date'),
   project: DS.belongsTo('project'),
   user: DS.belongsTo('user'),
+  stateManagerClass: EntryStateManager,
 
   durationInSeconds: Ember.computed('startedAt', 'stoppedAt', function() {
     const startedAt = get(this, 'startedAt');
@@ -21,45 +24,6 @@ export default DS.Model.extend({
 
   belongsToUserWithId(userId) {
     return this.belongsTo('user').id() === userId;
-  },
-
-  /* save */
-
-  saveTimer: null,
-  isPending: Ember.computed.bool('saveTimer'),
-
-  saveEntry() {
-    set(this, 'saveTimer', null);
-    return this.save();
-  },
-
-  markForSave() {
-    const timer = Ember.run.later(this, this.saveEntry, 3000);
-    setProperties(this, { saveTimer: timer, isEditing: false });
-  },
-
-  clearMarkForSave() {
-    this._clearTimer('saveTimer');
-  },
-
-  /* edit */
-
-  isEditing: false,
-
-  startEdit() {
-    this.clearMarkForDelete();
-    this.clearMarkForSave();
-    set(this, 'isEditing', true);
-  },
-
-  stopEdit() {
-    this.markForSave();
-  },
-
-  cancelEdit() {
-    this.clearMarkForSave();
-    this.rollbackAttributes();
-    this._rollbackProject();
   },
 
   /* update */
@@ -81,30 +45,11 @@ export default DS.Model.extend({
     });
   },
 
-  /* delete */
-
-  deleteTimer: null,
-  isDeleting: Ember.computed.bool('deleteTimer'),
-
-  markForDelete() {
-    const timer = Ember.run.later(this, this.deleteEntry, 3000);
-    setProperties(this, { deleteTimer: timer, isEditing: false });
-  },
-
-  clearMarkForDelete() {
-    this._clearTimer('deleteTimer');
-  },
-
-  deleteEntry() {
-    set(this, 'deleteTimer', null);
-    return this.destroyRecord();
-  },
-
   /* rollback */
 
   initialProject: null,
 
-  _rollbackProject() {
+  rollbackProject() {
     set(this, 'project', get(this, 'initialProject'));
   },
 
@@ -113,6 +58,10 @@ export default DS.Model.extend({
     project.then(() => {
       set(this, 'initialProject', get(this, 'project'));
     });
+  }),
+
+  projectHasChanged: Ember.computed('project', 'initialProject', function() {
+    return get(this, 'project.id') !== get(this, 'initialProject.id');
   }),
 
   /* start & stop */
@@ -127,14 +76,5 @@ export default DS.Model.extend({
 
   stop() {
     set(this, 'stoppedAt', new Date());
-  },
-
-
-  _clearTimer(propertyName) {
-    const timer = get(this, propertyName);
-    if (timer) {
-      Ember.run.cancel(timer);
-      set(this, propertyName, null);
-    }
   }
 });

@@ -15,8 +15,14 @@ function elementIsOrIsIn($element, $container) {
 export default Ember.Component.extend({
   tagName: 'li',
   classNames: ['entry', 'it-entry'],
-  classNameBindings: ['entry.isEditing:editing', 'entry.isDeleting:deleting', 'entry.isPending:pending'],
+  classNameBindings: [
+    'entry.isEditing:editing',
+    'entry.isPendingDelete:deleting',
+    'entry.isPendingSave:pending',
+  ],
   entry: null,
+
+  canRevert: Ember.computed.or('entry.isPendingSaveOrSaveErrored', 'entry.isPendingDeleteOrDeleteErrored'),
 
   isEditingDate: false,
 
@@ -106,7 +112,7 @@ export default Ember.Component.extend({
     this.addObserver('formattedStartedAt', this, this.formattedStartedAtChanged);
     this.addObserver('formattedStoppedAt', this, this.formattedStoppedAtChanged);
 
-    entry.startEdit();
+    entry.edit();
 
     scheduleOnce('afterRender', this, function() {
       if (selector) { this.$(selector).focus(); }
@@ -116,7 +122,7 @@ export default Ember.Component.extend({
 
   _closeEdit() {
     const entry = get(this, 'entry');
-    entry.stopEdit();
+    entry.markForSave();
 
     set(this, 'isEditingDate', false);
 
@@ -178,7 +184,7 @@ export default Ember.Component.extend({
     },
     revertEditEntry() {
       const entry = get(this, 'entry');
-      entry.cancelEdit();
+      entry.clear();
     },
 
     /* delete */
@@ -186,10 +192,6 @@ export default Ember.Component.extend({
     markEntryForDelete() {
       const entry = get(this, 'entry');
       entry.markForDelete();
-    },
-    cancelDeleteEntry() {
-      const entry = get(this, 'entry');
-      entry.clearMarkForDelete();
     },
 
     /* focus */
