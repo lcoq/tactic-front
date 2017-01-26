@@ -22,7 +22,7 @@ export default Ember.Component.extend({
 
   client: null,
 
-  canRevert: Ember.computed.or('client.isInvalid', 'client.isPendingSaveOrSaveErrored'),
+  canRevert: Ember.computed.or('client.isInvalid', 'client.isPendingSave'),
 
   didInsertElement() {
     this._super(...arguments);

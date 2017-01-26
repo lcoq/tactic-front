@@ -12,7 +12,7 @@
       <img class="project-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
     </a>
   {{/if}}
-  {{#if project.isPendingDeleteOrDeleteErrored}}
+  {{#if project.isPendingDelete}}
     <a {{action "cancelDeleteProject"}} class="project-action project-action-revert touch">
       <img class="project-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>

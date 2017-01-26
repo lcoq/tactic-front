@@ -24,7 +24,7 @@ export default Ember.Component.extend({
   ],
   entry: null,
 
-  canRevert: Ember.computed.or('entry.isPendingSaveOrSaveErrored', 'entry.isPendingDeleteOrDeleteErrored'),
+  canRevert: Ember.computed.or('entry.isPendingSave', 'entry.isPendingDelete'),
 
   isEditingDate: false,
 

@@ -12,7 +12,7 @@
       <img class="client-action-invalid-img" src="/assets/images/warn.svg" alt="Invalid" />
     </a>
   {{/if}}
-  {{#if client.isPendingDeleteOrDeleteErrored}}
+  {{#if client.isPendingDelete}}
     <a {{action "cancelDelete"}} class="client-action client-action-revert touch">
       <img class="client-action-cancel-img" src="/assets/images/revert.svg" alt="Revert" />
     </a>

@@ -68,9 +68,6 @@ const SaveErrorState = State.extend({
     },
     edit() {
       this._transitionTo('editing');
-    },
-    clear() {
-      this._transitionTo('clear');
     }
   }
 });
@@ -88,9 +85,6 @@ const DeleteErrorState = State.extend({
       const source = get(this, 'source');
       this.manager.rollback(source);
       this._transitionTo('editing');
-    },
-    clear() {
-      this._transitionTo('clear');
     }
   }
 });
