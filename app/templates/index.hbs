@@ -1,10 +1,12 @@
 <section class="entry-create-container no-print">
   {{create-entry
     entry=model.newEntry
+    stateManager=newEntryStateManager
     startTimer=(action "startTimer")
     stopTimer=(action "stopTimer")
     searchProjects=(action "searchProjects")
     didUpdateEntry=(action "didUpdateNewEntry")
+    retrySaveEntry=(action "retrySaveNewEntry")
   }}
 </section>
 {{entries-by-day

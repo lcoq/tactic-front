@@ -3,6 +3,18 @@ import RunningEntryStateManager from '../models/running-entry-state-manager';
 
 const { get, set } = Ember;
 
+function entryIsStoppedLocallyButStillRunningOnApi(entry) {
+  if (!get(entry, 'isSaveErrored')) {
+    return false;
+  }
+  // stoppedAt can be :
+  //   * set
+  //   *`undefined` on new records
+  //   * `null` on running entry saved
+  const changedAttributes = entry.changedAttributes();
+  return changedAttributes.stoppedAt && changedAttributes.stoppedAt[0] === null;
+}
+
 export default Ember.Controller.extend({
   userSummary: Ember.inject.service(),
 
@@ -21,16 +33,21 @@ export default Ember.Controller.extend({
     startTimer() {
       const stateManager = get(this, 'newEntryStateManager');
       stateManager.send('start');
-      stateManager.send('save');
     },
 
     stopTimer() {
       const stateManager = get(this, 'newEntryStateManager');
       const entry = get(this, 'model.newEntry');
-      stateManager.send('stop');
-      return stateManager.send('save').then(() => {
+      stateManager.send('stop').then(() => {
         get(this, 'model.entryList').addEntry(entry);
         get(this, 'userSummary').reload();
+        this.send('buildNewEntry');
+      }, () => {
+        if (get(stateManager, 'isSaveErrored')) {
+          // TODO move new entry state manager logic to the entry state manager ?
+          get(entry, '_stateManager')._transitionTo('saveError');
+        }
+        get(this, 'model.entryList').addEntry(entry);
         this.send('buildNewEntry');
       });
     },
@@ -38,6 +55,17 @@ export default Ember.Controller.extend({
     didUpdateNewEntry() {
       const stateManager = get(this, 'newEntryStateManager');
       stateManager.send('update');
+    },
+
+    retrySaveNewEntry() {
+      const stateManager = get(this, 'newEntryStateManager');
+      const retry = function() { stateManager.send('retry'); };
+      const runningEntryStoppedOnlyLocally = get(this, 'model.entryList.entries').find(entryIsStoppedLocallyButStillRunningOnApi);
+      if (runningEntryStoppedOnlyLocally) {
+        runningEntryStoppedOnlyLocally.retry().then(retry);
+      } else {
+        retry();
+      }
     },
 
     buildNewEntry() {

@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 
   deleteIsEnabled: Ember.computed.not('deleteIsDisabled'),
 
-  canRevert: Ember.computed.or('project.isInvalid', 'project.isPendingSaveOrSaveErrored'),
+  canRevert: Ember.computed.or('project.isInvalid', 'project.isPendingSave'),
   isClearAndDeleteIsEnabled: Ember.computed.and('project.isClear', 'deleteIsEnabled'),
 
   didInsertElement() {
