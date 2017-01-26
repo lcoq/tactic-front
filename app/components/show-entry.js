@@ -120,7 +120,10 @@ export default Ember.Component.extend({
 
     scheduleOnce('afterRender', this, function() {
       if (selector) { this.$(selector).focus(); }
-      this._watchFocusOut();
+    });
+
+    Ember.run.next(this, function() {
+      scheduleOnce('afterRender', this, function() { this._watchFocusOut(); });
     });
   },
 
@@ -138,17 +141,23 @@ export default Ember.Component.extend({
     this._unwatchFocusOut();
   },
 
+  _clickFocusesOut($element) {
+    return get(this, 'entry.isEditing') &&
+      !get(this, 'isDestroyed') &&
+      !elementIsOrIsIn($element, this.$()) &&
+      !elementIsOrIsIn($element, '.ui-datepicker-header');
+  },
+
   _watchFocusOut() {
-    Ember.$('body').on('click.focus-out-entry-edit-' + get(this, 'elementId'), (event) => {
-      if (get(this, 'entry.isEditing') && !elementIsOrIsIn(Ember.$(event.target), this.$())) {
-        if (get(this, 'isDestroyed')) { return; }
+    Ember.$(window).on('click.focus-out-entry-edit-' + get(this, 'elementId'), (event) => {
+      if (this._clickFocusesOut(Ember.$(event.target))) {
         this.send('focusLost');
       }
     });
   },
 
   _unwatchFocusOut() {
-    Ember.$('body').off('click.focus-out-entry-edit-' + get(this, 'elementId'));
+    Ember.$(window).off('click.focus-out-entry-edit-' + get(this, 'elementId'));
   },
 
   _initDatePicker(selector, initialDate, onSelect) {

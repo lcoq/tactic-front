@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import moment from 'moment';
+import scheduleOnce from '../utils/schedule-once';
 
 const { get, set, setProperties } = Ember;
+
+function elementIsOrIsIn($element, $container) {
+  return $element.is($container) || $element.closest($container).length;
+}
 
 function checkboxesProperty(type) {
   return Ember.computed(type, function() {
@@ -102,6 +107,24 @@ export default Ember.Component.extend({
     $elt.datepicker('setDate', initialDate);
   },
 
+  _watchDatePickerFocusOut(datePickerSelector, datePickerContainerSelector, clickEventName) {
+    Ember.run.next(this, function() {
+      scheduleOnce('afterRender', this, function() {
+        Ember.$(window).on(clickEventName, (event) => {
+          const $element = Ember.$(event.target);
+          if (!elementIsOrIsIn($element, datePickerContainerSelector) && !elementIsOrIsIn($element, '.ui-datepicker-header')) {
+            this._closeDatePicker(datePickerSelector, clickEventName);
+          }
+        });
+      });
+    });
+  },
+
+  _closeDatePicker(datePickerSelector, clickEventName) {
+    this.$(datePickerSelector).hide().datepicker('destroy');
+    Ember.$(window).off(clickEventName);
+  },
+
   actions: {
     checkAll(type) {
       this._changeAllCheckAndUpdateSelecteds(type, true);
@@ -114,23 +137,29 @@ export default Ember.Component.extend({
     },
 
     changeSinceDate() {
+      const clickEventName = 'click.focus-out-reviews-filter-since-datepicker';
+      this._watchDatePickerFocusOut('.js-since-datepicker', '.js-reviews-filter-from', clickEventName);
+
       this._initDatePicker('.js-since-datepicker', get(this, 'since'), (date) => {
         const properties = { since: date };
         if (moment(date).isAfter(get(this, 'before'))) {
           properties.before = date;
         }
         setProperties(this, properties);
-        this.$('.js-since-datepicker').hide().datepicker('destroy');
+        this._closeDatePicker('.js-since-datepicker', clickEventName);
       });
     },
     changeBeforeDate() {
+      const clickEventName = 'click.focus-out-reviews-filter-before-datepicker';
+      this._watchDatePickerFocusOut('.js-before-datepicker', '.js-reviews-filter-to', clickEventName);
+
       this._initDatePicker('.js-before-datepicker', get(this, 'before'), (date) => {
         const properties = { before: date };
         if (moment(date).isBefore(get(this, 'since'))) {
           properties.since = date;
         }
         setProperties(this, properties);
-        this.$('.js-before-datepicker').hide().datepicker('destroy');
+        this._closeDatePicker('.js-before-datepicker', clickEventName);
       });
     }
   }
