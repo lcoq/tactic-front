@@ -93,6 +93,7 @@ export default Ember.Controller.extend({
       project.markForDelete();
     },
     clearMarkProjectForDelete(project) {
+      this._clearMarkClientForDeleteForProject(project);
       project.clear();
     },
     didDeleteProject(project) {
