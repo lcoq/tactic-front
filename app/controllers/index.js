@@ -3,6 +3,18 @@ import RunningEntryStateManager from '../models/running-entry-state-manager';
 
 const { get, set } = Ember;
 
+function entryIsStoppedLocallyButStillRunningOnApi(entry) {
+  if (!get(entry, 'isSaveErrored')) {
+    return false;
+  }
+  // stoppedAt can be :
+  //   * set
+  //   *`undefined` on new records
+  //   * `null` on running entry saved
+  const changedAttributes = entry.changedAttributes();
+  return changedAttributes.stoppedAt && changedAttributes.stoppedAt[0] === null;
+}
+
 export default Ember.Controller.extend({
   userSummary: Ember.inject.service(),
 
@@ -43,6 +55,17 @@ export default Ember.Controller.extend({
     didUpdateNewEntry() {
       const stateManager = get(this, 'newEntryStateManager');
       stateManager.send('update');
+    },
+
+    retrySaveNewEntry() {
+      const stateManager = get(this, 'newEntryStateManager');
+      const retry = function() { stateManager.send('retry'); };
+      const runningEntryStoppedOnlyLocally = get(this, 'model.entryList.entries').find(entryIsStoppedLocallyButStillRunningOnApi);
+      if (runningEntryStoppedOnlyLocally) {
+        runningEntryStoppedOnlyLocally.retry().then(retry);
+      } else {
+        retry();
+      }
     },
 
     buildNewEntry() {

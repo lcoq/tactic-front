@@ -99,8 +99,7 @@ export default Ember.Component.extend({
       get(this, 'didUpdateEntry')();
     },
     retrySaveEntry() {
-      const stateManager = get(this, 'stateManager');
-      stateManager.send('retry');
+      get(this, 'retrySaveEntry')();
     }
   }
 });
