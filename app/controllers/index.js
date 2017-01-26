@@ -23,6 +23,22 @@ export default Ember.Controller.extend({
     return RunningEntryStateManager.create({ entry: entry });
   }),
 
+  _stopNewEntryAndAddItToEntryList() {
+    const stateManager = get(this, 'newEntryStateManager');
+    const entry = get(this, 'model.newEntry');
+    return stateManager.send('stop').then(() => {
+      get(this, 'userSummary').reload();
+    }, () => {
+      if (get(stateManager, 'isSaveErrored')) {
+        // TODO move new entry state manager logic to the entry state manager ?
+        get(entry, '_stateManager')._transitionTo('saveError');
+      }
+      return Ember.RSVP.reject();
+    }).finally(() => {
+      get(this, 'model.entryList').addEntry(entry);
+    });
+  },
+
   actions: {
 
     searchProjects(query) {
@@ -36,18 +52,7 @@ export default Ember.Controller.extend({
     },
 
     stopTimer() {
-      const stateManager = get(this, 'newEntryStateManager');
-      const entry = get(this, 'model.newEntry');
-      stateManager.send('stop').then(() => {
-        get(this, 'model.entryList').addEntry(entry);
-        get(this, 'userSummary').reload();
-        this.send('buildNewEntry');
-      }, () => {
-        if (get(stateManager, 'isSaveErrored')) {
-          // TODO move new entry state manager logic to the entry state manager ?
-          get(entry, '_stateManager')._transitionTo('saveError');
-        }
-        get(this, 'model.entryList').addEntry(entry);
+      this._stopNewEntryAndAddItToEntryList().finally(() => {
         this.send('buildNewEntry');
       });
     },
@@ -68,8 +73,8 @@ export default Ember.Controller.extend({
       }
     },
 
-    buildNewEntry() {
-      const entry = get(this, 'store').createRecord('entry');
+    buildNewEntry(attributes) {
+      const entry = get(this, 'store').createRecord('entry', attributes || {});
       set(this, 'model.newEntry', entry);
     },
 
@@ -79,6 +84,17 @@ export default Ember.Controller.extend({
 
     didDeleteEntry() {
       get(this, 'userSummary').reload();
+    },
+
+    restartEntry(entry) {
+      let beforePromise = Ember.RSVP.resolve();
+      if (get(this, 'model.newEntry.isStarted')) {
+        beforePromise = this._stopNewEntryAndAddItToEntryList();
+      }
+      beforePromise.finally(() => {
+        this.send('buildNewEntry', entry.getProperties('title', 'project'));
+        this.send('startTimer');
+      });
     }
   }
 });

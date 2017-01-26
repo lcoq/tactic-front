@@ -16,6 +16,11 @@
       <img class="entry-action-delete-img" src="/assets/images/calendar.svg" alt="Change date" />
     </a>
   {{/if}}
+  {{#if canRestartEntry}}
+    <a {{action "restartEntry"}} class="entry-action entry-action-restart touch">
+      <img class="entry-action-restart-img" src="/assets/images/play.svg" alt="Restart" />
+    </a>
+  {{/if}}
 </div>
 <div class="entry-content">
   {{#if isEditingDate}}<div class="entry-edit-date js-datepicker" />{{/if}}
