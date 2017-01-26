@@ -71,6 +71,8 @@ test('logs in POST sessions and redirect to index', function(assert) {
       match(request) {
         const json = JSON.parse(request.requestBody);
         return json.data &&
+          json.data.attributes &&
+          json.data.attributes.password === 'my-password' &&
           json.data.relationships &&
           json.data.relationships.user &&
           json.data.relationships.user.data &&
@@ -87,7 +89,9 @@ test('logs in POST sessions and redirect to index', function(assert) {
   }));
 
   visit('/login');
-  click('.it-select-user');
+  click('.it-select-user:first');
+  fillIn('.it-user-password:first', 'my-password');
+  keyEvent('.it-user-password:first', 'keyup', 13);
 
   andThen(function() {
     assert.equal(stubs.postSessions.requests.length, 1, 'should have POST sessions');

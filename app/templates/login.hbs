@@ -2,10 +2,18 @@
   <h1 class="login-title">Who are you ?</h1>
   <ul class="login-list">
     {{#each model as |user|}}
-      <li>
-        <a {{action "logIn" user}} class="login-item touch it-select-user">
+      <li class="login-item {{if (get errorByUserId user.id) "errored"}}">
+        <label for="{{concat "password-" user.id}}" class="touch login-item-label it-select-user">
           @ {{user.name}}
-        </a>
+        </label>
+        {{input
+          type="password"
+          value=(mut (get passwordByUserId user.id))
+          id=(concat "password-" user.id)
+          class="touch login-item-password it-user-password"
+          enter=(action "logIn" user)
+          key-up=(action "clearError" user)
+        }}
       </li>
     {{/each}}
   </ul>
