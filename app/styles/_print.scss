@@ -54,6 +54,11 @@ body {
   content: ', ';
 }
 
+.reviews-filter-clients .reviews-filter-item:not(:last-of-type):after {
+  display: inline;
+  content: ', ';
+}
+
 .reviews-filter-from, .reviews-filter-to {
   display: inline;
   font-size: $fs-xl;
