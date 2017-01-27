@@ -64,6 +64,13 @@ export default Ember.Component.extend({
     },
     changeHoveredProject(project) {
       set(this, 'hoveredProject', project);
+    },
+    clearProjects() {
+      // Run later to ensure #selectProject action is called on project click
+      Ember.run.later(this, function() {
+        if (get(this, 'isDestroying') || get(this, 'isDestroyed')) { return; }
+        set(this, 'projects', null);
+      }, 200);
     }
   }
 });

@@ -1,4 +1,4 @@
-{{input value=projectName class=(concat "text-input " (concat classNamePrefix "-project ") (concat "js-" classNamePrefix "-project")) selectOnFocus=true key-up="keyPressed" placeholder="Project"}}
+{{input value=projectName class=(concat "text-input " (concat classNamePrefix "-project ") (concat "js-" classNamePrefix "-project")) selectOnFocus=true key-up="keyPressed" focus-out="clearProjects" placeholder="Project"}}
 {{#if projects}}
   <ul class="{{concat classNamePrefix '-project-choices'}}">
     {{#each projects as |project|}}
