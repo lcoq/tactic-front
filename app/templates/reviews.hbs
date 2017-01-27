@@ -11,12 +11,15 @@
   since=since
   before=before
 
+  rounding=rounding
+
   updateSelectedUsers=(action "updateSelectedUsers")
   updateSelectedClients=(action "updateSelectedClients")
   updateSelectedProjects=(action "updateSelectedProjects")
 }}
 {{entries-by-client-and-project
   list=entriesByClientAndProject
+  rounding=(mut rounding)
   didDeleteEntry=(action "didDeleteEntry")
   didUpdateEntry=(action "didUpdateEntry")
   searchProjects=(action "searchProjects")

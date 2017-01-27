@@ -127,3 +127,11 @@
   padding: $sp;
   font-size: $fs-xs;
 }
+
+.reviews-filter-rounding-checkbox-container {
+  display: flex;
+}
+
+.reviews-filter-rounding-checkbox {
+  margin-right: $sp-xs;
+}

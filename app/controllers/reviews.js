@@ -58,6 +58,8 @@ export default Ember.Controller.extend({
     return moment().hours(0).minutes(0).seconds(0).toDate();
   }),
 
+  rounding: false,
+
   actions: {
     updateSelectedUsers(newUsers) {
       set(this, 'selectedUsers', newUsers);

@@ -7,6 +7,7 @@ export default Ember.Component.extend({
   classNames: ['entry-root-group-list'],
 
   list: null,
+  rounding: false,
 
   actions: {
 
