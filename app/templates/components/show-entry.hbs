@@ -36,14 +36,12 @@
 
   {{#if entry.isEditing}}
     <div class="entry-project touch it-entry-project">
-      {{input value=projectName class="entry-edit-project text-input js-entry-edit-project" enter="clearProjectIfEmpty" selectOnFocus=true key-up="projectNameChanged"}}
-      {{#if projectChoices}}
-        <ul class="entry-edit-project-choices">
-          {{#each projectChoices as |project|}}
-            <li {{action "selectProject" project}} class="entry-edit-project-choice touch">{{project.name}}</li>
-          {{/each}}
-        </ul>
-      {{/if}}
+      {{entry-choose-project
+        projectName=(unbound entry.project.name)
+        classNamePrefix="entry-edit"
+        searchProjects=searchProjects
+        selectProject=(action "selectProject")
+      }}
     </div>
   {{else}}
     <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">

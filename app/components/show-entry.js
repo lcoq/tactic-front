@@ -28,8 +28,6 @@ export default Ember.Component.extend({
 
   isEditingDate: false,
 
-  projectName: null,
-
   formattedDuration: null,
   formattedDurationChanged: Ember.observer('formattedDuration', function() {
     const duration = parseDuration(get(this, 'formattedDuration'));
@@ -76,8 +74,6 @@ export default Ember.Component.extend({
     }
   },
 
-  projectChoices: null,
-
   didInsertElement() {
     this._super(...arguments);
     const entry = get(this, 'entry');
@@ -92,14 +88,6 @@ export default Ember.Component.extend({
     entry.off('didDelete', this, this._didDeleteEntry);
     entry.off('didCreate', this, this._didUpdateEntry);
     entry.off('didUpdate', this, this._didUpdateEntry);
-  },
-
-  _searchProjects() {
-    const query = get(this, 'projectName');
-    if (!get(this, 'entry.isEditing')) { return; }
-    get(this, 'searchProjects')(query).then((projects) => {
-      set(this, 'projectChoices', projects);
-    });
   },
 
   _openEdit(selector) {
@@ -214,15 +202,6 @@ export default Ember.Component.extend({
 
     /* project */
 
-    projectNameChanged() {
-      Ember.run.debounce(this, this._searchProjects, 500);
-    },
-
-    clearProjectIfEmpty() {
-      if (Ember.isEmpty(get(this, 'projectName'))) {
-        this.send('selectProject', null);
-      }
-    },
     selectProject(project) {
       set(this, 'entry.project', project);
       this._closeEdit();

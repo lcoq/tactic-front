@@ -1,0 +1,8 @@
+{{input value=projectName class=(concat "text-input " (concat classNamePrefix "-project ") (concat "js-" classNamePrefix "-project")) selectOnFocus=true key-up="keyPressed" placeholder="Project"}}
+{{#if projects}}
+  <ul class="{{concat classNamePrefix '-project-choices'}}">
+    {{#each projects as |project|}}
+      <li {{action "selectProject" project}} {{action "changeHoveredProject" project on="mouseEnter"}} class="{{concat classNamePrefix '-project-choice'}} touch {{if (eq project hoveredProject) "selected"}}">{{project.name}}</li>
+    {{/each}}
+  </ul>
+{{/if}}
