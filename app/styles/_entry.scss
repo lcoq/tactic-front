@@ -192,19 +192,24 @@
   max-width: 100%;
 }
 
-.entry-edit-project-choices {
+.entry-edit-project-choices, .entry-create-project-choices {
   position: absolute;
   background-color: $clr3;
   z-index: 1;
   min-width: 100%;
 }
 
-.entry-edit-project-choice {
+.entry-edit-project-choice, .entry-create-project-choice {
   padding: 0 $sp;
   white-space: nowrap;
 
   &:not(:last-of-type) {
     border-bottom: 1px solid $clr7;
+  }
+
+  &.selected {
+    color: $clr1;
+    background-color: $clr8;
   }
 }
 
@@ -248,20 +253,7 @@
 }
 
 .entry-create-project-choices {
-  position: absolute;
-  background-color: $clr3;
-  z-index: 1;
   line-height: $btn-size;
-  min-width: 100%;
-}
-
-.entry-create-project-choice {
-  padding: 0 $sp;
-  white-space: nowrap;
-
-  &:not(:last-of-type) {
-    border-bottom: 1px solid $clr7;
-  }
 }
 
 .entry-create-duration {

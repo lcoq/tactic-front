@@ -20,20 +20,12 @@ export default Ember.Component.extend({
     return formatDuration(startedAt, clock);
   }),
 
-  projectName: null,
-  projectChoices: null,
+  projectName: Ember.computed.reads('entry.project.name'),
 
   didReceiveAttrs() {
     this._super(...arguments);
-    const entry = get(this, 'entry');
-
-    if (get(entry, 'isStarted')) {
+    if (get(this, 'entry.isStarted')) {
       this._updateClockAndRestartTimer();
-      get(entry, 'project').then((project) => {
-        if (project) {
-          set(this, 'projectName', get(project, 'name'));
-        }
-      });
     }
   },
 
@@ -41,13 +33,6 @@ export default Ember.Component.extend({
     this._super(...arguments);
     Ember.run.cancel(get(this, 'clockTimer'));
     set(this, 'clockTimer', null);
-  },
-
-  _searchProjects() {
-    const query = get(this, 'projectName');
-    get(this, 'searchProjects')(query).then((projects) => {
-      set(this, 'projectChoices', projects);
-    });
   },
 
   _updateClockAndRestartTimer() {
@@ -78,24 +63,14 @@ export default Ember.Component.extend({
     stopTimer() {
       Ember.run.cancel(get(this, 'clockTimer'));
       set(this, 'clockTimer', null);
-
       get(this, 'stopTimer')();
-      setProperties(this, { projectChoices: null, projectName: null });
-    },
-    clearProjectIfEmpty() {
-      if (Ember.isEmpty(get(this, 'projectName'))) {
-        this.send('selectProject', null);
-      }
-    },
-    projectNameChanged() {
-      this.send('startTimer');
-      Ember.run.debounce(this, this._searchProjects, 500);
+      set(this, 'projectName', null);
     },
     selectProject(project) {
-      const entry = get(this, 'entry');
-      const projectName = project ? get(project, 'name') : null;
-      set(entry, 'project', project);
-      setProperties(this, { projectChoices: null, projectName: projectName });
+      setProperties(this, {
+        'entry.project': project,
+        'projectName': get(project, 'name')
+      });
       get(this, 'didUpdateEntry')();
     },
     retrySaveEntry() {
