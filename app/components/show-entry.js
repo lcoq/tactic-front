@@ -25,6 +25,7 @@ export default Ember.Component.extend({
   entry: null,
 
   canRevert: Ember.computed.or('entry.isPendingSave', 'entry.isPendingDelete'),
+  canRestartEntry: Ember.computed.and('restartEntry', 'entry.isClear'),
 
   isEditingDate: false,
 
@@ -248,6 +249,13 @@ export default Ember.Component.extend({
         get(this, 'entry').updateToDate(date);
         this._closeEdit();
       });
+    },
+
+    /* restart */
+
+    restartEntry() {
+      const entry = get(this, 'entry');
+      get(this, 'restartEntry')(entry);
     }
   }
 });
