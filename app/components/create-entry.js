@@ -69,7 +69,7 @@ export default Ember.Component.extend({
     selectProject(project) {
       setProperties(this, {
         'entry.project': project,
-        'projectName': get(project, 'name')
+        'projectName': project && get(project, 'name')
       });
       get(this, 'didUpdateEntry')();
     },
