@@ -3,7 +3,7 @@
   color: $clr2;
 }
 
-.entry-root-group-header, .entry-group-header {
+.entry-root-group-list-header, .entry-root-group-header, .entry-group-header {
   display: flex;
   align-items: center;
   padding: $sp-sm;
@@ -19,6 +19,24 @@
   margin-left: $sp;
   font-weight: bold;
   font-size: $fs-sm;
+}
+
+.entry-root-group-list-header {
+  background-color: $clr17;
+}
+
+.entry-root-group-list-header-title {
+  color: $clr4;
+  font-size: $fs-xl;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.entry-root-group-list-header-duration {
+  color: $clr5;
+  margin-left: $sp;
+  font-weight: bold;
+  font-size: $fs-lg;
 }
 
 .entry-root-group {

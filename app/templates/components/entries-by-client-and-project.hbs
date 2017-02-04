@@ -1,3 +1,9 @@
+<header class="entry-root-group-list-header">
+  <h2 class="entry-root-group-list-header-title">Total</h2>
+  <div class="entry-root-group-list-header-duration">
+    {{format-duration (if rounding list.roundedDurationInSeconds list.durationInSeconds)}}
+  </div>
+</header>
 {{#each list.groups as |group|}}
   <section class="entry-root-group">
     <header class="entry-root-group-header">
