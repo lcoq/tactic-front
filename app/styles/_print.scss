@@ -30,11 +30,12 @@ body {
   font-weight: bold;
 }
 
-.reviews-filter-item-list-container, .reviews-filter-item-list, .reviews-filter-item {
+.reviews-filter-users .reviews-filter-header-title:after {
   display: inline;
+  content: ': ';
 }
 
-.reviews-filter-users .reviews-filter-header-title:after {
+.reviews-filter-clients .reviews-filter-header-title:after {
   display: inline;
   content: ': ';
 }
@@ -42,21 +43,6 @@ body {
 .reviews-filter-projects .reviews-filter-header-title:after {
   display: inline;
   content: ': ';
-}
-
-.reviews-filter-users .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
-}
-
-.reviews-filter-projects .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
-}
-
-.reviews-filter-clients .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
 }
 
 .reviews-filter-from, .reviews-filter-to {
