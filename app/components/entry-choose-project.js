@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 
   projects: null,
 
-  hoveredProject: Ember.computed('projects', function() {
+  hoveredProject: Ember.computed('projects.firstObject', function() {
     return get(this, 'projects.firstObject');
   }),
 
@@ -21,6 +21,9 @@ export default Ember.Component.extend({
     get(this, 'searchProjects')(query).then((projects) => {
       if (get(this, 'isDestroying') || get(this, 'isDestroyed')) { return; }
       set(this, 'projects', projects);
+      if (projects) {
+        set(this, 'hoveredProject', get(projects, 'firstObject'));
+      }
     });
   },
 
