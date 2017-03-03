@@ -1,4 +1,4 @@
-<section class="reviews-filter reviews-filter-users js-reviews-filter-users">
+<section class="reviews-filter reviews-filter-users js-reviews-filter-users {{if allUsersSelected "no-print"}}">
   <header class="reviews-filter-header">
     <h2 class="reviews-filter-header-title">Users</h2>
     <div class="reviews-filter-header-count no-print">({{selectedUsers.length}}/{{users.length}})</div>
@@ -20,7 +20,7 @@
     </ul>
   </div>
 </section>
-<section class="reviews-filter reviews-filter-clients js-reviews-filter-clients">
+<section class="reviews-filter reviews-filter-clients js-reviews-filter-clients {{if allClientsSelected "no-print"}}">
   <header class="reviews-filter-header">
     <h2 class="reviews-filter-header-title">Clients</h2>
     <div class="reviews-filter-header-count no-print">({{selectedClients.length}}/{{clients.length}})</div>
@@ -42,7 +42,7 @@
     </ul>
   </div>
 </section>
-<section class="reviews-filter reviews-filter-projects js-reviews-filter-projects">
+<section class="reviews-filter reviews-filter-projects js-reviews-filter-projects {{if allProjectsSelected "no-print"}}">
   <header class="reviews-filter-header">
     <h2 class="reviews-filter-header-title">Projects</h2>
     <div class="reviews-filter-header-count no-print">({{selectedProjects.length}}/{{projects.length}})</div>
