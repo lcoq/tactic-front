@@ -57,6 +57,10 @@ body {
 
 /* entry group */
 
+.entry-group {
+  margin-bottom: $sp-sm;
+}
+
 .entry-group-list-duration {
   margin-top: $sp-sm;
   margin-bottom: $sp-lg;
@@ -81,6 +85,7 @@ body {
 
 .entry-root-group-list-header {
   background-color: inherit;
+  padding: $sp-sm 0;
   margin: $sp 0;
 }
 
@@ -94,15 +99,17 @@ body {
 }
 
 .entry-group-header {
-  background-color: $clr3;
+  border-bottom: 1px solid $clr2;
 }
 
 .entry-group-header-duration {
   color: $clr8;
+  font-weight: bold;
 }
 
 .entry-root-group-header-duration {
   color: $clr3;
+  font-weight: bold;
 }
 
 
