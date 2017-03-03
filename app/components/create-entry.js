@@ -27,6 +27,7 @@ export default Ember.Component.extend({
     if (get(this, 'entry.isStarted')) {
       this._updateClockAndRestartTimer();
     }
+    set(this, 'projectName', get(this, 'entry.project.name'));
   },
 
   willDestroyElement() {
