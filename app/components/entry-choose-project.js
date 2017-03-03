@@ -61,6 +61,7 @@ export default Ember.Component.extend({
     selectProject(project) {
       get(this, 'selectProject')(project);
       set(this, 'projects', null);
+      this.$('input').blur();
     },
     changeHoveredProject(project) {
       set(this, 'hoveredProject', project);
