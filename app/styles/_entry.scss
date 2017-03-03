@@ -123,15 +123,15 @@
 .entry-actions {
   display: none;
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translate(-100%, -50%);
+  right: 100%;
+  top: 0;
 }
 
 .entry-action {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: $sp-sm 0;
 }
 
 .entry-action-delete-img, .entry-action-cancel-img, .entry-action-restart-img {
