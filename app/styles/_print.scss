@@ -124,6 +124,10 @@ body {
   display: flex;
 }
 
+.entry-date {
+  padding-right: $sp-sm;
+}
+
 .entry-title {
   width: 55%;
   padding-right: $sp-sm;

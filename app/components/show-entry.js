@@ -24,6 +24,8 @@ export default Ember.Component.extend({
     'rounding:disabled'
   ],
 
+  showDate: true,
+
   entry: null,
   rounding: false,
 
