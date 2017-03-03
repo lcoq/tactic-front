@@ -121,6 +121,7 @@
 .reviews-filter-from-date, .reviews-filter-to-date {
   display: none;
   position: absolute;
+  top: 100%;
   left: 0;
   z-index: 2;
   background-color: $clr3;
