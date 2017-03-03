@@ -82,3 +82,9 @@
     <div class="reviews-filter-to-date js-before-datepicker no-print" />
   </header>
 </section>
+<section class="reviews-filter reviews-filter-rounding no-print">
+  <label class="reviews-filter-rounding-checkbox-container">
+    <input {{action "toggleRounding" on="change"}} type="checkbox" checked={{rounding}} class="reviews-filter-rounding-checkbox" />
+    <span>Round</span>
+  </label>
+</section>

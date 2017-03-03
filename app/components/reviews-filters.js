@@ -161,6 +161,9 @@ export default Ember.Component.extend({
         setProperties(this, properties);
         this._closeDatePicker('.js-before-datepicker', clickEventName);
       });
+    },
+    toggleRounding() {
+      this.toggleProperty('rounding');
     }
   }
 });

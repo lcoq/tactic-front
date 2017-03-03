@@ -13,5 +13,8 @@ export default Ember.Object.extend({
   },
 
   durationInSeconds: Ember.computed.sum('_entriesDurationsInSeconds'),
-  _entriesDurationsInSeconds: Ember.computed.mapBy('entries', 'durationInSeconds')
+  _entriesDurationsInSeconds: Ember.computed.mapBy('entries', 'durationInSeconds'),
+
+  roundedDurationInSeconds: Ember.computed.sum('_roundedEntriesDurationsInSeconds'),
+  _roundedEntriesDurationsInSeconds: Ember.computed.mapBy('entries', 'roundedDurationInSeconds')
 });

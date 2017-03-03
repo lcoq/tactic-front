@@ -20,9 +20,12 @@ export default Ember.Component.extend({
     'entry.isPendingDelete:deleting',
     'entry.isPendingSave:pending',
     'entry.isSaveErrored:errored',
-    'entry.isDeleteErrored:errored'
+    'entry.isDeleteErrored:errored',
+    'rounding:disabled'
   ],
+
   entry: null,
+  rounding: false,
 
   canRevert: Ember.computed.or('entry.isPendingSave', 'entry.isPendingDelete'),
   canRestartEntry: Ember.computed.and('restartEntry', 'entry.isClear'),
@@ -188,7 +191,7 @@ export default Ember.Component.extend({
     /* edit */
 
     editEntry(selector) {
-      if (get(this, 'entry.isEditing')) { return; }
+      if (get(this, 'entry.isEditing') || get(this, 'rounding')) { return; }
       this._openEdit(selector);
     },
     revertEditEntry() {

@@ -99,7 +99,7 @@
   }
 }
 
-.entry:hover {
+.entry:not(.disabled):hover {
   background-color: $clr7;
 }
 

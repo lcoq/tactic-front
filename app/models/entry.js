@@ -76,5 +76,35 @@ export default DS.Model.extend(MutableRecordStateManagerMixin, {
 
   stop() {
     set(this, 'stoppedAt', new Date());
-  }
+  },
+
+  /* rounding */
+
+  roundedDurationInSeconds: Ember.computed('durationInSeconds', function() {
+    const seconds = get(this, 'durationInSeconds');
+    const minutes = (seconds - (seconds % 60)) / 60.0;
+    const roundToMinutes = 5;
+    let roundedMinutes = minutes;
+    if (minutes % roundToMinutes !== 0) {
+      roundedMinutes = minutes + (roundToMinutes - (minutes % roundToMinutes));
+    }
+    return roundedMinutes * 60;
+  }),
+
+  roundedStartedAt: Ember.computed('startedAt', function() {
+    const time = moment(get(this, 'startedAt'));
+    const minutes = time.minutes();
+    const roundToMinutes = 5;
+    let rounded = time.seconds(0);
+    if (minutes % roundToMinutes !== 0) {
+      rounded = rounded.minutes(minutes + (roundToMinutes - (minutes % roundToMinutes)));
+    }
+    return rounded.toDate();
+  }),
+
+  roundedStoppedAt: Ember.computed('roundedStartedAt', 'roundedDurationInSeconds', function() {
+    const startedAt = moment(get(this, 'roundedStartedAt'));
+    const roundedDuration = get(this, 'roundedDurationInSeconds');
+    return startedAt.seconds(roundedDuration).toDate();
+  })
 });
