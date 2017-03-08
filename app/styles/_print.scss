@@ -90,13 +90,10 @@ body {
 }
 
 .entry-root-group-header {
-  background-color: $clr5;
   margin: $sp 0;
+  border: 1px solid $clr2;
 }
 
-.entry-root-group-header-title {
-  color: $clr1;
-}
 
 .entry-group-header {
   border-bottom: 1px solid $clr2;
@@ -108,7 +105,6 @@ body {
 }
 
 .entry-root-group-header-duration {
-  color: $clr3;
   font-weight: bold;
 }
 
@@ -129,16 +125,14 @@ body {
 }
 
 .entry-title {
-  width: 55%;
+  width: 85%;
   padding-right: $sp-sm;
 }
 
 .entry-project {
-  width: 35%;
   padding-right: $sp-sm;
 }
 
 .entry-duration {
-  width: 10%;
   padding-right: $sp-sm;
 }
