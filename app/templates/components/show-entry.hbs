@@ -57,7 +57,7 @@
       }}
     </div>
   {{else}}
-    <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
+    <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project {{if groupedByProject "no-print"}}">
       {{#if entry.project}}
         {{entry.project.name}}
       {{else}}
