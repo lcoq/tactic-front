@@ -12,7 +12,7 @@ function allSelectedProperty(allProperty, selectedProperty) {
   return Ember.computed(allProperty, selectedProperty, function() {
     const total = get(this, allProperty + '.length');
     const selected = get(this, selectedProperty + '.length');
-    return (total == selected);
+    return (total === selected);
   });
 }
 
