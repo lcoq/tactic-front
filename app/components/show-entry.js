@@ -25,10 +25,10 @@ export default Ember.Component.extend({
   ],
 
   groupedBy: null,
-  groupedByDay: Ember.computed.equal('groupedBy', 'day'),
-  groupedByProject: Ember.computed.equal('groupedBy', 'project'),
+  isGroupedByDay: Ember.computed.equal('groupedBy', 'day'),
+  isGroupedByProject: Ember.computed.equal('groupedBy', 'project'),
 
-  showDate: Ember.computed.not('groupedByDay'),
+  showDate: Ember.computed.not('isGroupedByDay'),
 
   entry: null,
   rounding: false,
