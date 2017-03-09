@@ -155,7 +155,7 @@
   align-items: center;
 }
 
-.entry-title, .entry-duration, .entry-started-at, .entry-stopped-at {
+.entry-date, .entry-title, .entry-duration, .entry-started-at, .entry-stopped-at {
   display: flex;
   align-items: center;
   min-height: $btn-size;
@@ -163,6 +163,11 @@
 
 .entry-project, .entry-duration, .entry-started-at, .entry-stopped-at {
   line-height: $btn-size;
+}
+
+.entry-date {
+  padding-right: $sp-sm;
+  line-height: 30px;
 }
 
 .entry-title {

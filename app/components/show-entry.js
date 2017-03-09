@@ -24,6 +24,12 @@ export default Ember.Component.extend({
     'rounding:disabled'
   ],
 
+  groupedBy: null,
+  isGroupedByDay: Ember.computed.equal('groupedBy', 'day'),
+  isGroupedByProject: Ember.computed.equal('groupedBy', 'project'),
+
+  showDate: Ember.computed.not('isGroupedByDay'),
+
   entry: null,
   rounding: false,
 

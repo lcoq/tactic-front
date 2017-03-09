@@ -27,6 +27,12 @@
 <div class="entry-content">
   {{#if isEditingDate}}<div class="entry-edit-date js-datepicker" />{{/if}}
 
+  {{#if showDate}}
+    <div class="entry-date">
+      {{moment-format entry.startedAt "DD/MM"}}
+    </div>
+  {{/if}}
+
   {{#if entry.isEditing}}
     <div class="entry-title touch it-entry-title">
       {{input value=entry.title class="entry-edit-title text-input js-entry-edit-title it-entry-edit-title" enter="clearFocus" selectOnFocus=true}}
@@ -51,7 +57,7 @@
       }}
     </div>
   {{else}}
-    <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project">
+    <div {{action "editEntry" ".js-entry-edit-project"}} class="entry-project touch it-entry-project {{if isGroupedByProject "no-print"}}">
       {{#if entry.project}}
         {{entry.project.name}}
       {{else}}

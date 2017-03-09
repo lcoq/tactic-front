@@ -30,11 +30,12 @@ body {
   font-weight: bold;
 }
 
-.reviews-filter-item-list-container, .reviews-filter-item-list, .reviews-filter-item {
+.reviews-filter-users .reviews-filter-header-title:after {
   display: inline;
+  content: ': ';
 }
 
-.reviews-filter-users .reviews-filter-header-title:after {
+.reviews-filter-clients .reviews-filter-header-title:after {
   display: inline;
   content: ': ';
 }
@@ -42,21 +43,6 @@ body {
 .reviews-filter-projects .reviews-filter-header-title:after {
   display: inline;
   content: ': ';
-}
-
-.reviews-filter-users .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
-}
-
-.reviews-filter-projects .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
-}
-
-.reviews-filter-clients .reviews-filter-item:not(:last-of-type):after {
-  display: inline;
-  content: ', ';
 }
 
 .reviews-filter-from, .reviews-filter-to {
@@ -70,6 +56,10 @@ body {
 }
 
 /* entry group */
+
+.entry-group {
+  margin-bottom: $sp-sm;
+}
 
 .entry-group-list-duration {
   margin-top: $sp-sm;
@@ -95,28 +85,27 @@ body {
 
 .entry-root-group-list-header {
   background-color: inherit;
+  padding: $sp-sm 0;
   margin: $sp 0;
 }
 
 .entry-root-group-header {
-  background-color: $clr5;
   margin: $sp 0;
+  border: 1px solid $clr2;
 }
 
-.entry-root-group-header-title {
-  color: $clr1;
-}
 
 .entry-group-header {
-  background-color: $clr3;
+  border-bottom: 1px solid $clr2;
 }
 
 .entry-group-header-duration {
   color: $clr8;
+  font-weight: bold;
 }
 
 .entry-root-group-header-duration {
-  color: $clr3;
+  font-weight: bold;
 }
 
 
@@ -131,17 +120,19 @@ body {
   display: flex;
 }
 
+.entry-date {
+  padding-right: $sp-sm;
+}
+
 .entry-title {
-  width: 55%;
+  width: 85%;
   padding-right: $sp-sm;
 }
 
 .entry-project {
-  width: 35%;
   padding-right: $sp-sm;
 }
 
 .entry-duration {
-  width: 10%;
   padding-right: $sp-sm;
 }

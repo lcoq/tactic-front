@@ -8,6 +8,14 @@ function elementIsOrIsIn($element, $container) {
   return $element.is($container) || $element.closest($container).length;
 }
 
+function allSelectedProperty(allProperty, selectedProperty) {
+  return Ember.computed(allProperty, selectedProperty, function() {
+    const total = get(this, allProperty + '.length');
+    const selected = get(this, selectedProperty + '.length');
+    return (total === selected);
+  });
+}
+
 function checkboxesProperty(type) {
   return Ember.computed(type, function() {
     const collection = get(this, type);
@@ -46,12 +54,15 @@ export default Ember.Component.extend({
 
   users: null,
   selectedUsers: null,
+  allUsersSelected: allSelectedProperty('users', 'selectedUsers'),
 
   clients: null,
   selectedClients: null,
+  allClientsSelected: allSelectedProperty('clients', 'selectedClients'),
 
   projects: null,
   selectedProjects: null,
+  allProjectsSelected: allSelectedProperty('projects', 'selectedProjects'),
 
   since: null,
   before: null,

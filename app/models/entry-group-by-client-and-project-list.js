@@ -8,6 +8,8 @@ export default EntryGroup.extend({
   entries: null,
   groups: null,
 
+  multipleGroups: Ember.computed.gt('groups.length', 1),
+
   removeEntry(entry) {
     const groups = get(this, 'groups');
     const group = this._findGroupByEntry(groups, entry);
