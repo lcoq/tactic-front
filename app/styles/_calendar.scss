@@ -24,6 +24,9 @@
 }
 
 .ui-datepicker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0 $sp-sm $sp-sm $sp-sm;
 }
 
@@ -36,16 +39,24 @@
   cursor: pointer;
 
   &.ui-datepicker-prev {
-    float: left;
+    width: $btn-size;
+    height: $btn-size;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   &.ui-datepicker-next {
-    float: right;
+    order: 3;
+    width: $btn-size;
+    height: $btn-size;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
 .ui-datepicker-title {
   line-height: 20px;
-  text-align: center;
   cursor: default;
 }
 
