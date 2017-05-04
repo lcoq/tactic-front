@@ -16,7 +16,7 @@ module.exports = function(deployTarget) {
       type: 'rsync',
       dest: '/home/ember-deploy/tactic-front/www',
       delete: true,
-      host: 'ember-deploy@198.49.73.86',
+      host: 'ember-deploy@104.129.41.66',
       args: ['--verbose', '-ztl']
     }
   }
@@ -26,4 +26,3 @@ module.exports = function(deployTarget) {
   // ENV object synchronously.
   return ENV;
 };
-
