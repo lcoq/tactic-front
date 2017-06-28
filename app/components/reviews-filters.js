@@ -49,9 +49,6 @@ function toggleCheck(checkboxes, item) {
 }
 
 export default Ember.Component.extend({
-  tagName: 'section',
-  classNames: ['reviews-filters'],
-
   users: null,
   selectedUsers: null,
   allUsersSelected: allSelectedProperty('users', 'selectedUsers'),

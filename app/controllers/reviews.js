@@ -7,7 +7,7 @@ const { get, set } = Ember;
 export default Ember.Controller.extend({
   userSummary: Ember.inject.service(),
 
-  entries: Ember.computed('selectedUsers.@each.id', 'selectedProjects.@each.id', 'since', 'before', function() {
+  entries: Ember.computed('selectedUsers.@each.id', 'selectedProjects.@each.id', 'since', 'before', 'query', function() {
     const selectedUserIds = get(this, 'selectedUsers').mapBy('id');
     const selectedProjectIds = get(this, 'selectedProjects').mapBy('id');
 
@@ -15,14 +15,19 @@ export default Ember.Controller.extend({
       return [];
     }
 
-    return get(this, 'store').query('entry', {
-      filter: {
-        'since': moment(get(this, 'since')).startOf('day').toISOString(),
-        'before': moment(get(this, 'before')).endOf('day').toISOString(),
-        'user-id': selectedUserIds,
-        'project-id': selectedProjectIds
-      }
-    });
+    const filters = {
+      'since': moment(get(this, 'since')).startOf('day').toISOString(),
+      'before': moment(get(this, 'before')).endOf('day').toISOString(),
+      'user-id': selectedUserIds,
+      'project-id': selectedProjectIds
+    };
+
+    let query = get(this, 'query');
+    if (Ember.isPresent(query)) {
+      filters['query'] = query;
+    }
+
+    return get(this, 'store').query('entry', { filter: filters });
   }),
 
   entriesByClientAndProject: Ember.computed('entries.[]', function() {
@@ -60,6 +65,8 @@ export default Ember.Controller.extend({
 
   rounding: false,
 
+  query: null,
+
   actions: {
     updateSelectedUsers(newUsers) {
       set(this, 'selectedUsers', newUsers);
@@ -86,6 +93,10 @@ export default Ember.Controller.extend({
 
     updateSelectedProjects(newProjects) {
       set(this, 'selectedProjects', newProjects);
+    },
+
+    updateQuery(newQuery) {
+      set(this, 'query', newQuery);
     },
 
     searchProjects(query) {
