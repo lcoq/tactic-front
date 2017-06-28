@@ -1,90 +1,102 @@
-<section class="reviews-filter reviews-filter-users js-reviews-filter-users {{if allUsersSelected "no-print"}}">
-  <header class="reviews-filter-header">
-    <h2 class="reviews-filter-header-title">Users</h2>
-    <div class="reviews-filter-header-count no-print">({{selectedUsers.length}}/{{users.length}})</div>
-  </header>
-  <div class="reviews-filter-item-list-container">
-    <ul class="reviews-filter-item-list">
-      <li class="reviews-filter-item reviews-filter-item-toggle no-print">
-        <a {{action "checkAll" "users"}}>Select all</a>
-        <a {{action "uncheckAll" "users"}}>Select none</a>
-      </li>
-      {{#each users as |user|}}
-        <li class="reviews-filter-item it-reviews-filter-item-user {{unless (get selectedUsersCheckboxes user.id) "no-print"}}">
-          <label class="reviews-filter-item-checkbox-container">
-            <input {{action "selectedChanged" "users" user on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedUsersCheckboxes user.id}} />
-            <span class="reviews-filter-item-checkbox-txt">{{user.name}}</span>
-          </label>
+<section class="reviews-filters">
+  <section class="reviews-filter reviews-filter-users js-reviews-filter-users {{if allUsersSelected "no-print"}}">
+    <header class="reviews-filter-header">
+      <h2 class="reviews-filter-header-title">Users</h2>
+      <div class="reviews-filter-header-count no-print">({{selectedUsers.length}}/{{users.length}})</div>
+    </header>
+    <div class="reviews-filter-item-list-container">
+      <ul class="reviews-filter-item-list">
+        <li class="reviews-filter-item reviews-filter-item-toggle no-print">
+          <a {{action "checkAll" "users"}}>Select all</a>
+          <a {{action "uncheckAll" "users"}}>Select none</a>
         </li>
-      {{/each}}
-    </ul>
-  </div>
-</section>
-<section class="reviews-filter reviews-filter-clients js-reviews-filter-clients {{if allClientsSelected "no-print"}}">
-  <header class="reviews-filter-header">
-    <h2 class="reviews-filter-header-title">Clients</h2>
-    <div class="reviews-filter-header-count no-print">({{selectedClients.length}}/{{clients.length}})</div>
-  </header>
-  <div class="reviews-filter-item-list-container">
-    <ul class="reviews-filter-item-list">
-      <li class="reviews-filter-item reviews-filter-item-toggle no-print">
-        <a {{action "checkAll" "clients"}}>Select all</a>
-        <a {{action "uncheckAll" "clients"}}>Select none</a>
-      </li>
-      {{#each clients as |client|}}
-        <li class="reviews-filter-item reviews-filter-item-client it-reviews-filter-item-client {{unless (get selectedClientsCheckboxes client.id) "no-print"}}">
-          <label class="reviews-filter-item-checkbox-container">
-            <input {{action "selectedChanged" "clients" client on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedClientsCheckboxes client.id}} />
-            <span class="reviews-filter-item-checkbox-txt">{{client.name}}</span>
-          </label>
+        {{#each users as |user|}}
+          <li class="reviews-filter-item it-reviews-filter-item-user {{unless (get selectedUsersCheckboxes user.id) "no-print"}}">
+            <label class="reviews-filter-item-checkbox-container">
+              <input {{action "selectedChanged" "users" user on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedUsersCheckboxes user.id}} />
+              <span class="reviews-filter-item-checkbox-txt">{{user.name}}</span>
+            </label>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  </section>
+  <section class="reviews-filter reviews-filter-clients js-reviews-filter-clients {{if allClientsSelected "no-print"}}">
+    <header class="reviews-filter-header">
+      <h2 class="reviews-filter-header-title">Clients</h2>
+      <div class="reviews-filter-header-count no-print">({{selectedClients.length}}/{{clients.length}})</div>
+    </header>
+    <div class="reviews-filter-item-list-container">
+      <ul class="reviews-filter-item-list">
+        <li class="reviews-filter-item reviews-filter-item-toggle no-print">
+          <a {{action "checkAll" "clients"}}>Select all</a>
+          <a {{action "uncheckAll" "clients"}}>Select none</a>
         </li>
-      {{/each}}
-    </ul>
-  </div>
-</section>
-<section class="reviews-filter reviews-filter-projects js-reviews-filter-projects {{if allProjectsSelected "no-print"}}">
-  <header class="reviews-filter-header">
-    <h2 class="reviews-filter-header-title">Projects</h2>
-    <div class="reviews-filter-header-count no-print">({{selectedProjects.length}}/{{projects.length}})</div>
-  </header>
-  <div class="reviews-filter-item-list-container">
-    <ul class="reviews-filter-item-list">
-      <li class="reviews-filter-item reviews-filter-item-toggle no-print">
-        <a {{action "checkAll" "projects"}}>Select all</a>
-        <a {{action "uncheckAll" "projects"}}>Select none</a>
-      </li>
-      {{#each projects as |project|}}
-        <li class="reviews-filter-item reviews-filter-item-project it-reviews-filter-item-project {{unless (get selectedProjectsCheckboxes project.id) "no-print"}}">
-          <label class="reviews-filter-item-checkbox-container">
-            <input {{action "selectedChanged" "projects" project on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedProjectsCheckboxes project.id}} />
-            <span class="reviews-filter-item-checkbox-txt">{{project.name}}</span>
-          </label>
+        {{#each clients as |client|}}
+          <li class="reviews-filter-item reviews-filter-item-client it-reviews-filter-item-client {{unless (get selectedClientsCheckboxes client.id) "no-print"}}">
+            <label class="reviews-filter-item-checkbox-container">
+              <input {{action "selectedChanged" "clients" client on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedClientsCheckboxes client.id}} />
+              <span class="reviews-filter-item-checkbox-txt">{{client.name}}</span>
+            </label>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  </section>
+  <section class="reviews-filter reviews-filter-projects js-reviews-filter-projects {{if allProjectsSelected "no-print"}}">
+    <header class="reviews-filter-header">
+      <h2 class="reviews-filter-header-title">Projects</h2>
+      <div class="reviews-filter-header-count no-print">({{selectedProjects.length}}/{{projects.length}})</div>
+    </header>
+    <div class="reviews-filter-item-list-container">
+      <ul class="reviews-filter-item-list">
+        <li class="reviews-filter-item reviews-filter-item-toggle no-print">
+          <a {{action "checkAll" "projects"}}>Select all</a>
+          <a {{action "uncheckAll" "projects"}}>Select none</a>
         </li>
-      {{/each}}
-    </ul>
-  </div>
+        {{#each projects as |project|}}
+          <li class="reviews-filter-item reviews-filter-item-project it-reviews-filter-item-project {{unless (get selectedProjectsCheckboxes project.id) "no-print"}}">
+            <label class="reviews-filter-item-checkbox-container">
+              <input {{action "selectedChanged" "projects" project on="change"}} type="checkbox" class="reviews-filter-item-checkbox no-print" checked={{get selectedProjectsCheckboxes project.id}} />
+              <span class="reviews-filter-item-checkbox-txt">{{project.name}}</span>
+            </label>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  </section>
+  <section class="reviews-filter reviews-filter-from js-reviews-filter-from">
+    <div class="reviews-filter-from-txt no-print">from</div>
+    <header class="reviews-filter-header">
+      <h2 {{action "changeSinceDate"}} class="reviews-filter-header-title">
+        {{moment-format since "YYYY/MM/DD"}}
+      </h2>
+      <div class="reviews-filter-from-date js-since-datepicker no-print" />
+    </header>
+  </section>
+  <section class="reviews-filter reviews-filter-to js-reviews-filter-to">
+    <div class="reviews-filter-to-txt no-print">to</div>
+    <header class="reviews-filter-header">
+      <h2 {{action "changeBeforeDate"}} class="reviews-filter-header-title">
+        {{moment-format before "YYYY/MM/DD"}}
+      </h2>
+      <div class="reviews-filter-to-date js-before-datepicker no-print" />
+    </header>
+  </section>
+  <section class="reviews-filter reviews-filter-rounding no-print">
+    <label class="reviews-filter-rounding-checkbox-container">
+      <input {{action "toggleRounding" on="change"}} type="checkbox" checked={{rounding}} class="reviews-filter-rounding-checkbox" />
+      <span>Round</span>
+    </label>
+  </section>
 </section>
-<section class="reviews-filter reviews-filter-from js-reviews-filter-from">
-  <div class="reviews-filter-from-txt no-print">from</div>
-  <header class="reviews-filter-header">
-    <h2 {{action "changeSinceDate"}} class="reviews-filter-header-title">
-      {{moment-format since "YYYY/MM/DD"}}
-    </h2>
-    <div class="reviews-filter-from-date js-since-datepicker no-print" />
-  </header>
-</section>
-<section class="reviews-filter reviews-filter-to js-reviews-filter-to">
-  <div class="reviews-filter-to-txt no-print">to</div>
-  <header class="reviews-filter-header">
-    <h2 {{action "changeBeforeDate"}} class="reviews-filter-header-title">
-      {{moment-format before "YYYY/MM/DD"}}
-    </h2>
-    <div class="reviews-filter-to-date js-before-datepicker no-print" />
-  </header>
-</section>
-<section class="reviews-filter reviews-filter-rounding no-print">
-  <label class="reviews-filter-rounding-checkbox-container">
-    <input {{action "toggleRounding" on="change"}} type="checkbox" checked={{rounding}} class="reviews-filter-rounding-checkbox" />
-    <span>Round</span>
-  </label>
+<section class="reviews-filters">
+  <section class="reviews-filter reviews-filter-query">
+    {{#if query}}
+      <span class="only-print">
+        Recherche : {{query}}
+      </span>
+    {{/if}}
+    {{input enter=updateQuery placeholder="Rechercher une tâche ..." class="reviews-filter-query-input no-print"}}
+  </section>
 </section>
