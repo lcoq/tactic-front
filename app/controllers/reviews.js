@@ -122,17 +122,17 @@ export default Ember.Controller.extend({
       get(this, 'userSummary').reload();
     },
 
-    generateCSV(options = {}) {
+    generateCSV(additionalFilters = {}) {
       let projectIds;
 
-      if (options.hasOwnProperty('client')) {
-        const clientId = options.client && options.client.get('id') || '0';
+      if (additionalFilters.hasOwnProperty('client')) {
+        const clientId = additionalFilters.client && additionalFilters.client.get('id') || '0';
         projectIds = get(this, 'selectedProjects').filter(function(project) {
           return clientId === (get(project, 'client.id') || '0');
         }).mapBy('id');
       }
-      else if (options.hasOwnProperty('project')) {
-        projectIds = [ options.project.get('id') || '0' ];
+      else if (additionalFilters.hasOwnProperty('project')) {
+        projectIds = [ additionalFilters.project.get('id') || '0' ];
       }
       else {
         projectIds = get(this, 'selectedProjects').mapBy('id');
@@ -149,8 +149,13 @@ export default Ember.Controller.extend({
         filters['query'] = query;
       }
 
+      const options = {};
+      if (get(this, 'rounding')) {
+        options['rounded'] = 1;
+      }
+
       const adapter = get(this, 'store').adapterFor('entry');
-      const params = adapter.sortQueryParams(merge({ filter: filters }, adapter.get('headers')));
+      const params = adapter.sortQueryParams(merge({ filter: filters, options: options }, adapter.get('headers')));
       const pathWithoutParams = adapter.buildURL('entry', null, null, 'query', params) + '.csv';
       const url = [ pathWithoutParams, Ember.$.param(params) ].join('?');
       this._downloadFile(url);
