@@ -1,6 +1,6 @@
 .reviews-filters {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
 }
 
 .reviews-filter {
@@ -131,6 +131,7 @@
 
 .reviews-filter-rounding-checkbox-container {
   display: flex;
+  margin: 12px 0;
 }
 
 .reviews-filter-rounding-checkbox {
