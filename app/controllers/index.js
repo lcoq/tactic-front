@@ -39,6 +39,12 @@ export default Ember.Controller.extend({
     });
   },
 
+  _updateIcon(name) {
+    Ember.$("link[rel*='icon']").each(function() {
+      Ember.$(this).attr('href', Ember.$(this).data('href-' + name));
+    });
+  },
+
   actions: {
 
     searchProjects(query) {
@@ -49,11 +55,13 @@ export default Ember.Controller.extend({
     startTimer() {
       const stateManager = get(this, 'newEntryStateManager');
       stateManager.send('start');
+      this._updateIcon('started');
     },
 
     stopTimer() {
       this._stopNewEntryAndAddItToEntryList().finally(() => {
         this.send('buildNewEntry');
+      this._updateIcon('stopped');
       });
     },
 
