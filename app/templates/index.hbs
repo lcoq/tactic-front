@@ -11,8 +11,11 @@
 </section>
 {{entries-by-day
   list=model.entryList
-  didDeleteEntry=(action "didDeleteEntry")
+  willUpdateEntry=(action "willUpdateEntry")
   didUpdateEntry=(action "didUpdateEntry")
+  willDeleteEntry=(action "willDeleteEntry")
+  didDeleteEntry=(action "didDeleteEntry")
+  didRevertEntry=(action "didRevertEntry")
   searchProjects=(action "searchProjects")
   restartEntry=(action "restartEntry")
 }}

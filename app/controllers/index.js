@@ -18,6 +18,9 @@ function entryIsStoppedLocallyButStillRunningOnApi(entry) {
 export default Ember.Controller.extend({
   userSummary: Ember.inject.service(),
 
+  waitingEntries: [],
+  shouldUpdateSummary: false,
+
   newEntryStateManager: Ember.computed('model.newEntry', function() {
     const entry = get(this, 'model.newEntry');
     return RunningEntryStateManager.create({ entry: entry });
@@ -27,7 +30,7 @@ export default Ember.Controller.extend({
     const stateManager = get(this, 'newEntryStateManager');
     const entry = get(this, 'model.newEntry');
     return stateManager.send('stop').then(() => {
-      get(this, 'userSummary').reload();
+      this._reloadOrScheduleUserSummary();
     }, () => {
       if (get(stateManager, 'isSaveErrored')) {
         // TODO move new entry state manager logic to the entry state manager ?
@@ -43,6 +46,23 @@ export default Ember.Controller.extend({
     Ember.$("link[rel*='icon']").each(function() {
       Ember.$(this).attr('href', Ember.$(this).data('href-' + name));
     });
+  },
+
+  _reloadUserSummary() {
+    set(this, 'shouldUpdateSummary', false);
+    get(this, 'userSummary').reload();
+  },
+
+  _scheduleReloadUserSummary() {
+    set(this, 'shouldUpdateSummary', true);
+  },
+
+  _reloadOrScheduleUserSummary() {
+    if (get(this, 'waitingEntries.length') === 0) {
+      this._reloadUserSummary();
+    } else {
+      this._scheduleReloadUserSummary();
+    }
   },
 
   actions: {
@@ -86,12 +106,29 @@ export default Ember.Controller.extend({
       set(this, 'model.newEntry', entry);
     },
 
-    didUpdateEntry() {
-      get(this, 'userSummary').reload();
+    willUpdateEntry(entry) {
+      get(this, 'waitingEntries').pushObject(entry);
     },
 
-    didDeleteEntry() {
-      get(this, 'userSummary').reload();
+    didUpdateEntry(entry) {
+      get(this, 'waitingEntries').removeObject(entry);
+      this._reloadOrScheduleUserSummary();
+    },
+
+    didRevertEntry(entry) {
+      get(this, 'waitingEntries').removeObject(entry);
+      if (get(this, 'waitingEntries.length') === 0 && get(this, 'shouldUpdateSummary')) {
+        this._reloadUserSummary();
+      }
+    },
+
+    willDeleteEntry(entry) {
+      get(this, 'waitingEntries').pushObject(entry);
+    },
+
+    didDeleteEntry(entry) {
+      get(this, 'waitingEntries').removeObject(entry);
+      this._reloadOrScheduleUserSummary();
     },
 
     restartEntry(entry) {

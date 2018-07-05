@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import EntryGroupByDayList from '../models/entry-group-by-day-list';
 
-const { get } = Ember;
+const { get, setProperties } = Ember;
 
 export default Ember.Route.extend({
   authentication: Ember.inject.service(),
@@ -25,6 +25,14 @@ export default Ember.Route.extend({
       }
     });
     return Ember.RSVP.hash({ entryList: entryList, newEntry: runningEntry });
+  },
+
+  setupController(controller) {
+    this._super(...arguments);
+    setProperties(controller, {
+      waitingEntries: [],
+      shouldUpdateSummary: false
+    });
   },
 
   actions: {

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import formatDuration from '../utils/format-duration';
 import config from '../config/environment';
 
-const { get, set, setProperties } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Component.extend({
   classNames: ['entry-create'],
@@ -68,10 +68,15 @@ export default Ember.Component.extend({
       set(this, 'projectName', null);
     },
     selectProject(project) {
-      setProperties(this, {
-        'entry.project': project,
-        'projectName': project && get(project, 'name')
-      });
+      set(this, 'projectName', project && get(project, 'name'));
+      let entry = get(this, 'entry');
+      let callback = function () { set(entry, 'project', project); };
+      if (get(entry, 'isSaving')) {
+        let callbackName = get(entry, 'isNew') ? 'didCreate' : 'didUpdate';
+        entry.one(callbackName, callback);
+      } else {
+        callback();
+      }
       get(this, 'didUpdateEntry')();
     },
     retrySaveEntry() {

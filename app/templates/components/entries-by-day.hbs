@@ -12,8 +12,11 @@
       {{#each group.entries as |entry|}}
         {{show-entry
           entry=entry
-          didDeleteEntry=(action "didDeleteEntry")
+          willUpdateEntry=willUpdateEntry
           didUpdateEntry=(action "didUpdateEntry")
+          willDeleteEntry=willDeleteEntry
+          didDeleteEntry=(action "didDeleteEntry")
+          didRevertEntry=didRevertEntry
           searchProjects=searchProjects
           restartEntry=restartEntry
           groupedBy="day"

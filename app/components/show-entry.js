@@ -127,6 +127,9 @@ export default Ember.Component.extend({
 
   _closeEdit() {
     const entry = get(this, 'entry');
+    if (get(this, 'willUpdateEntry')) {
+      get(this, 'willUpdateEntry')(entry);
+    }
     entry.markForSave();
 
     set(this, 'isEditingDate', false);
@@ -202,6 +205,9 @@ export default Ember.Component.extend({
     },
     revertEditEntry() {
       const entry = get(this, 'entry');
+      if (get(this, 'didRevertEntry')) {
+        get(this, 'didRevertEntry')(entry);
+      }
       entry.clear();
     },
 
@@ -209,6 +215,9 @@ export default Ember.Component.extend({
 
     markEntryForDelete() {
       const entry = get(this, 'entry');
+      if (get(this, 'willDeleteEntry')) {
+        get(this, 'willDeleteEntry')(entry);
+      }
       entry.markForDelete();
     },
 
