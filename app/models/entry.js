@@ -54,6 +54,9 @@ export default DS.Model.extend(MutableRecordStateManagerMixin, {
   },
 
   updateInitialProject: Ember.on('didLoad', 'didUpdate', function() {
+    get(this, 'project').then(() => {
+      set(this, 'initialProject', get(this, 'project'));
+    });
     set(this, 'initialProject', get(this, 'project'));
   }),
 
