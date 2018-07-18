@@ -17,6 +17,11 @@ export default Ember.Component.extend({
 
     didDeleteEntry() {
       get(this, 'didDeleteEntry')(...arguments);
+    },
+
+    generateCSV(group) {
+      let project = group.get('project');
+      get(this, 'generateCSV')({ project });
     }
   }
 });

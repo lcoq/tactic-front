@@ -4,6 +4,9 @@
   <div class="entry-root-group-list-header-duration">
     {{format-duration (if rounding list.roundedDurationInSeconds list.durationInSeconds)}}
   </div>
+  <div class="entry-root-group-list-header-actions">
+    <a {{action "generateGroupListCSV"}} class="entry-root-group-list-header-action">CSV</a>
+  </div>
 </header>
 {{/if}}
 {{#each list.groups as |group|}}
@@ -13,6 +16,9 @@
       <div class="entry-root-group-header-duration">
         {{format-duration (if rounding group.roundedDurationInSeconds group.durationInSeconds)}}
       </div>
+      <div class="entry-root-group-header-actions">
+        <a {{action "generateGroupCSV" group}} class="entry-root-group-header-action">CSV</a>
+      </div>
     </header>
     {{entries-by-project
       list=group
@@ -20,6 +26,7 @@
       didDeleteEntry=(action "didDeleteEntry")
       didUpdateEntry=(action "didUpdateEntry")
       searchProjects=(action "searchProjects")
+      generateCSV=(action "generateCSV")
     }}
   </section>
 {{/each}}

@@ -23,6 +23,19 @@ export default Ember.Component.extend({
 
     searchProjects() {
       return get(this, 'searchProjects')(...arguments);
+    },
+
+    generateGroupListCSV() {
+      get(this, 'generateCSV')();
+    },
+
+    generateGroupCSV(group) {
+      let client = group.get('client');
+      get(this, 'generateCSV')({ client });
+    },
+
+    generateCSV() {
+      get(this, 'generateCSV')(...arguments);
     }
   }
 });

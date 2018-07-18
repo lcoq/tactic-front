@@ -5,6 +5,9 @@
       <div class="entry-group-header-duration it-entry-group-duration">
         {{format-duration (if rounding group.roundedDurationInSeconds group.durationInSeconds)}}
       </div>
+      <div class="entry-group-header-actions">
+        <a {{action "generateCSV" group}} class="entry-group-header-action">CSV</a>
+      </div>
     </header>
     <ul class="entry-group-item-list">
       {{#each group.entries as |entry|}}

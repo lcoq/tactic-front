@@ -21,6 +21,19 @@
   font-size: $fs-sm;
 }
 
+.entry-root-group-list-header-actions, .entry-root-group-header-actions, .entry-group-header-actions {
+  margin-left: auto;
+}
+
+.entry-root-group-list-header-action, .entry-root-group-header-action, .entry-group-header-action {
+  padding: $sp-xs $sp-xs;
+  font-weight: bold;
+}
+
+.entry-root-group-list-header-action, .entry-group-header-action {
+  color: $clr4;
+}
+
 .entry-root-group-list-header {
   background-color: $clr17;
 }
@@ -60,6 +73,10 @@
 
 .entry-root-group-header-duration {
   color: $clr3;
+}
+
+.entry-root-group-header-action {
+  color: $clr7;
 }
 
 .entry-group-header {
