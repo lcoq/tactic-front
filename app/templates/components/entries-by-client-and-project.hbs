@@ -17,7 +17,7 @@
         {{format-duration (if rounding group.roundedDurationInSeconds group.durationInSeconds)}}
       </div>
       <div class="entry-root-group-header-actions">
-        <a {{action "generateGroupCSV" group}} class="entry-root-group-header-action">CSV</a>
+        <a {{action "generateGroupCSV" group}} class="entry-root-group-header-action no-print">CSV</a>
       </div>
     </header>
     {{entries-by-project

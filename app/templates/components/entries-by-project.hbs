@@ -6,7 +6,7 @@
         {{format-duration (if rounding group.roundedDurationInSeconds group.durationInSeconds)}}
       </div>
       <div class="entry-group-header-actions">
-        <a {{action "generateCSV" group}} class="entry-group-header-action">CSV</a>
+        <a {{action "generateCSV" group}} class="entry-group-header-action no-print">CSV</a>
       </div>
     </header>
     <ul class="entry-group-item-list">
