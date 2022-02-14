@@ -3,6 +3,41 @@
 This README outlines the details of collaborating on this Ember application.
 A short introduction of this app could easily go here.
 
+## Setup
+
+Notice the Ember server starts on port `4200`.
+
+### Package issues
+
+There are some issues with packages which rely on some package versions that are using ES6 features :
+
+- `ember-cli-moment-shim` which rely on `broccoli-stew ^1.0.0`, but needs to be manually fixed to `=1.0.0`
+- `ember-cli/node_modules/broccoli-concat` => `fast-sourcemap-concat": "=1.0.1"`
+
+After global `npm i`, update each `package.json` file in `node_modules` for packages above by fixing the required version.
+As an example :
+
+```
+$ cd node_modules/ember-cli-moment-shim
+$ # replace version in package.json
+$ npm i
+```
+
+### Node Sass issue
+
+If you have the following error:
+
+> Error: Node Sass does not yet support your current environment: Linux 64-bit with Unsupported runtime (83)
+
+You may have to rebuild or install it through one of the following command :
+
+```
+$ npm i node-sass@4.14.1
+$ npm rebuild node-sass --unsafe-perm node-sass
+```
+
+You may also have to rebuild or install it in nested npm packages if the errors does not come directly from `node_modules/node-sass` package.
+
 ## Prerequisites
 
 You will need the following things properly installed on your computer.
